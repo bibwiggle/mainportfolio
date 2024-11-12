@@ -2,9 +2,8 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, CheckCircle, Github, Twitter } from 'lucide-react'
-import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CheckCircle } from 'lucide-react'
 
 
 interface PageProps {}
