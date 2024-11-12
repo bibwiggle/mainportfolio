@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle } from 'lucide-react'
 
 
-interface PageProps extends Record<string, unknown> {}
+interface PageProps {
+  [key: string]: unknown;
+}
 
 export default function Page({}: PageProps) {
 
