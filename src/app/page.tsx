@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle } from 'lucide-react'
 
 
-interface PageProps {}
+interface PageProps extends Record<string, unknown> {}
 
 export default function Page({}: PageProps) {
 
@@ -211,7 +211,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin magn
   )
 }
 
-interface MountainIconProps extends React.SVGProps<SVGSVGElement> {}
+type MountainIconProps = React.SVGProps<SVGSVGElement>;
 
 function MountainIcon(props: MountainIconProps) {
   return (
