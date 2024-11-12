@@ -6,11 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle } from 'lucide-react'
 
 
-interface PageProps {
-  [key: string]: unknown;
-}
-
-export default function Page({}: PageProps) {
+export default function Page() {
 
   const [playbackRate, setPlaybackRate] = useState(13) // Start at max speed
   const videoRef = useRef<HTMLVideoElement>(null)
