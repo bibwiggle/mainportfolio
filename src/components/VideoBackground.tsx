@@ -1,13 +1,14 @@
 "use client"
 import { useState, useRef, useEffect } from 'react'
+import MuxPlayer from '@mux/mux-player-react';
 
 interface VideoBackgroundProps {
-  videoSrc: string;
+  reverseSpeed?: boolean;
 }
 
-export default function VideoBackground({ videoSrc }: VideoBackgroundProps) {
-  const [playbackRate, setPlaybackRate] = useState(1) // Start at min speed
-  const videoRef = useRef<HTMLVideoElement>(null)
+export default function VideoBackground({ reverseSpeed = false }: VideoBackgroundProps) {
+  const [playbackRate, setPlaybackRate] = useState(reverseSpeed ? 13 : 1)
+  const muxPlayerRef = useRef<any>(null)
 
   const updatePlaybackRate = () => {
     const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
@@ -15,11 +16,13 @@ export default function VideoBackground({ videoSrc }: VideoBackgroundProps) {
     
     // Calculate the new playback rate based on scroll position
     const scrollProgress = Math.min(currentScrollTop / maxScroll, 1)
-    const newRate = 1 + (scrollProgress * 12) // 1 (min) to 13 (max) speed
+    const newRate = reverseSpeed
+      ? 13 - (scrollProgress * 12) // 13 (max) to 1 (min) speed
+      : 1 + (scrollProgress * 12) // 1 (min) to 13 (max) speed
 
     setPlaybackRate(newRate)
-    if (videoRef.current) {
-      videoRef.current.playbackRate = newRate
+    if (muxPlayerRef.current) {
+      muxPlayerRef.current.playbackRate = newRate
     }
   }
 
@@ -33,18 +36,22 @@ export default function VideoBackground({ videoSrc }: VideoBackgroundProps) {
     return () => {
       window.removeEventListener('scroll', updatePlaybackRate)
     }
-  }, [])
+  }, [reverseSpeed])
 
   return (
     <>
-      <video 
-        ref={videoRef}
+      <MuxPlayer
+        ref={muxPlayerRef}
+        streamType="on-demand"
+        playbackId="nqqDpjhjVeBsQrncmP1Mj00J01k01Guz202lKHdVNFpKVO4"
+        metadataVideoTitle="Placeholder (optional)"
+        metadataViewerUserId="Placeholder (optional)"
+        primaryColor="#FFFFFF"
+        secondaryColor="#000000"
         autoPlay
         loop
         muted
         playsInline
-        preload="auto"
-        src={videoSrc}
         className="fixed top-0 left-0 w-full h-full object-cover -z-10"
       />
       <div className="fixed top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded">
