@@ -1,63 +1,13 @@
-"use client"
-import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle } from 'lucide-react'
+import VideoBackground from '@/components/VideoBackground'
 
 export default function Page() {
-  const [playbackRate, setPlaybackRate] = useState(13) // Start at max speed
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const secondLayerRef = useRef<HTMLElement>(null)
-  const lastScrollTop = useRef(0)
-
-  const updatePlaybackRate = () => {
-    const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const secondLayerTop = secondLayerRef.current?.offsetTop ?? 0
-    
-    // Check if we're actually scrolling (not at the top or bottom of the page)
-    if (currentScrollTop >= 0 && currentScrollTop < (document.documentElement.scrollHeight - window.innerHeight)) {
-      // Calculate the new playback rate based on scroll position
-      const scrollProgress = Math.min(currentScrollTop / secondLayerTop, 1)
-      const newRate = 13 - (scrollProgress * 12) // 13 (max) to 1 (min) speed
-
-      setPlaybackRate(newRate)
-      if (videoRef.current) {
-        videoRef.current.playbackRate = newRate
-      }
-    }
-
-    lastScrollTop.current = currentScrollTop
-  }
-
-  useEffect(() => {
-    // Set initial playback rate
-    updatePlaybackRate()
-
-    // Add scroll event listener
-    window.addEventListener('scroll', updatePlaybackRate)
-
-    return () => {
-      window.removeEventListener('scroll', updatePlaybackRate)
-    }
-  }, [])
-
   return (
     <div className="relative min-h-screen flex flex-col overflow-hidden">
-      <video 
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        src="/DCA_2.mp4"
-        className="fixed top-0 left-0 w-full h-full object-cover -z-10"
-      />
-
-      <div className="fixed top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded">
-        Speed: {playbackRate.toFixed(2)}x
-      </div>
+      <VideoBackground videoSrc="/DCA_2.mp4" />
 
       <header className="px-4 lg:px-6 h-14 flex items-center">
         <Link className="flex items-center justify-center" href="#">
@@ -129,7 +79,7 @@ export default function Page() {
           </div>
         </section>
 
-        <section ref={secondLayerRef} className="w-full py-12 md:py-24 lg:py-32">
+        <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Hello World</h2>
             <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
