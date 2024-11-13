@@ -43,20 +43,24 @@ export default function Page() {
   }, [])
 
   return (
-    <div className="relative min-h-screen flex flex-col overflow-hidden">
-      <video 
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        src="/DCA_2.mp4"
-        className="fixed top-0 left-0 w-full h-100vh object-cover -z-10"
-      />
-
-      <div className="fixed top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded">
-        Speed: {playbackRate.toFixed(2)}x
+    <div className="relative min-h-screen flex flex-col">
+      <div className="fixed inset-0 w-full h-full overflow-hidden">
+        <video 
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          src="/DCA_2.mp4"
+          className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover"
+        />
       </div>
+
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <div className="fixed top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded">
+          Speed: {playbackRate.toFixed(2)}x
+        </div>
+
 
       <header className="px-4 lg:px-6 h-14 flex items-center"> {/*top tab*/}
         <Link className="flex items-center justify-center" href="#">
@@ -205,6 +209,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin magn
           </Link>
         </nav>
       </footer>
+    </div>
     </div>
   )
 }
