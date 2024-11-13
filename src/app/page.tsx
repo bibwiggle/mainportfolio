@@ -11,32 +11,34 @@ export default function Page() {
   const secondLayerRef = useRef<HTMLElement>(null)
   const lastScrollTop = useRef(0)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
+  const updatePlaybackRate = () => {
+    const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
+    const secondLayerTop = secondLayerRef.current?.offsetTop ?? 0
+    
+    // Check if we're actually scrolling (not at the top or bottom of the page)
+    if (currentScrollTop >= 0 && currentScrollTop < (document.documentElement.scrollHeight - window.innerHeight)) {
+      // Calculate the new playback rate based on scroll position
+      const scrollProgress = Math.min(currentScrollTop / secondLayerTop, 1)
+      const newRate = 13 - (scrollProgress * 12) // 13 (max) to 1 (min) speed
 
-      // Check if we're actually scrolling (not at the top or bottom of the page)
-      if (currentScrollTop > 0 && currentScrollTop < (document.documentElement.scrollHeight - window.innerHeight)) {
-        // Calculate the position of the second layer
-        const secondLayerTop = secondLayerRef.current?.offsetTop ?? 0
-        
-        // Calculate the new playback rate based on scroll position
-        const scrollProgress = Math.min(currentScrollTop / secondLayerTop, 1)
-        const newRate = 13 - (scrollProgress * 12) // 13 (max) to 1 (min) speed
-
-        setPlaybackRate(newRate)
-        if (videoRef.current) {
-          videoRef.current.playbackRate = newRate
-        }
+      setPlaybackRate(newRate)
+      if (videoRef.current) {
+        videoRef.current.playbackRate = newRate
       }
-
-      lastScrollTop.current = currentScrollTop
     }
 
-    window.addEventListener('scroll', handleScroll)
+    lastScrollTop.current = currentScrollTop
+  }
+
+  useEffect(() => {
+    // Set initial playback rate
+    updatePlaybackRate()
+
+    // Add scroll event listener
+    window.addEventListener('scroll', updatePlaybackRate)
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', updatePlaybackRate)
     }
   }, [])
 
