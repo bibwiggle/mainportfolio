@@ -40,8 +40,20 @@ export default function Page() {
     }
   }, [])
 
+  useEffect(() => {
+    const setViewportHeight = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    setViewportHeight();
+    window.addEventListener('resize', setViewportHeight);
+
+    return () => window.removeEventListener('resize', setViewportHeight);
+  }, []);
+
   return (
-    <div className="relative min-h-screen flex flex-col">
+    <div className="relative flex flex-col" style={{ minHeight: 'calc(var(--vh, 1vh) * 100)' }}>
       <div className="fixed inset-0 w-full h-full overflow-hidden">
         <video 
           ref={videoRef}
@@ -54,7 +66,7 @@ export default function Page() {
         />
       </div>
 
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col" style={{ minHeight: 'calc(var(--vh, 1vh) * 100)' }}>
         <div className="fixed top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded">
           Speed: {playbackRate.toFixed(2)}x
         </div>
