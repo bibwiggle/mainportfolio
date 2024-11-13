@@ -51,7 +51,7 @@ export default function Page() {
         muted
         playsInline
         src="/DCA_2.mp4"
-        className="fixed top-0 left-0 w-full h-full object-cover -z-10"
+        className="fixed top-0 left-0 w-full h-100vh object-cover -z-10"
       />
 
       <div className="fixed top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded">
