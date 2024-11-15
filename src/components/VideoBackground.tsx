@@ -45,7 +45,7 @@ export default function VideoBackground({ reverseSpeed = false }: VideoBackgroun
       <MuxPlayer
         ref={muxPlayerRef}
         streamType="on-demand"
-        playbackId="9rLXKkhWN9DoE11lBg00myUuacZ02YZOjgpMxJ5puxjCDA"
+        playbackId="rLXKkhWN9DoE11lBg00myUuacZ02YZOjgpMxJ5puxjCDA"
         metadataVideoTitle="Placeholder (optional)"
         metadataViewerUserId="Placeholder (optional)"
         primaryColor="#FFFFFF"
