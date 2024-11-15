@@ -7,7 +7,7 @@ interface VideoBackgroundProps {
 }
 
 export default function VideoBackground({ reverseSpeed = false }: VideoBackgroundProps) {
-  const [playbackRate, setPlaybackRate] = useState(reverseSpeed ? 13 : 1)
+  const [playbackRate, setPlaybackRate] = useState(reverseSpeed ? 5 : 1)
   const muxPlayerRef = useRef<any>(null)
 
   const updatePlaybackRate = () => {
