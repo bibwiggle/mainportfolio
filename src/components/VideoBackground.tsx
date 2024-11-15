@@ -1,16 +1,18 @@
 "use client"
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import MuxPlayer from '@mux/mux-player-react';
 
 interface VideoBackgroundProps {
   reverseSpeed?: boolean;
 }
 
+type MuxPlayerRefType = React.ElementRef<typeof MuxPlayer>;
+
 export default function VideoBackground({ reverseSpeed = false }: VideoBackgroundProps) {
   const [playbackRate, setPlaybackRate] = useState(reverseSpeed ? 5 : 1)
-  const muxPlayerRef = useRef<any>(null)
+  const muxPlayerRef = useRef<MuxPlayerRefType>(null)
 
-  const updatePlaybackRate = () => {
+  const updatePlaybackRate = useCallback(() => {
     const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight
     
@@ -24,7 +26,7 @@ export default function VideoBackground({ reverseSpeed = false }: VideoBackgroun
     if (muxPlayerRef.current) {
       muxPlayerRef.current.playbackRate = newRate
     }
-  }
+  }, [reverseSpeed])
 
   useEffect(() => {
     // Set initial playback rate
@@ -36,7 +38,7 @@ export default function VideoBackground({ reverseSpeed = false }: VideoBackgroun
     return () => {
       window.removeEventListener('scroll', updatePlaybackRate)
     }
-  }, [reverseSpeed])
+  }, [updatePlaybackRate])
 
   return (
     <>
