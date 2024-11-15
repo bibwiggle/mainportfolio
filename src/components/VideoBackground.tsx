@@ -17,8 +17,8 @@ export default function VideoBackground({ reverseSpeed = false }: VideoBackgroun
     // Calculate the new playback rate based on scroll position
     const scrollProgress = Math.min(currentScrollTop / maxScroll, 1)
     const newRate = reverseSpeed
-      ? 13 - (scrollProgress * 12) // 13 (max) to 1 (min) speed
-      : 1 + (scrollProgress * 12) // 1 (min) to 13 (max) speed
+      ? 5 - (scrollProgress * 4) // 13 (max) to 1 (min) speed
+      : 1 + (scrollProgress * 4) // 1 (min) to 13 (max) speed
 
     setPlaybackRate(newRate)
     if (muxPlayerRef.current) {
@@ -43,7 +43,7 @@ export default function VideoBackground({ reverseSpeed = false }: VideoBackgroun
       <MuxPlayer
         ref={muxPlayerRef}
         streamType="on-demand"
-        playbackId="nqqDpjhjVeBsQrncmP1Mj00J01k01Guz202lKHdVNFpKVO4"
+        playbackId="9rLXKkhWN9DoE11lBg00myUuacZ02YZOjgpMxJ5puxjCDA"
         metadataVideoTitle="Placeholder (optional)"
         metadataViewerUserId="Placeholder (optional)"
         primaryColor="#FFFFFF"
