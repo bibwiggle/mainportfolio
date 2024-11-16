@@ -50,7 +50,7 @@ export default function Page() {
           <div className="fixed inset-0 -z-10">
       <video
         className="w-full h-full object-cover"
-        src="/DCAreduced.mp4" // Replace with your video file path
+        src="/DCAsharpn.mp4" // Replace with your video file path
         autoPlay
         loop
         muted
