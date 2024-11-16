@@ -6,30 +6,49 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle } from 'lucide-react'
 
-function VideoBackground() {
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [playbackRate, setPlaybackRate] = useState(1)
+// function VideoBackground() {
+//   const videoRef = useRef<HTMLVideoElement>(null)
+//   const [playbackRate, setPlaybackRate] = useState(1)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-      const scrollPercentage = scrollPosition / maxScroll
-      const newRate = 1 + scrollPercentage * 4 // Adjust this multiplier to change the max speed
-      setPlaybackRate(newRate)
-      if (videoRef.current) {
-        videoRef.current.playbackRate = newRate
-      }
-    }
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollPosition = window.scrollY
+  //     const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+  //     const scrollPercentage = scrollPosition / maxScroll
+  //     const newRate = 1 + scrollPercentage * 4 // Adjust this multiplier to change the max speed
+  //     setPlaybackRate(newRate)
+  //     if (videoRef.current) {
+  //       videoRef.current.playbackRate = newRate
+  //     }
+  //   }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    // window.addEventListener('scroll', handleScroll)
+    // return () => window.removeEventListener('scroll', handleScroll)
+  // }, [])
 
+  // return (
+    // <div className="fixed inset-0 -z-10">
+    //   <video
+    //     ref={videoRef}
+    //     className="w-full h-full object-cover"
+    //     src="/DCAreduced.mp4" // Replace with your video file path
+    //     autoPlay
+    //     loop
+    //     muted
+    //     playsInline
+    //   />
+    //   <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
+    //     {/* Speed: {playbackRate.toFixed(2)}x */}
+    //   </div>
+    // </div>
+  // )
+// }
+
+export default function Page() {
   return (
-    <div className="fixed inset-0 -z-10">
+    <div className="relative min-h-screen">
+          <div className="fixed inset-0 -z-10">
       <video
-        ref={videoRef}
         className="w-full h-full object-cover"
         src="/DCAreduced.mp4" // Replace with your video file path
         autoPlay
@@ -38,16 +57,9 @@ function VideoBackground() {
         playsInline
       />
       <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-        Speed: {playbackRate.toFixed(2)}x
+        {/* Speed: {playbackRate.toFixed(2)}x */}
       </div>
     </div>
-  )
-}
-
-export default function Page() {
-  return (
-    <div className="relative min-h-screen">
-      <VideoBackground />
       <div className="flex flex-col min-h-screen relative z-10">
         <header className="px-4 lg:px-6 h-14 flex items-center">
           <Link className="flex items-center justify-center" href="#">
