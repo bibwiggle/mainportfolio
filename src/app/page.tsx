@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+// import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -45,6 +45,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // }
 
 export default function Page() {
+
   return (
     <div className="relative min-h-screen overflow-y-scroll no-scrollbar">
           <div className="fixed inset-0 -z-10">
