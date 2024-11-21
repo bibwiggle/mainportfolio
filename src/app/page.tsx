@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle } from 'lucide-react'
+
 
 // function VideoBackground() {
 //   const videoRef = useRef<HTMLVideoElement>(null)
@@ -45,11 +45,6 @@ import { CheckCircle } from 'lucide-react'
 // }
 
 export default function Page() {
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
   return (
     <div className="relative min-h-screen overflow-y-scroll no-scrollbar">
           <div className="fixed inset-0 -z-10">
