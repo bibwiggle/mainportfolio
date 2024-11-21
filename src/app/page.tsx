@@ -1,6 +1,6 @@
 "use client"
 
-// import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -45,8 +45,13 @@ import { CheckCircle } from 'lucide-react'
 // }
 
 export default function Page() {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen overflow-y-scroll no-scrollbar">
           <div className="fixed inset-0 -z-10">
       <video
         className="w-full h-full object-cover"
@@ -68,10 +73,7 @@ export default function Page() {
           </Link>
           <nav className="ml-auto flex gap-4 sm:gap-6">
             <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-              Features
-            </Link>
-            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-              Pricing
+              Projects
             </Link>
             <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
               About
@@ -82,86 +84,27 @@ export default function Page() {
           </nav>
         </header>
         <main className="flex-1">
-          <section className="w-full py-96 md:py-24 lg:py-32 xl:py-96">
-            <div className="container px-4 md:px-6 mx-auto">
-              <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-wider sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Hello World YAYYY
+          <section className="w-full h-screen items-center justify-center content-center"> {/* Welcome section start */}
+            <div className="container px-4 md:px-6 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
+              <div className="flex flex-col items-center text-center">
+                <div className="space-y-0 py-10">
+                  <h1 className="text-8xl font-bold tracking-widest md:text-8xl lg:text-9xl">
+                  Junu Lee
                   </h1>
-                  <p className="py-5 mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+                  <p className="py-5 mx-auto max-w-[700px] md:text-xl">
                     Digital Experiences | Content Creation | Art Direction
                   </p>
                 </div>
-                <div className="space-x-4">
-                  <Button variant="destructive">Get Started</Button>
-                  <Button variant="outline">Learn More</Button>
-                </div>
               </div>
             </div>
-          </section>
-          <section className="w-full py-96 md:py-24 lg:py-32 xl:py-96">
-            <div className="container px-4 md:px-6 mx-auto">
-              <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-wider sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Hello World YAYYY
-                  </h1>
-                  <p className="py-5 mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                    Digital Experiences | Content Creation | Art Direction
-                  </p>
-                </div>
-                <div className="space-x-4">
-                  <Button variant="destructive">Get Started</Button>
-                  <Button variant="outline">Learn More</Button>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="w-full py-96 md:py-24 lg:py-32 xl:py-96">
-            <div className="container px-4 md:px-6 mx-auto">
-              <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-wider sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Hello World YAYYY
-                  </h1>
-                  <p className="py-5 mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                    Digital Experiences | Content Creation | Art Direction
-                  </p>
-                </div>
-                <div className="space-x-4">
-                  <Button variant="destructive">Get Started</Button>
-                  <Button variant="outline">Learn More</Button>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="w-full py-96 md:py-24 lg:py-32 xl:py-96">
-            <div className="container px-4 md:px-6 mx-auto">
-              <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-wider sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Hello World YAYYY
-                  </h1>
-                  <p className="py-5 mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                    Digital Experiences | Content Creation | Art Direction
-                  </p>
-                </div>
-                <div className="space-x-4">
-                  <Button variant="destructive">Get Started</Button>
-                  <Button variant="outline">Learn More</Button>
-                </div>
-              </div>
-            </div>
-          </section>
+          </section> {/* Welcome section end */}
           <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6 mx-auto">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Hello World</h2>
+              <h2 className="text-3xl font tracking-normal sm:text-5xl text-center mb-12">Projects</h2>
               <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
                 <Card>
                   <CardHeader>
-                    <CheckCircle className="w-8 h-8 mb-4 text-green-500" />
-                    <CardTitle>Hello World</CardTitle>
+                    <CardTitle>Beat Bowl</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p>
@@ -171,8 +114,7 @@ export default function Page() {
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CheckCircle className="w-8 h-8 mb-4 text-green-500" />
-                    <CardTitle>Hello World</CardTitle>
+                    <CardTitle>Dancing 단청</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p>
@@ -182,8 +124,17 @@ export default function Page() {
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CheckCircle className="w-8 h-8 mb-4 text-green-500" />
-                    <CardTitle>Hello World</CardTitle>
+                    <CardTitle>VJ clips</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin magna ac neque porta, nec.
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Humidifier sculpture</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p>
