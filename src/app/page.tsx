@@ -3,7 +3,7 @@
 // import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ProjectCard, ProjectGrid } from "@/components/ui/card"
 
 
 // function VideoBackground() {
@@ -44,6 +44,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
   // )
 // }
 
+const projects = [
+  {
+    id: "1",
+    title: "Beat Bowl",
+    description: "An interactive music experience that combines rhythm and visual elements.",
+    imageUrl: "/taxi.png",
+    gifUrl: "/placeholder.svg?height=300&width=400",
+    link: "/projects/beat-bowl"
+  },
+  {
+    id: "2",
+    title: "Dancing 단청",
+    description: "A digital art installation inspired by traditional Korean decorative techniques.",
+    imageUrl: "/usps.png",
+    gifUrl: "/placeholder.svg?height=300&width=400",
+    link: "/projects/dancing-dancheong"
+  },
+  {
+    id: "3",
+    title: "VJ clips",
+    description: "A collection of visually stunning video clips for live performances and events.",
+    imageUrl: "/bus.png",
+    gifUrl: "/placeholder.svg?height=300&width=400",
+    link: "/projects/vj-clips"
+  },
+  {
+    id: "4",
+    title: "Humidifier sculpture",
+    description: "An artistic exploration of form and function, blending sculpture with everyday objects.",
+    imageUrl: "/police.png",
+    gifUrl: "/placeholder.svg?height=300&width=400",
+    link: "/projects/humidifier-sculpture"
+  }
+]
+
 export default function Page() {
 
   return (
@@ -81,10 +116,10 @@ export default function Page() {
         </header>
         <main className="flex-1">
           <section className="w-full h-screen items-center justify-center content-center"> {/* Welcome section start */}
-            <div className="container px-4 md:px-6 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
+            <div className="container px-4 md:px-5 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
               <div className="flex flex-col items-center text-center">
                 <div className="space-y-0 py-10">
-                  <h1 className="text-8xl font-bold tracking-widest md:text-8xl lg:text-9xl">
+                  <h1 className="text-6xl font-light tracking-widest sm:text-6xl md:text-8xl lg:text-9xl">
                   Junu Lee
                   </h1>
                   <p className="py-5 mx-auto max-w-[700px] md:text-xl">
@@ -95,50 +130,9 @@ export default function Page() {
             </div>
           </section> {/* Welcome section end */}
           <section className="w-full py-12 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6 mx-auto">
-              <h2 className="text-3xl font tracking-normal sm:text-5xl text-center mb-12">Projects</h2>
-              <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Beat Bowl</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin magna ac neque porta, nec.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Dancing 단청</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin magna ac neque porta, nec.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>VJ clips</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin magna ac neque porta, nec.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Humidifier sculpture</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin magna ac neque porta, nec.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+          <div className="container px-4 md:px-6 mx-auto">
+              <h2 className="text-3xl font-thin tracking-normal sm:text-5xl text-center mb-12">Projects</h2>
+              <ProjectGrid projects={projects} />
             </div>
           </section>
           <section className="w-full py-12 md:py-24 lg:py-32">
