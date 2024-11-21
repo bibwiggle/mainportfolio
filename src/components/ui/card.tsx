@@ -122,7 +122,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </CardFooter>
       </Card>
     </Link>
-  )
+  ) 
 }
 
 export function ProjectGrid({ projects }: { projects: Project[] }) {

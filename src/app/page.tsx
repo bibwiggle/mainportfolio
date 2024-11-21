@@ -3,7 +3,7 @@
 // import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
-import { ProjectCard, ProjectGrid } from "@/components/ui/card"
+import { ProjectGrid } from "@/components/ui/card"
 
 
 // function VideoBackground() {
