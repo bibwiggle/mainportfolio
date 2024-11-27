@@ -3,7 +3,6 @@
 // import { useState, useEffect } from 'react'
 
 // import React, { useEffect, useRef } from 'react'
-import React, { Suspense } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ProjectGrid } from "@/components/ui/card"
