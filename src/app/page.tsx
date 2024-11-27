@@ -1,17 +1,25 @@
 "use client"
 
 // import { useState, useEffect } from 'react'
+
+// import React, { useEffect, useRef } from 'react'
+import React, { Suspense } from 'react'
+import { Canvas } from '@react-three/fiber'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ProjectGrid } from "@/components/ui/card"
+import Scene from "@/components/scene"  // Import the Scene component
+// import dynamic from 'next/dynamic'
 
+
+// const Scene = dynamic(() => import('@/components/scene'), { ssr: false })
 
 // function VideoBackground() {
 //   const videoRef = useRef<HTMLVideoElement>(null)
 //   const [playbackRate, setPlaybackRate] = useState(1)
 
   // useEffect(() => {
-  //   const handleScroll = () => {
+  //   const handleScroll = () => {1
   //     const scrollPosition = window.scrollY
   //     const maxScroll = document.documentElement.scrollHeight - window.innerHeight
   //     const scrollPercentage = scrollPosition / maxScroll
@@ -82,19 +90,24 @@ const projects = [
 export default function Page() {
 
   return (
+    
     <div className="relative min-h-screen overflow-y-scroll no-scrollbar">
+            {/* <ThreeBackground /> */}
           <div className="fixed inset-0 -z-10">
-      <video
+       
+  
+            <Scene />
+
+ 
+      {/* <video
         className="w-full h-full object-cover"
         src="/DCAsharpn.mp4" // Replace with your video file path
         autoPlay
         loop
         muted
         playsInline
-      />
-      <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-        {/* Speed: {playbackRate.toFixed(2)}x */}
-      </div>
+      /> */}
+
     </div>
       <div className="flex flex-col min-h-screen relative z-10">
         <header className="px-4 lg:px-6 h-14 flex items-center">
