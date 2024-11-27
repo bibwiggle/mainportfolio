@@ -4,7 +4,6 @@
 
 // import React, { useEffect, useRef } from 'react'
 import React, { Suspense } from 'react'
-import { Canvas } from '@react-three/fiber'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ProjectGrid } from "@/components/ui/card"
