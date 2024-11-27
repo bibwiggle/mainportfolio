@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useRef, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, useAnimations, useGLTF } from '@react-three/drei'
@@ -23,33 +21,18 @@ function Model({ url }: { url: string }) {
       camera.updateProjectionMatrix()
     }
 
-    // Set up renderer to work with the chrome texture
-    // if ('useLegacyLights' in gl) {
-    //   (gl as any).useLegacyLights = false
-    // } else if ('physicallyCorrectLights' in gl) {
-    //   (gl as any).physicallyCorrectLights = true
-    // }
-
-    // if ('outputColorSpace' in gl) {
-    //   gl.outputColorSpace = THREE.SRGBColorSpace
-    // } else if ('outputEncoding' in gl) {
-    //   (gl as any).outputEncoding = THREE.SRGBColorSpace
-    // }
-
-    // gl.toneMapping = THREE.ACESFilmicToneMapping
-    // gl.toneMappingExposure = 1
-
-     // Traverse and modify material
-     scene.traverse((child) => {
-      if (child.isMesh) {
-        child.material = new THREE.MeshStandardMaterial({
-          metalness: 1.0005,
+    // Traverse and modify material
+    scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh
+        mesh.material = new THREE.MeshPhysicalMaterial({
+          metalness: 1.000,
           roughness: 0.0,
           clearcoat: 1.0, // Extra shiny finish
           reflectivity: 1.0, // Full reflectivity
-        });
+        })
       }
-    });
+    })
 
   }, [scene, actions, cameras, camera, gl])
 
