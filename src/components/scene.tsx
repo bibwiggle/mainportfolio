@@ -1,7 +1,31 @@
-import React, { useRef, useEffect } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, useAnimations, useGLTF } from '@react-three/drei'
+"use client"
+
+import React, { useRef, useEffect, useState } from 'react'
+import { Canvas, useFrame, useThree, ThreeElements } from '@react-three/fiber'
+import { OrbitControls, useAnimations, useGLTF, CubeCamera } from '@react-three/drei'
 import * as THREE from 'three'
+
+function Box(props: ThreeElements['mesh']) {
+  const meshRef = useRef<THREE.Mesh>(null!)
+  const [hovered, setHover] = useState(false)
+  const [active, setActive] = useState(false)
+  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
+  return (
+    <mesh
+      {...props}
+      ref={meshRef}
+      scale={active ? 1.5 : 1}
+      onClick={(event) => setActive(!active)}
+      onPointerOver={(event) => setHover(true)}
+      onPointerOut={(event) => setHover(false)}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={hovered ? 'hotpink' : '#2f74c0'} />
+    </mesh>
+    
+    
+  )
+  }
+  
 
 function Model({ url }: { url: string }) {
   const group = useRef<THREE.Group>(null)
@@ -25,12 +49,16 @@ function Model({ url }: { url: string }) {
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh
-        mesh.material = new THREE.MeshPhysicalMaterial({
-          metalness: 1.000,
-          roughness: 0.0,
-          clearcoat: 1.0, // Extra shiny finish
-          reflectivity: 1.0, // Full reflectivity
-        })
+        if (mesh.material) {
+          const newMaterial = new THREE.MeshPhysicalMaterial({
+            metalness: 1.000,
+            roughness: 0.0,
+            clearcoat: 1.0,
+            reflectivity: 1.0,
+            envMapIntensity: 1.0,
+          })
+          mesh.material = newMaterial
+        }
       }
     })
 
@@ -43,14 +71,33 @@ function Model({ url }: { url: string }) {
     })
   })
 
-  return <primitive object={scene} ref={group} />
+  return (
+    <CubeCamera resolution={256} frames={1}>
+      {(texture) => (
+        <primitive object={scene} ref={group}>
+          {scene.children.map((child, index) => {
+            if ((child as THREE.Mesh).isMesh) {
+              const mesh = child as THREE.Mesh
+              return (
+                <mesh key={index} geometry={mesh.geometry}>
+                </mesh>
+              )
+            }
+            return null
+          })}
+        </primitive>
+      )}
+    </CubeCamera>
+  )
 }
 
 function Scene() {
   return (
-    <Canvas>
+    <Canvas camera={{ position: [0, 0, 5000], fov: 75 }}>
       <React.Suspense fallback={null}>
-        <Model url="/decimated.glb" />
+      <Box position={[-1.2, 0, 0]} />
+      <Box position={[1.2, 0, 0]} />
+        <Model url="/DCA.gltf"  />
         <OrbitControls />
       </React.Suspense>
     </Canvas>

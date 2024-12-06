@@ -90,11 +90,10 @@ export default function Page() {
   return (
     
     <div className="relative min-h-screen overflow-y-scroll no-scrollbar">
-            {/* <ThreeBackground /> */}
-          <div className="fixed inset-0 -z-10">
-       
-  
-            <Scene />
+
+          {/* <div className="fixed inset-0 ">
+        */}
+
 
  
       {/* <video
@@ -106,7 +105,7 @@ export default function Page() {
         playsInline
       /> */}
 
-    </div>
+    {/* </div> */}
       <div className="flex flex-col min-h-screen relative z-10">
         <header className="px-4 lg:px-6 h-14 flex items-center">
           <Link className="flex items-center justify-center" href="#">
@@ -126,6 +125,10 @@ export default function Page() {
           </nav>
         </header>
         <main className="flex-1">
+        <div className="fixed inset-0 ">
+          <Scene />
+        </div>
+        
           <section className="w-full h-screen items-center justify-center content-center"> {/* Welcome section start */}
             <div className="container px-4 md:px-5 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
               <div className="flex flex-col items-center text-center">
