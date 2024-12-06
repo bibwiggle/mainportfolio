@@ -89,7 +89,7 @@ export default function Page() {
 
   return (
     
-    <div className="relative min-h-screen overflow-y-scroll no-scrollbar">
+    <div className="relative min-h-screen overflow-y-scroll no-scrollbar bg-black">
 
           {/* <div className="fixed inset-0 ">
         */}

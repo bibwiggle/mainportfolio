@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useRef, useEffect, useState } from 'react'
-import { Canvas, useFrame, useThree, ThreeElements } from '@react-three/fiber'
+import React, { useRef, useEffect } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, useAnimations, useGLTF, CubeCamera } from '@react-three/drei'
 import * as THREE from 'three'
 
@@ -71,6 +71,7 @@ function Model({ url }: { url: string }) {
               const mesh = child as THREE.Mesh
               return (
                 <mesh key={index} geometry={mesh.geometry}>
+                  <meshStandardMaterial envMap={texture}/>
                 </mesh>
               )
             }
