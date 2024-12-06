@@ -5,27 +5,18 @@ import { Canvas, useFrame, useThree, ThreeElements } from '@react-three/fiber'
 import { OrbitControls, useAnimations, useGLTF, CubeCamera } from '@react-three/drei'
 import * as THREE from 'three'
 
-function Box(props: ThreeElements['mesh']) {
-  const meshRef = useRef<THREE.Mesh>(null!)
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
+function ReflectiveSphere() {
   return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : '#2f74c0'} />
-    </mesh>
-    
-    
-  )
-  }
-  
+    <CubeCamera resolution={256*2} frames={1}>
+      {(texture) => (
+        <mesh>
+          <sphereGeometry args={[5, 64, 64]} />
+          <meshStandardMaterial envMap={texture} metalness={1} roughness={0} />
+        </mesh>
+      )}
+    </CubeCamera>
+  );
+}
 
 function Model({ url }: { url: string }) {
   const group = useRef<THREE.Group>(null)
@@ -91,12 +82,13 @@ function Model({ url }: { url: string }) {
   )
 }
 
+
+
 function Scene() {
   return (
     <Canvas camera={{ position: [0, 0, 5000], fov: 75 }}>
       <React.Suspense fallback={null}>
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
+      <ReflectiveSphere/>
         <Model url="/DCA.gltf"  />
         <OrbitControls />
       </React.Suspense>
@@ -105,3 +97,49 @@ function Scene() {
 }
 
 export default Scene
+
+useGLTF.preload('/DCA.gltf');
+
+// // Type guard for Light
+// function isLight(object: THREE.Object3D): object is THREE.Light {
+//   return 'isLight' in object; // Check if the object has an `isLight` property
+// }
+
+
+
+// function Model({ url }: { url: string }) {
+//   const { scene } = useGLTF(url);
+
+//   // Edit light properties after loading the model
+//   useEffect(() => {
+//     scene.traverse((child) => {
+//       if (isLight(child)) {
+//         (child as THREE.Light).intensity = 2; // Adjust light intensity
+//         (child as THREE.Light).color.set('white'); // Change light color
+//         console.log('Editing light:', child);
+//       }
+//     });
+//   }, [scene]);
+
+//   return <primitive object={scene} />;
+// }
+
+// export default function Scene() {
+//   return (
+//     <div style={{ width: '100%', height: '100vh' }}>
+//       <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+//         <Suspense fallback={null}>
+//           {/* Ambient Light */}
+//           <ambientLight intensity={0.5} />
+
+//           {/* Directional Light */}
+//           <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
+
+//           <Model url="/DCA.gltf" />
+//           <ReflectiveSphere/>
+//           <OrbitControls />
+//         </Suspense>
+//       </Canvas>
+//     </div>
+//   );
+// }
