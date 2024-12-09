@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ProjectGrid } from "@/components/ui/card"
 import Scene from "@/components/scene"  // Import the Scene component
+import { Home } from '@/components/lottie' 
 // import dynamic from 'next/dynamic'
 
 
@@ -90,22 +91,9 @@ export default function Page() {
   return (
     
     <div className="relative min-h-screen overflow-y-scroll no-scrollbar bg-black">
-
-          {/* <div className="fixed inset-0 ">
-        */}
-
-
- 
-      {/* <video
-        className="w-full h-full object-cover"
-        src="/DCAsharpn.mp4" // Replace with your video file path
-        autoPlay
-        loop
-        muted
-        playsInline
-      /> */}
-
-    {/* </div> */}
+    <div className="fixed inset-0 ">
+      <Home/>
+    </div>
       <div className="flex flex-col min-h-screen relative z-10">
         <header className="px-4 lg:px-6 h-14 flex items-center">
           <Link className="flex items-center justify-center" href="#">
@@ -125,9 +113,6 @@ export default function Page() {
           </nav>
         </header>
         <main className="flex-1">
-        <div className="fixed inset-0 ">
-          <Scene />
-        </div>
         
           <section className="w-full h-screen items-center justify-center content-center"> {/* Welcome section start */}
             <div className="container px-4 md:px-5 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
