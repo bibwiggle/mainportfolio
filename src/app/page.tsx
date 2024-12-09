@@ -6,7 +6,6 @@
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ProjectGrid } from "@/components/ui/card"
-import Scene from "@/components/scene"  // Import the Scene component
 import { Home } from '@/components/lottie' 
 // import dynamic from 'next/dynamic'
 

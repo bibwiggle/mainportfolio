@@ -63,7 +63,7 @@ export function Home() {
                     ref={lottieRef}
                 />
             </div>
-            <div style={{ height: '500vh' }}>
+            <div style={{ height: '1000vh' }}>
                 {/* This div creates scrollable space */}
             </div>
         </>
