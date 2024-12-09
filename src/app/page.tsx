@@ -9,47 +9,6 @@ import { ProjectGrid } from "@/components/ui/card"
 import { Home } from '@/components/lottie' 
 // import dynamic from 'next/dynamic'
 
-
-// const Scene = dynamic(() => import('@/components/scene'), { ssr: false })
-
-// function VideoBackground() {
-//   const videoRef = useRef<HTMLVideoElement>(null)
-//   const [playbackRate, setPlaybackRate] = useState(1)
-
-  // useEffect(() => {
-  //   const handleScroll = () => {1
-  //     const scrollPosition = window.scrollY
-  //     const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-  //     const scrollPercentage = scrollPosition / maxScroll
-  //     const newRate = 1 + scrollPercentage * 4 // Adjust this multiplier to change the max speed
-  //     setPlaybackRate(newRate)
-  //     if (videoRef.current) {
-  //       videoRef.current.playbackRate = newRate
-  //     }
-  //   }
-
-    // window.addEventListener('scroll', handleScroll)
-    // return () => window.removeEventListener('scroll', handleScroll)
-  // }, [])
-
-  // return (
-    // <div className="fixed inset-0 -z-10">
-    //   <video
-    //     ref={videoRef}
-    //     className="w-full h-full object-cover"
-    //     src="/DCAreduced.mp4" // Replace with your video file path
-    //     autoPlay
-    //     loop
-    //     muted
-    //     playsInline
-    //   />
-    //   <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-    //     {/* Speed: {playbackRate.toFixed(2)}x */}
-    //   </div>
-    // </div>
-  // )
-// }
-
 const projects = [
   {
     id: "1",

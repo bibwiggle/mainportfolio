@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Add any other configuration options here
-  transpilePackages: ['three'],
-  test: /\.json$/,
-  type: 'javascript/auto',
-  use: ['json-loader'],
+
+  transpilePackages: ['three'], // This is valid and fine
+
+  webpack: (config) => {
+    // Remove unnecessary json-loader since Next.js natively supports JSON imports
+    return config;
+  }
 }
 
-module.exports = nextConfig
+module.exports = nextConfig;
