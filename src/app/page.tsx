@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ProjectGrid } from "@/components/ui/card"
 import { Home } from '@/components/lottie' 
+import { Scene } from '@/components/scene' 
 // import dynamic from 'next/dynamic'
 
 const projects = [
@@ -89,6 +90,7 @@ export default function Page() {
           <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6 mx-auto">
               <h2 className="text-3xl font-thin tracking-normal sm:text-5xl text-center mb-12">Projects</h2>
+              <Scene/>
               <ProjectGrid projects={projects} />
             </div>
           </section>
