@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useRef, useMemo } from 'react'
-import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
-import { OrbitControls, useAnimations, useGLTF, CubeCamera, Environment } from '@react-three/drei'
+import { Canvas, useFrame, useLoader } from '@react-three/fiber'
+import { OrbitControls, CubeCamera, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 
 // Import your project images
