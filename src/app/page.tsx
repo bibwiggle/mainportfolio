@@ -9,40 +9,40 @@ import { Home } from '@/components/lottie'
 import { Scene } from '@/components/scene' 
 // import dynamic from 'next/dynamic'
 
-const projects = [
-  {
-    id: "1",
-    title: "Beat Bowl",
-    description: "An interactive music experience that combines rhythm and visual elements.",
-    imageUrl: "/taxi.png",
-    gifUrl: "/placeholder.svg?height=300&width=400",
-    link: "/projects/beat-bowl"
-  },
-  {
-    id: "2",
-    title: "Dancing 단청",
-    description: "A digital art installation inspired by traditional Korean decorative techniques.",
-    imageUrl: "/usps.png",
-    gifUrl: "/placeholder.svg?height=300&width=400",
-    link: "/projects/dancing-dancheong"
-  },
-  {
-    id: "3",
-    title: "VJ clips",
-    description: "A collection of visually stunning video clips for live performances and events.",
-    imageUrl: "/bus.png",
-    gifUrl: "/placeholder.svg?height=300&width=400",
-    link: "/projects/vj-clips"
-  },
-  {
-    id: "4",
-    title: "Humidifier sculpture",
-    description: "An artistic exploration of form and function, blending sculpture with everyday objects.",
-    imageUrl: "/police.png",
-    gifUrl: "/placeholder.svg?height=300&width=400",
-    link: "/projects/humidifier-sculpture"
-  }
-]
+// const projects = [
+//   {
+//     id: "1",
+//     title: "Beat Bowl",
+//     description: "An interactive music experience that combines rhythm and visual elements.",
+//     imageUrl: "/taxi.png",
+//     gifUrl: "/placeholder.svg?height=300&width=400",
+//     link: "/projects/beat-bowl"
+//   },
+//   {
+//     id: "2",
+//     title: "Dancing 단청",
+//     description: "A digital art installation inspired by traditional Korean decorative techniques.",
+//     imageUrl: "/usps.png",
+//     gifUrl: "/placeholder.svg?height=300&width=400",
+//     link: "/projects/dancing-dancheong"
+//   },
+//   {
+//     id: "3",
+//     title: "VJ clips",
+//     description: "A collection of visually stunning video clips for live performances and events.",
+//     imageUrl: "/bus.png",
+//     gifUrl: "/placeholder.svg?height=300&width=400",
+//     link: "/projects/vj-clips"
+//   },
+//   {
+//     id: "4",
+//     title: "Humidifier sculpture",
+//     description: "An artistic exploration of form and function, blending sculpture with everyday objects.",
+//     imageUrl: "/police.png",
+//     gifUrl: "/placeholder.svg?height=300&width=400",
+//     link: "/projects/humidifier-sculpture"
+//   }
+// ]
 
 export default function Page() {
 
