@@ -1,7 +1,7 @@
 "use client"
 
-import React, {  } from 'react'
-import { Canvas } from '@react-three/fiber'
+import React, { useRef } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, CubeCamera, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 
@@ -16,22 +16,23 @@ import * as THREE from 'three'
 
 
 function ReflectiveSphere() {
+  const meshRef = useRef<THREE.Mesh>(null)
   // const meshRef = useRef<THREE.Mesh>(null)
   // const cubeRenderTarget = useMemo(() => new THREE.WebGLCubeRenderTarget(256), [])
   // const textures = useLoader(THREE.TextureLoader, projectImages)
 
-  // useFrame(() => {
-  //   if (meshRef.current) {
-  //     meshRef.current.rotation.y += 1
-  //   }
-  // })
+  useFrame(() => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 1
+    }
+  })
 
   return (
     <CubeCamera frames={Infinity}>
       {(texture) => (
-        <mesh>
+        <mesh ref={meshRef}>
           <sphereGeometry args={[250, 10, 10]} />
-          <meshStandardMaterial metalness={1} roughness={0} />
+          <meshStandardMaterial envMap={texture} metalness={1} roughness={0} />
         </mesh>
       )}
     </CubeCamera>
