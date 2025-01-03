@@ -56,11 +56,10 @@
 
 "use client"
 
-import React, { useRef, useDeferredValue, Suspense } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, CubeCamera, Environment, useTexture } from '@react-three/drei'
+import React, { useRef, Suspense } from 'react'
+import { Canvas, useThree } from '@react-three/fiber'
+import { OrbitControls, Environment, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
-import { useControls, folder } from 'leva'
 
 export function Scene() {
   return (
@@ -94,9 +93,7 @@ function SelectEnv(){
 }
 
 function ReflectiveSphere() {
-  const { scene, gl } = useThree();
   const meshRef = useRef<THREE.Mesh>(null)
-  const ref = useRef()
   const texture = useTexture('/HDR_blue_nebulae-1.hdr')
 
 
