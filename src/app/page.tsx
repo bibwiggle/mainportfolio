@@ -15,7 +15,7 @@ const projects = [
     description: "An interactive music experience that combines rhythm and visual elements.",
     imageUrl: "/Postcard.jpg",
     gifUrl: "/Comp.gif",
-    link: "/projects/beat-bowl"
+    link: "#"
   },
   {
     id: "2",
@@ -23,7 +23,7 @@ const projects = [
     description: "A digital art installation inspired by traditional Korean decorative techniques.",
     imageUrl: "/Postcard.jpg",
     gifUrl: "/Comp.gif",
-    link: "/projects/dancing-dancheong"
+    link: "#"
   },
   {
     id: "3",
@@ -31,7 +31,7 @@ const projects = [
     description: "A collection of visually stunning video clips for live performances and events.",
     imageUrl: "/Postcard.jpg",
     gifUrl: "/Comp.gif",
-    link: "/projects/vj-clips"
+    link: "#"
   }
 ]
 
