@@ -23,7 +23,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "border bg-card text-card-foreground shadow-sm",
+      "bg-card text-card-foreground shadow-sm",
       className
     )}
     {...props}
@@ -96,30 +96,31 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link href={project.link} passHref>
       <Card 
-        className="w-full cursor-pointer transition-all duration-300 hover:shadow-lg"
+        className="w-full h-full cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <CardHeader>
-          <CardTitle>{project.title}</CardTitle>
-          <CardDescription>{project.description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="relative aspect-video overflow-hidden rounded-md">
-            <Image
-              src={isHovered ? project.gifUrl : project.imageUrl}
-              alt={project.title}
-              layout="fill"
-              objectFit="cover"
-              className="transition-all duration-300 transform hover:scale-105"
-            />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <p className="text-sm text-gray-500 hover:text-primary transition-colors duration-200">
-            View Project Details
-          </p>
-        </CardFooter>
+        <div className="absolute inset-0">
+          <Image
+            src={isHovered ? project.gifUrl : project.imageUrl}
+            alt={project.title}
+            layout="fill"
+            objectFit="cover"
+            className="transition-all duration-300 transform hover:scale-105"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
+        <div className="relative z-10 flex flex-col justify-end">
+          <CardHeader className="text-white">
+            <CardTitle className="text-2xl font-bold mb-2">{project.title}</CardTitle>
+            <CardDescription className="text-gray-200 h-96">{project.description}</CardDescription>
+          </CardHeader>
+          <CardFooter className="text-white">
+            <p className="text-sm hover:text-primary transition-colors duration-200">
+              View Project Details
+            </p>
+          </CardFooter>
+        </div>
       </Card>
     </Link>
   ) 
@@ -127,7 +128,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
 export function ProjectGrid({ projects }: { projects: Project[] }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 p-0 ">
+    <div className="grid gap-0 lg:grid-cols-3 lg:gap-0 m-0">
       {projects.map((project) => (
         <ProjectCard key={project.id} project={project} />
       ))}
