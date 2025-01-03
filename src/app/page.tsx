@@ -14,7 +14,7 @@ const projects = [
     title: "Beat Bowl",
     description: "An interactive music experience that combines rhythm and visual elements.",
     imageUrl: "/Postcard.jpg",
-    gifUrl: "/placeholder.svg?height=300&width=400",
+    gifUrl: "/Comp.gif",
     link: "/projects/beat-bowl"
   },
   {
@@ -22,7 +22,7 @@ const projects = [
     title: "Dancing 단청",
     description: "A digital art installation inspired by traditional Korean decorative techniques.",
     imageUrl: "/Postcard.jpg",
-    gifUrl: "/placeholder.svg?height=300&width=400",
+    gifUrl: "/Comp.gif",
     link: "/projects/dancing-dancheong"
   },
   {
@@ -30,7 +30,7 @@ const projects = [
     title: "VJ clips",
     description: "A collection of visually stunning video clips for live performances and events.",
     imageUrl: "/Postcard.jpg",
-    gifUrl: "/placeholder.svg?height=300&width=400",
+    gifUrl: "/Comp.gif",
     link: "/projects/vj-clips"
   }
 ]
@@ -78,7 +78,7 @@ export default function Page() {
             </div>
           </section> {/* Welcome section end */}
           <section className="w-full">
-          <div className="bg-black py-12">
+          <div className="py-12">
               <h2 className="text-3xl font-thin tracking-normal sm:text-5xl text-center  ">Projects</h2>
           </div>
           <ProjectGrid projects={projects} />
