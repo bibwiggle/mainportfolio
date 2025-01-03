@@ -52,8 +52,7 @@ export function Home() {
             <Lottie 
                 lottieRef={lottieRef}
                 animationData={DCA} 
-                loop={true}
-                autoplay={false}
+                loop={false}
                 style={{
                     width: '100%',
                     height: '100%',
