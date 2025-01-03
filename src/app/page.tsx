@@ -3,8 +3,9 @@
 // import { useState, useEffect } from 'react'
 
 // import React, { useEffect, useRef } from 'react'
+import ErrorBoundary from '@/components/ErrorBoundary';
 import Link from 'next/link'
-import { Home } from '@/components/lottie' 
+import { Home as LottieBackground } from '@/components/lottie' 
 import { ProjectGrid } from "@/components/ui/card"
 // import dynamic from 'next/dynamic'
 
@@ -38,10 +39,10 @@ const projects = [
 export default function Page() {
 
   return (
-    
+    <ErrorBoundary>
     <div className="relative min-h-screen overflow-y-scroll no-scrollbar bg-black">
     <div className="fixed inset-0 ">
-      <Home/>
+    <LottieBackground />
     </div>
       <div className="flex flex-col min-h-screen relative z-10">
         <header className="px-4 lg:px-6 h-14 flex items-center">
@@ -88,7 +89,8 @@ export default function Page() {
         </footer>
       </div>
     </div>
-  )
+    </ErrorBoundary>
+  );
 }
 
 type MountainIconProps = React.SVGProps<SVGSVGElement>;

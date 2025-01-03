@@ -52,13 +52,18 @@ export function Home() {
             <Lottie 
                 lottieRef={lottieRef}
                 animationData={DCA} 
-                loop={false}
+                loop={true}
+                autoplay={false}
+                renderer={'canvas' as 'svg'}
                 style={{
                     width: '100%',
                     height: '100%',
+                    
                 }}
                 rendererSettings={{
                     preserveAspectRatio: 'xMidYMid slice',
+                    progressiveLoad: true, // This can help with performance
+                    
                 }}
             />
         </div>
