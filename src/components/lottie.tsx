@@ -13,7 +13,9 @@ function easeOutCubic(x: number): number {
 
 export function Home() {
     const [scrollPercentage, setScrollPercentage] = useState(0);
+    const [size, setSize] = useState({ width: '100%', height: '100%' });
     const lottieRef = useRef<LottieRefCurrentProps>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -29,16 +31,10 @@ export function Home() {
 
     useEffect(() => {
         if (lottieRef.current) {
-            // Apply easing function to the scroll percentage
             const easedPercentage = easeOutCubic(scrollPercentage);
-            
-            // Calculate speed based on eased scroll percentage
-            // 5 at the top (0% scrolled), 1 at the bottom (100% scrolled)
             const speed = 3.5 - (2.5 * easedPercentage);
-            
             lottieRef.current.setSpeed(speed);
 
-            // Pause the animation when at the very top
             if (scrollPercentage > .999) {
                 lottieRef.current.pause();
             } else {
@@ -47,25 +43,61 @@ export function Home() {
         }
     }, [scrollPercentage]);
 
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const updateSize = () => {
+            if (containerRef.current) {
+                const aspectRatio = 16 / 9; // Adjust this to match your animation's aspect ratio
+                const containerWidth = containerRef.current.offsetWidth;
+                const containerHeight = containerRef.current.offsetHeight;
+                const containerRatio = containerWidth / containerHeight;
+
+                if (containerRatio > aspectRatio) {
+                    // Container is wider than the desired aspect ratio
+                    const height = containerWidth / aspectRatio;
+                    setSize({ width: '100%', height: `${height}px` });
+                } else {
+                    // Container is taller than the desired aspect ratio
+                    const width = containerHeight * aspectRatio;
+                    setSize({ width: `${width}px`, height: '100%' });
+                }
+            }
+        };
+
+        const resizeObserver = new ResizeObserver(updateSize);
+        resizeObserver.observe(containerRef.current);
+
+        return () => resizeObserver.disconnect();
+    }, []);
+
+    // Force Lottie to redraw when size changes
+    useEffect(() => {
+        if (lottieRef.current && lottieRef.current.animationItem) {
+            lottieRef.current.animationItem.resize();
+        }
+    }, [size]);
+
     return (
-        <div className="fixed inset-0 w-screen h-screen overflow-hidden">
-            <Lottie 
-                lottieRef={lottieRef}
-                animationData={DCA} 
-                loop={true}
-                autoplay={false}
-                renderer={'canvas' as 'svg'}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    
-                }}
-                rendererSettings={{
-                    preserveAspectRatio: 'xMidYMid slice',
-                    progressiveLoad: true, // This can help with performance
-                    
-                }}
-            />
+        <div ref={containerRef} className="fixed inset-0 w-full h-full overflow-hidden flex items-center justify-center">
+            <div style={{ width: size.width, height: size.height, maxWidth: '100%', maxHeight: '100%' }}>
+                <Lottie 
+                    lottieRef={lottieRef}
+                    animationData={DCA} 
+                    loop={true}
+                    autoplay={false}
+                    renderer={'canvas' as 'svg'}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                    }}
+                    rendererSettings={{
+                        preserveAspectRatio: 'xMidYMid slice',
+                        progressiveLoad: true,
+                    }}
+                />
+            </div>
         </div>
     );
 }

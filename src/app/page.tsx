@@ -39,8 +39,8 @@ export default function Page() {
 
   return (
     
-    <div className="relative min-h-screen overflow-y-scroll no-scrollbar bg-black">
-    <div className="fixed inset-0 ">
+    <div className="relative min-h-screen overflow-y-scroll no-scrollbar">
+    <div className="fixed inset-0 h-full">
       <Home/>
     </div>
       <div className="flex flex-col min-h-screen relative z-10">
@@ -84,8 +84,7 @@ export default function Page() {
           <ProjectGrid projects={projects} />
           </section>
         </main>
-        <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6">
-        </footer>
+
       </div>
     </div>
   )
