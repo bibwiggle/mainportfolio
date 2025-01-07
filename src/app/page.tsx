@@ -66,7 +66,7 @@ export default function Page() {
           <section className="w-full h-screen items-center justify-center content-center"> {/* Welcome section start */}
             <div className="container px-4 md:px-5 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
               <div className="flex flex-col items-center text-center">
-                <div className="space-y-0 py-10">
+                <div className="space-y-0">
                   <h1 className="text-6xl font-light tracking-widest sm:text-6xl md:text-8xl lg:text-9xl">
                   Junu
                   </h1>
