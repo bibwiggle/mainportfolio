@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 
 // Import the Lottie animation file
-import DCA from '../../src/lotties/4k90.json';
+import DCA from '../../src/lotties/90.json';
 
 // Easing function (ease-out cubic) //Higher the number, quicker to slow down
 function easeOutCubic(x: number): number {
