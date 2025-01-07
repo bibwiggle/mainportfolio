@@ -25,7 +25,7 @@ export function Home() {
             const scrollRange = pageHeight - windowHeight;
             
             // Allow scrolling beyond 100% (e.g., 3 times the page height)
-            const extendedScrollRange = scrollRange /2.5;
+            const extendedScrollRange = scrollRange /10;
             const percentage = (scrollPosition / extendedScrollRange) % 1;
             
             setScrollPercentage(percentage);
