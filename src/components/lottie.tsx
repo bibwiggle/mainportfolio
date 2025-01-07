@@ -4,11 +4,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 
 // Import the Lottie animation file
-import DCA from '../../src/lotties/DCAsharpn_1.json';
+import DCA from '../../src/lotties/95.json';
 
 // Easing function (ease-out cubic) //Higher the number, quicker to slow down
 function easeOutCubic(x: number): number {
-  return 1 - Math.pow(1 - x, 5);
+  return 1 - Math.pow(1 - x, 1);
 }
 
 export function Home() {
@@ -20,26 +20,31 @@ export function Home() {
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const percentage = scrollPosition / maxScroll;
+            const pageHeight = document.documentElement.scrollHeight;
+            const windowHeight = window.innerHeight;
+            const scrollRange = pageHeight - windowHeight;
+            
+            // Allow scrolling beyond 100% (e.g., 3 times the page height)
+            const extendedScrollRange = scrollRange /2.5;
+            const percentage = (scrollPosition / extendedScrollRange) % 1;
+            
             setScrollPercentage(percentage);
+            console.log(percentage)
         };
+
+       
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     useEffect(() => {
-        if (lottieRef.current) {
+        if (lottieRef.current && lottieRef.current.animationItem) {
             const easedPercentage = easeOutCubic(scrollPercentage);
-            const speed = 3.5 - (2.5 * easedPercentage);
-            lottieRef.current.setSpeed(speed);
-
-            if (scrollPercentage > .999) {
-                lottieRef.current.pause();
-            } else {
-                lottieRef.current.play();
-            }
+            const totalFrames = lottieRef.current.animationItem.totalFrames;
+            const frame = Math.floor(easedPercentage * totalFrames);
+            
+            lottieRef.current.animationItem.goToAndStop(frame, true);
         }
     }, [scrollPercentage]);
 
@@ -48,7 +53,7 @@ export function Home() {
 
         const updateSize = () => {
             if (containerRef.current) {
-                const aspectRatio = 16 / 9; // Adjust this to match your animation's aspect ratio
+                const aspectRatio = 1 / 1; // Adjust this to match your animation's aspect ratio
                 const containerWidth = containerRef.current.offsetWidth;
                 const containerHeight = containerRef.current.offsetHeight;
                 const containerRatio = containerWidth / containerHeight;

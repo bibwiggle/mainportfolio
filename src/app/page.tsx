@@ -77,6 +77,20 @@ export default function Page() {
               </div>
             </div>
           </section> {/* Welcome section end */}
+          <section className="w-full h-screen items-center justify-center content-center"> {/* Welcome section start */}
+            <div className="container px-4 md:px-5 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
+              <div className="flex flex-col items-center text-center">
+                <div className="space-y-0 py-10">
+                  <h1 className="text-6xl font-light tracking-widest sm:text-6xl md:text-8xl lg:text-9xl">
+                  Junu
+                  </h1>
+                  <p className="py-5 mx-auto max-w-[700px] md:text-xl">
+                    Digital Experiences | Content Creation | Art Direction
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section> {/* Welcome section end */}
           <section className="w-full">
           <div className="py-12">
               <h2 className="text-3xl font-thin tracking-normal sm:text-5xl text-center  ">Projects</h2>
