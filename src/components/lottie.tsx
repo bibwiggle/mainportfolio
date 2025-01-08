@@ -8,7 +8,7 @@ import DCA from '../../src/lotties/80comp.json';
 
 export function Home() {
     const [scrollPercentage, setScrollPercentage] = useState(0);
-    const [size, setSize] = useState({ width: '100%', height: '100%' });
+    const [size] = useState({ width: '100%', height: '100%' });
     const lottieRef = useRef<LottieRefCurrentProps>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
