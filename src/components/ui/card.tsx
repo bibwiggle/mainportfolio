@@ -100,15 +100,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="absolute inset-0">
-          <Image
-            src={isHovered ? project.gifUrl : project.imageUrl}
-            alt={project.title}
-            layout="fill"
-            objectFit="cover"
-            className="transition-all duration-300 transform hover:scale-105"
-          />
-        </div>
+<div className="absolute inset-0">
+  <Image
+    src={isHovered ? project.gifUrl : project.imageUrl}
+    alt={project.title}
+    fill
+    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    className="object-cover"
+  />
+</div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
         <div className="relative z-10 flex flex-col justify-end">
           <CardHeader className="text-white">

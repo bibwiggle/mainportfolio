@@ -6,6 +6,7 @@
 import Link from 'next/link'
 import { Home } from '@/components/lottie' 
 import { ProjectGrid } from "@/components/ui/card"
+import NameAnimation from '@/components/NameAnimation'
 // import dynamic from 'next/dynamic'
 
 const projects = [
@@ -34,7 +35,7 @@ const projects = [
     link: "#"
   },
   {
-    id: "1",
+    id: "4",
     title: "Beat Bowl",
     description: "An interactive music experience that combines rhythm and visual elements.",
     imageUrl: "/Postcard.jpg",
@@ -42,7 +43,7 @@ const projects = [
     link: "#"
   },
   {
-    id: "1",
+    id: "5",
     title: "Beat Bowl",
     description: "An interactive music experience that combines rhythm and visual elements.",
     imageUrl: "/Postcard.jpg",
@@ -50,7 +51,7 @@ const projects = [
     link: "#"
   },
   {
-    id: "1",
+    id: "6",
     title: "Beat Bowl",
     description: "An interactive music experience that combines rhythm and visual elements.",
     imageUrl: "/Postcard.jpg",
@@ -62,12 +63,8 @@ const projects = [
 export default function Page() {
 
   return (
-    
     <div className="relative min-h-screen no-scrollbar">
-    <div className="inset-0 h-full">
-      <Home/>
-    </div>
-      <div className="flex flex-col min-h-screen relative z-10">
+      <div className="relative z-10 min-h-screen flex flex-col">
       <header className="site-header js-site-header  js-fixed-nav sticky top-0 z-50 px-4 lg:px-6 h-14 flex items-center backdrop-blur-sm shadow">
           <nav className="mx-auto flex gap-4 sm:gap-6">
             <Link className="text-rose-300 font-normal sm:text-sm md:text-base lg:text-lg hover:underline underline-offset-4" href="#">
@@ -82,14 +79,16 @@ export default function Page() {
           </nav>
         </header>
         <main className="flex-1">
-        
+        <div className="absolute inset-0 z-0">
+        <Home />
+      </div>
         <section className="w-full items-center justify-center content-center" style={{ height: 'calc(100vh - 3.5rem)' }}>
           <div className="container px-4 md:px-5 mx-auto h-full flex flex-col justify-center items-center">
             <div className="space-y-0 text-center">
-              <h1 className="text-emerald-200 text-6xl font-light tracking-widest sm:text-6xl md:text-8xl lg:text-9xl">
-              Junu
-              </h1>
-              <p className="text-emerald-200 py-5 mx-auto max-w-[700px] md:text-xl">
+            <div className="relative inline-block">
+              <NameAnimation />
+</div>
+              <p className="text-white mix-blend-difference py-5 mx-auto max-w-[700px] md:text-xl">
               Digital Experiences | Content Creation | Art Direction
               </p>
             </div>

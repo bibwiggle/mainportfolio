@@ -4,11 +4,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 
 // Import the Lottie animation file
-import DCA from '../../src/lotties/80comp.json';
+import DCA from '../../src/lotties/3k80.json';
 
 export function Home() {
     const [scrollPercentage, setScrollPercentage] = useState(0);
-    const [size] = useState({ width: '100%', height: '100%' });
+    const [size, setSize] = useState({ width: '100%', height: '100%' });
     const lottieRef = useRef<LottieRefCurrentProps>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -20,7 +20,7 @@ export function Home() {
             const scrollRange = pageHeight - windowHeight;
             
             // Allow scrolling beyond 100% (e.g., 5 times the page height)
-            const extendedScrollRange = scrollRange / 4;
+            const extendedScrollRange = scrollRange / 8;
             const percentage = (scrollPosition / extendedScrollRange) % 1;
             
             setScrollPercentage(percentage);
@@ -39,42 +39,42 @@ export function Home() {
         }
     }, [scrollPercentage]);
 
-    // useEffect(() => {
-    //     if (!containerRef.current) return;
+    useEffect(() => {
+        if (!containerRef.current) return;
 
-    //     const updateSize = () => {
-    //         if (containerRef.current) {
-    //             const aspectRatio = 16 / 9; // Adjust this to match your animation's aspect ratio
-    //             const windowWidth = window.innerWidth;
-    //             const windowHeight = window.innerHeight;
-    //             const windowRatio = windowWidth / windowHeight;
+        const updateSize = () => {
+            if (containerRef.current) {
+                const aspectRatio = 1 / 1; // Adjust this to match your animation's aspect ratio
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                const windowRatio = windowWidth / windowHeight;
 
-    //             let width, height;
+                let width, height;
 
-    //             if (windowRatio > aspectRatio) {
-    //                 // Window is wider than the desired aspect ratio
-    //                 width = windowWidth;
-    //                 height = windowWidth / aspectRatio;
-    //             } else {
-    //                 // Window is taller than the desired aspect ratio
-    //                 height = windowHeight;
-    //                 width = windowHeight * aspectRatio;
-    //             }
+                if (windowRatio > aspectRatio) {
+                    // Window is wider than the desired aspect ratio
+                    width = windowWidth;
+                    height = windowWidth / aspectRatio;
+                } else {
+                    // Window is taller than the desired aspect ratio
+                    height = windowHeight;
+                    width = windowHeight * aspectRatio;
+                }
 
-    //             // Increase size to ensure full coverage
-    //             const scale = 1.2;
-    //             width *= scale;
-    //             height *= scale;
+                // Increase size to ensure full coverage
+                const scale = 1.2;
+                width *= scale;
+                height *= scale;
 
-    //             setSize({ width: `${width}px`, height: `${height}px` });
-    //         }
-    //     };
+                setSize({ width: `${width}px`, height: `${height}px` });
+            }
+        };
 
-    //     updateSize();
-    //     window.addEventListener('resize', updateSize);
+        updateSize();
+        window.addEventListener('resize', updateSize);
 
-    //     return () => window.removeEventListener('resize', updateSize);
-    // }, []);
+        return () => window.removeEventListener('resize', updateSize);
+    }, []);
 
     // Force Lottie to redraw when size changes
     useEffect(() => {
@@ -84,16 +84,9 @@ export function Home() {
     }, [size]);
 
     return (
-        <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
-            <div 
-                style={{ 
-                    width: size.width, 
-                    height: size.height,
-                    maxWidth: 'none',
-                    maxHeight: 'none',
-                    transform: 'translate(0, -27%)',
-                }}
-            >
+    <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden">
+      <div className="w-screen h-screen absolute"
+      >
                 <Lottie 
                     lottieRef={lottieRef}
                     animationData={DCA} 
@@ -103,7 +96,8 @@ export function Home() {
                     style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover',
+                        objectFit: 'fill',
+                        filter: 'brightness(1.15)',
                     }}
                     rendererSettings={{
                         preserveAspectRatio: 'xMidYMid slice',
@@ -114,5 +108,3 @@ export function Home() {
         </div>
     );
 }
-
-export default Home;
