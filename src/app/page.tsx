@@ -32,68 +32,73 @@ const projects = [
     imageUrl: "/Postcard.jpg",
     gifUrl: "/Comp.gif",
     link: "#"
-  }
+  },
+  {
+    id: "1",
+    title: "Beat Bowl",
+    description: "An interactive music experience that combines rhythm and visual elements.",
+    imageUrl: "/Postcard.jpg",
+    gifUrl: "/Comp.gif",
+    link: "#"
+  },
+  {
+    id: "1",
+    title: "Beat Bowl",
+    description: "An interactive music experience that combines rhythm and visual elements.",
+    imageUrl: "/Postcard.jpg",
+    gifUrl: "/Comp.gif",
+    link: "#"
+  },
+  {
+    id: "1",
+    title: "Beat Bowl",
+    description: "An interactive music experience that combines rhythm and visual elements.",
+    imageUrl: "/Postcard.jpg",
+    gifUrl: "/Comp.gif",
+    link: "#"
+  },
 ]
 
 export default function Page() {
 
   return (
     
-    <div className="relative min-h-screen overflow-y-scroll no-scrollbar">
-    <div className="fixed inset-0 h-full">
+    <div className="relative min-h-screen no-scrollbar">
+    <div className="inset-0 h-full">
       <Home/>
     </div>
       <div className="flex flex-col min-h-screen relative z-10">
-        <header className="px-4 lg:px-6 h-14 flex items-center">
-          <Link className="flex items-center justify-center" href="#">
-            <MountainIcon className="h-6 w-6" />
-            <span className="sr-only">Acme Inc</span>
-          </Link>
-          <nav className="ml-auto flex gap-4 sm:gap-6">
-            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+      <header className="site-header js-site-header  js-fixed-nav sticky top-0 z-50 px-4 lg:px-6 h-14 flex items-center backdrop-blur-sm shadow">
+          <nav className="mx-auto flex gap-4 sm:gap-6">
+            <Link className="text-rose-300 font-normal sm:text-sm md:text-base lg:text-lg hover:underline underline-offset-4" href="#">
               Projects
             </Link>
-            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            <Link className="text-cyan-400 font-normal sm:text-sm md:text-base lg:text-lg hover:underline underline-offset-4" href="#">
               About
             </Link>
-            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            <Link className="text-emerald-200 font-normal sm:text-sm md:text-base lg:text-lg hover:underline underline-offset-4" href="#">
               Contact
             </Link>
           </nav>
         </header>
         <main className="flex-1">
         
-          <section className="w-full h-screen items-center justify-center content-center"> {/* Welcome section start */}
-            <div className="container px-4 md:px-5 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
-              <div className="flex flex-col items-center text-center">
-                <div className="space-y-0">
-                  <h1 className="text-6xl font-light tracking-widest sm:text-6xl md:text-8xl lg:text-9xl">
-                  Junu
-                  </h1>
-                  <p className="py-5 mx-auto max-w-[700px] md:text-xl">
-                    Digital Experiences | Content Creation | Art Direction
-                  </p>
-                </div>
-              </div>
+        <section className="w-full items-center justify-center content-center" style={{ height: 'calc(100vh - 3.5rem)' }}>
+          <div className="container px-4 md:px-5 mx-auto h-full flex flex-col justify-center items-center">
+            <div className="space-y-0 text-center">
+              <h1 className="text-emerald-200 text-6xl font-light tracking-widest sm:text-6xl md:text-8xl lg:text-9xl">
+              Junu
+              </h1>
+              <p className="text-emerald-200 py-5 mx-auto max-w-[700px] md:text-xl">
+              Digital Experiences | Content Creation | Art Direction
+              </p>
             </div>
-          </section> {/* Welcome section end */}
-          <section className="w-full h-screen items-center justify-center content-center"> {/* Welcome section start */}
-            <div className="container px-4 md:px-5 mx-auto" style={{ minHeight: 'calc(100vh - 42rem)'}}>
-              <div className="flex flex-col items-center text-center">
-                <div className="space-y-0 py-10">
-                  <h1 className="text-6xl font-light tracking-widest sm:text-6xl md:text-8xl lg:text-9xl">
-                  Junu
-                  </h1>
-                  <p className="py-5 mx-auto max-w-[700px] md:text-xl">
-                    Digital Experiences | Content Creation | Art Direction
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section> {/* Welcome section end */}
+          </div>
+        </section>{/* Welcome section end */}
+  
           <section className="w-full">
-          <div className="py-12">
-              <h2 className="text-3xl font-thin tracking-normal sm:text-5xl text-center  ">Projects</h2>
+          <div className="py-4 backdrop-blur-sm shadow">
+              <h2 className="text-emerald-200 text-3xl font-thin tracking-normal sm:text-5xl text-center">Projects</h2>
           </div>
           <ProjectGrid projects={projects} />
           </section>

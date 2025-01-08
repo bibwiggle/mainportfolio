@@ -6,11 +6,6 @@ import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 // Import the Lottie animation file
 import DCA from '../../src/lotties/90.json';
 
-// Easing function (ease-out cubic) //Higher the number, quicker to slow down
-function easeOutCubic(x: number): number {
-  return 1 - Math.pow(1 - x, 1);
-}
-
 export function Home() {
     const [scrollPercentage, setScrollPercentage] = useState(0);
     const [size, setSize] = useState({ width: '100%', height: '100%' });
@@ -24,15 +19,12 @@ export function Home() {
             const windowHeight = window.innerHeight;
             const scrollRange = pageHeight - windowHeight;
             
-            // Allow scrolling beyond 100% (e.g., 3 times the page height)
-            const extendedScrollRange = scrollRange /10;
+            // Allow scrolling beyond 100% (e.g., 5 times the page height)
+            const extendedScrollRange = scrollRange / 4;
             const percentage = (scrollPosition / extendedScrollRange) % 1;
             
             setScrollPercentage(percentage);
-            console.log(percentage)
         };
-
-       
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -40,41 +32,49 @@ export function Home() {
 
     useEffect(() => {
         if (lottieRef.current && lottieRef.current.animationItem) {
-            const easedPercentage = easeOutCubic(scrollPercentage);
             const totalFrames = lottieRef.current.animationItem.totalFrames;
-            const frame = Math.floor(easedPercentage * totalFrames);
+            const frame = Math.floor(scrollPercentage * totalFrames);
             
             lottieRef.current.animationItem.goToAndStop(frame, true);
         }
     }, [scrollPercentage]);
 
-    useEffect(() => {
-        if (!containerRef.current) return;
+    // useEffect(() => {
+    //     if (!containerRef.current) return;
 
-        const updateSize = () => {
-            if (containerRef.current) {
-                const aspectRatio = 1 / 1; // Adjust this to match your animation's aspect ratio
-                const containerWidth = containerRef.current.offsetWidth;
-                const containerHeight = containerRef.current.offsetHeight;
-                const containerRatio = containerWidth / containerHeight;
+    //     const updateSize = () => {
+    //         if (containerRef.current) {
+    //             const aspectRatio = 16 / 9; // Adjust this to match your animation's aspect ratio
+    //             const windowWidth = window.innerWidth;
+    //             const windowHeight = window.innerHeight;
+    //             const windowRatio = windowWidth / windowHeight;
 
-                if (containerRatio > aspectRatio) {
-                    // Container is wider than the desired aspect ratio
-                    const height = containerWidth / aspectRatio;
-                    setSize({ width: '100%', height: `${height}px` });
-                } else {
-                    // Container is taller than the desired aspect ratio
-                    const width = containerHeight * aspectRatio;
-                    setSize({ width: `${width}px`, height: '100%' });
-                }
-            }
-        };
+    //             let width, height;
 
-        const resizeObserver = new ResizeObserver(updateSize);
-        resizeObserver.observe(containerRef.current);
+    //             if (windowRatio > aspectRatio) {
+    //                 // Window is wider than the desired aspect ratio
+    //                 width = windowWidth;
+    //                 height = windowWidth / aspectRatio;
+    //             } else {
+    //                 // Window is taller than the desired aspect ratio
+    //                 height = windowHeight;
+    //                 width = windowHeight * aspectRatio;
+    //             }
 
-        return () => resizeObserver.disconnect();
-    }, []);
+    //             // Increase size to ensure full coverage
+    //             const scale = 1.2;
+    //             width *= scale;
+    //             height *= scale;
+
+    //             setSize({ width: `${width}px`, height: `${height}px` });
+    //         }
+    //     };
+
+    //     updateSize();
+    //     window.addEventListener('resize', updateSize);
+
+    //     return () => window.removeEventListener('resize', updateSize);
+    // }, []);
 
     // Force Lottie to redraw when size changes
     useEffect(() => {
@@ -84,8 +84,16 @@ export function Home() {
     }, [size]);
 
     return (
-        <div ref={containerRef} className="fixed inset-0 w-full h-full overflow-hidden flex items-center justify-center">
-            <div style={{ width: size.width, height: size.height, maxWidth: '100%', maxHeight: '100%' }}>
+        <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
+            <div 
+                style={{ 
+                    width: size.width, 
+                    height: size.height,
+                    maxWidth: 'none',
+                    maxHeight: 'none',
+                    transform: 'translate(0, -27%)',
+                }}
+            >
                 <Lottie 
                     lottieRef={lottieRef}
                     animationData={DCA} 
