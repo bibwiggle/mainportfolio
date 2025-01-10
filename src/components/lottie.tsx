@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 
 // Import the Lottie animation file
-import DCA from '../../src/lotties/3k80.json';
+import DCA from '../../src/lotties/3k80b.json';
 
 export function Home() {
     const [scrollPercentage, setScrollPercentage] = useState(0);
@@ -97,7 +97,7 @@ export function Home() {
                         width: '100%',
                         height: '100%',
                         objectFit: 'fill',
-                        filter: 'brightness(1.15)',
+                        filter: 'brightness(1.15s)',
                     }}
                     rendererSettings={{
                         preserveAspectRatio: 'xMidYMid slice',
