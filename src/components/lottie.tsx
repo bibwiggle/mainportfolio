@@ -14,14 +14,16 @@ export function Home() {
 
     useEffect(() => {
         const handleScroll = () => {
-            const scrollPosition = window.scrollY;
+            const scrollPosition = Math.max(0, window.scrollY);
             const pageHeight = document.documentElement.scrollHeight;
             const windowHeight = window.innerHeight;
             const scrollRange = pageHeight - windowHeight;
             
-            // Allow scrolling beyond 100% (e.g., 5 times the page height)
+            // Allow scrolling beyond 100% (e.g., 8 times the page height)
             const extendedScrollRange = scrollRange / 8;
-            const percentage = (scrollPosition / extendedScrollRange) % 1;
+            
+            // Add a small buffer (0.05) to prevent blank animation at edges
+            const percentage = Math.min(Math.max((scrollPosition / extendedScrollRange), 0), 0.95);
             
             setScrollPercentage(percentage);
         };
@@ -84,9 +86,8 @@ export function Home() {
     }, [size]);
 
     return (
-    <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden">
-      <div className="w-screen h-screen absolute"
-      >
+        <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden">
+            <div className="w-screen h-screen absolute">
                 <Lottie 
                     lottieRef={lottieRef}
                     animationData={DCA} 
@@ -97,7 +98,7 @@ export function Home() {
                         width: '100%',
                         height: '100%',
                         objectFit: 'fill',
-                        filter: 'brightness(1.15s)',
+                        filter: 'brightness(1.15)',
                     }}
                     rendererSettings={{
                         preserveAspectRatio: 'xMidYMid slice',
