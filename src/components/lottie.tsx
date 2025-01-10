@@ -22,8 +22,8 @@ export function Home() {
             // Allow scrolling beyond 100% (e.g., 8 times the page height)
             const extendedScrollRange = scrollRange / 8;
             
-            // Add a small buffer (0.05) to prevent blank animation at edges
-            const percentage = Math.min(Math.max((scrollPosition / extendedScrollRange), 0), 0.95);
+            // Calculate percentage and allow it to go beyond 1 for looping
+            const percentage = scrollPosition / extendedScrollRange;
             
             setScrollPercentage(percentage);
         };
@@ -35,7 +35,7 @@ export function Home() {
     useEffect(() => {
         if (lottieRef.current && lottieRef.current.animationItem) {
             const totalFrames = lottieRef.current.animationItem.totalFrames;
-            const frame = Math.floor(scrollPercentage * totalFrames);
+            const frame = Math.floor((scrollPercentage % 1) * totalFrames);
             
             lottieRef.current.animationItem.goToAndStop(frame, true);
         }
