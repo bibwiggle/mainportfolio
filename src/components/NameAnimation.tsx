@@ -1,31 +1,46 @@
-"use client"
+"use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 
-export const NameAnimation = () => {
-  const nameVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
+const ShatterEffect = () => {
+  const [text, setText] = useState("Junu"); // Default to English name
+  const koreanText = "이준우"; // Korean name
+
+  const shatterVariants = {
+    initial: { opacity: 1, x: 0, y: 0 },
+    hover: (i: number) => ({
       opacity: 1,
-      y: 0,
-      transition: {
-        delay: 0.5,
-        duration: 0.8,
-        ease: "easeOut"
-      }
-    }
+      x: Math.random() * 50 - 25, // Random displacement
+      y: Math.random() * 50 - 25,
+      transition: { duration: 0.5 },
+    }),
+  };
+
+  const handlePageClick = () => {
+    setText((prevText) => (prevText === "Junu" ? koreanText : "Junu")); // Toggle between English and Korean
   };
 
   return (
-    <motion.h1
-      className="text-white mix-blend-difference text-6xl font-light tracking-widest sm:text-6xl md:text-8xl lg:text-9xl"
-      initial="hidden"
-      animate="visible"
-      variants={nameVariants}
-    >
-      Junu
-    </motion.h1>
+    <div onClick={handlePageClick} style={{ cursor: "pointer", userSelect: "none" }}>
+      <motion.div
+        className="flex text-white mix-blend-difference font-semibold opacity-95 tracking-tight text-8xl sm:text-9xl lg:text-9xl xl:text-10xl"
+        initial="initial"
+        whileHover="hover"
+      >
+        {text.split("").map((char, index) => (
+          <motion.span
+            key={index}
+            custom={index}
+            variants={shatterVariants}
+            style={{ display: "inline-block" }}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </motion.div>
+    </div>
   );
 };
 
-export default NameAnimation;
+export default ShatterEffect;

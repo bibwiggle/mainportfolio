@@ -12,6 +12,11 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontSize:{
+        '10xl': '20rem',
+        '9xl': '15rem',
+        '8xl': '8rem',
+      }
     },
   },
   plugins: [],

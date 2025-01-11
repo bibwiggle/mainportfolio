@@ -22,6 +22,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-lottie": "^1.2.10",
+    "react-p5": "^1.4.1",
     "tailwind-merge": "^2.5.5",
     "three": "0.163.0"
   },
