@@ -4,38 +4,51 @@ import React, { useEffect, useState, useRef } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 
 // Import the Lottie animation file
-import DCA from "../../src/lotties/3k80b.json";
+import DCA from "../../public/lotties/3k80b.json";
 
 export function Home() {
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const [size, setSize] = useState({ width: "100%", height: "100%" });
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const targetScrollPercentageRef = useRef(0);
+  const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = Math.max(0, window.scrollY);
       const pageHeight = document.documentElement.scrollHeight;
       const windowHeight = window.innerHeight;
-      console.log({windowHeight, pageHeight })
-      // general max window 
       const scrollRange = pageHeight - windowHeight;
 
-      const desktopScalor = 2
-      const mobileScalor = 8
-      const scalor = window.innerWidth >= 1024 ? desktopScalor : mobileScalor
+      const desktopScalor = 2;
+      const mobileScalor = 8;
+      const scalor = window.innerWidth >= 1024 ? desktopScalor : mobileScalor;
 
-      // Allow scrolling beyond 100% (e.g., 8 times the page height)
       const extendedScrollRange = scrollRange / scalor;
-
-      // Calculate percentage and allow it to go beyond 1 for looping
       const percentage = scrollPosition / extendedScrollRange;
 
-      setScrollPercentage(percentage);
+      targetScrollPercentageRef.current = percentage;
+    };
+
+    const smoothScrollAnimation = () => {
+      setScrollPercentage((prevPercentage) => {
+        const diff = targetScrollPercentageRef.current - prevPercentage;
+        return prevPercentage + diff * 0.23; // Adjust the 0.1 value to change smoothing speed
+      });
+
+      animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {

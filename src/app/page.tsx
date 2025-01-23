@@ -3,11 +3,12 @@
 // import { useState, useEffect } from 'react'
 
 // import React, { useEffect, useRef } from 'react'
-import {P5Background} from "@/components/P5Background";
+// import {P5Background} from "@/components/P5Background";
 import Link from "next/link";
 import { Home } from "@/components/lottie";
 import { ProjectGrid } from "@/components/ui/card";
-import NameAnimation from "@/components/NameAnimation";
+import { NameAnimation } from "@/components/NameAnimation";
+
 // import dynamic from 'next/dynamic'
 
 const projects = [
@@ -36,7 +37,7 @@ const projects = [
       "A collection of visually stunning video clips for live performances and events.",
     imageUrl: "/Postcard.jpg",
     gifUrl: "/Comp.gif",
-    link: "#",
+    link: "/vjclips",
   },
   {
     id: "4",
@@ -49,15 +50,6 @@ const projects = [
   },
   {
     id: "5",
-    title: "Beat Bowl",
-    description:
-      "An interactive music experience that combines rhythm and visual elements.",
-    imageUrl: "/Postcard.jpg",
-    gifUrl: "/Comp.gif",
-    link: "#",
-  },
-  {
-    id: "6",
     title: "Beat Bowl",
     description:
       "An interactive music experience that combines rhythm and visual elements.",
@@ -103,10 +95,10 @@ export default function Page() {
           >
             <div className="container px-4 md:px-5 mx-auto h-full flex flex-col justify-center items-center">
               <div className="space-y-0 text-center">
-                <div className="relative inline-block">
+                <div className="relative inline">
                   <NameAnimation />
                 </div>
-                <p className="text-white mix-blend-difference py-5 mx-auto max-w-[700px] md:text-xl">
+                <p className="text-white mix-blend-difference py-0 mx-auto max-w-[700px] md:text-xl">
                   Digital Experiences | Content Creation | Art Direction
                 </p>
               </div>
@@ -119,7 +111,7 @@ export default function Page() {
        
             <div className="py-4 backdrop-blur-sm shadow">
             <div className="fixed object-fill">
-            <P5Background />
+
             </div>
               <h2 className="text-emerald-200 text-3xl font-thin tracking-normal sm:text-5xl text-center">
                 Projects
