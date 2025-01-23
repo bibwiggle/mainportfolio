@@ -21,7 +21,7 @@ export function Home() {
       const windowHeight = window.innerHeight;
       const scrollRange = pageHeight - windowHeight;
 
-      const desktopScalor = 2;
+      const desktopScalor = 3.2;
       const mobileScalor = 8;
       const scalor = window.innerWidth >= 1024 ? desktopScalor : mobileScalor;
 
@@ -34,7 +34,7 @@ export function Home() {
     const smoothScrollAnimation = () => {
       setScrollPercentage((prevPercentage) => {
         const diff = targetScrollPercentageRef.current - prevPercentage;
-        return prevPercentage + diff * 0.23; // Adjust the 0.1 value to change smoothing speed
+        return prevPercentage + diff * 0.12; // Adjust the 0.1 value to change smoothing speed
       });
 
       animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);

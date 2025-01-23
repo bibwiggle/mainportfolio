@@ -1,6 +1,5 @@
 import {
   Poppins,
-  Jersey_15,
   Roboto,
   Montserrat,
   Oswald,
@@ -10,13 +9,6 @@ export const poppins = Poppins({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500"],
-});
-
-// Define Jersey 15 font
-export const jersey_15 = Jersey_15({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400"],
 });
 
 export const roboto = Roboto({

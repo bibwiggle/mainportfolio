@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { poppins, jersey_15 } from "@/fonts";
+import { roboto } from "@/fonts";
 
 export const metadata: Metadata = {
   title: "Junu Lee",
@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.className} ${jersey_15.className} antialiased`}>
+      <body className={`${roboto.className} antialiased`}>
         {children}
       </body>
     </html>
