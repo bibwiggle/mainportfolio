@@ -34,7 +34,7 @@ export function Home() {
     const smoothScrollAnimation = () => {
       setScrollPercentage((prevPercentage) => {
         const diff = targetScrollPercentageRef.current - prevPercentage;
-        return prevPercentage + diff * 0.12; // Adjust the 0.1 value to change smoothing speed
+        return prevPercentage + diff * 0.18; // Adjust the 0.1 value to change smoothing speed
       });
 
       animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);

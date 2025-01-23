@@ -14,7 +14,7 @@ export const NameAnimation = () => {
   return (
     <div onClick={handlePageClick} style={{ cursor: "pointer", userSelect: "none" }}>
       <motion.div
-        className="text-white mix-blend-difference font-semibold opacity-95 tracking-normal text-8xl sm:text-9xl lg:text-9xl xl:text-10xl xl:leading-[300px] lg:leading-[270px] sm:leading-[250px] leading-[180px]"
+        className="text-white mix-blend-difference font-semibold opacity-95 tracking-normal text-8xl sm:text-8xl lg:text-9xl xl:text-9xl xl:leading-[270px] lg:leading-[270px] sm:leading-[180px] leading-[180px]"
         initial="initial"
         whileHover="hover"
       >
