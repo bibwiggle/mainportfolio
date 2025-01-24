@@ -173,7 +173,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link
       href={project.link}
-      className="group w-full h-[50vh] block cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
+      className="group w-full lg:h-[100vh] h-[100vh] block cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
@@ -196,8 +196,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <Image
             src={project.imageUrl || "/placeholder.svg"}
             alt={project.title}
+            quality={100}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
           />
         )}

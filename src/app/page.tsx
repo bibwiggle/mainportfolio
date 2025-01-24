@@ -8,21 +8,21 @@ import { AnimatedHeader } from "@/components/AnimatedHeader";
 const projects = [
   {
     id: "1",
+    title: "Dancing Dancheong (단청)",
+    description:
+      "A digital art installation inspired by traditional Korean decorative techniques.",
+    imageUrl: "/thesisv3.png",
+    lottieUrl: "/lotties/DDlottie.json",
+    link: "/dancingdancheong",
+  },
+  {
+    id: "2",
     title: "Beat Bowl",
     description:
       "An interactive music experience that combines rhythm and visual elements.",
     imageUrl: "/DownscaleBB.jpg",
     lottieUrl: "/lotties/beatbowl.json",
-    link: "#",
-  },
-  {
-    id: "2",
-    title: "Dancing 단청",
-    description:
-      "A digital art installation inspired by traditional Korean decorative techniques.",
-    imageUrl: "/Postcard.jpg",
-    lottieUrl: "/lotties/3k80b.json",
-    link: "#",
+    link: "/beatbowl",
   },
   {
     id: "3",
@@ -33,31 +33,13 @@ const projects = [
     lottieUrl: "/lotties/VJclips.json",
     link: "/vjclips",
   },
-  {
-    id: "4",
-    title: "Project 4",
-    description:
-      "An exciting new project showcasing innovative design and technology.",
-    imageUrl: "/Postcard.jpg",
-    lottieUrl: "/lotties/3k80b.json",
-    link: "#",
-  },
-  {
-    id: "5",
-    title: "Project 5",
-    description:
-      "A groundbreaking initiative pushing the boundaries of digital art.",
-    imageUrl: "/Postcard.jpg",
-    lottieUrl: "/lotties/3k80b.json",
-    link: "#",
-  },
 ];
 
 export default function Page() {
   const homePageLinks = [
     { href: "#projects", label: "Projects", colorClass: "text-rose-300" },
-    { href: "#about", label: "About", colorClass: "text-cyan-400" },
-    { href: "#contact", label: "Contact", colorClass: "text-emerald-200" },
+    { href: "/about", label: "About", colorClass: "text-cyan-400" },
+    { href: "/contact", label: "Contact", colorClass: "text-emerald-200" },
   ];
 
   return (
