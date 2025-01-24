@@ -29,8 +29,8 @@ const projects = [
     title: "VJ clips",
     description:
       "A collection of visually stunning video clips for live performances and events.",
-    imageUrl: "/Postcard.jpg",
-    lottieUrl: "/lotties/3k80b.json",
+    imageUrl: "/VJtn.jpg",
+    lottieUrl: "/lotties/VJclips.json",
     link: "/vjclips",
   },
   {

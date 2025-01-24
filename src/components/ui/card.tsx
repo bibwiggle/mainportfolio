@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import { createContext, useContext, useState } from "react";
 
 type LottieAnimationData = {
   v: string;
@@ -99,22 +100,43 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
+type ProjectCardContextType = {
+  activeProjectId: string | null;
+  setActiveProjectId: (id: string | null) => void;
+};
+
+const ProjectCardContext = createContext<ProjectCardContextType>({
+  activeProjectId: null,
+  setActiveProjectId: () => {},
+});
+
+const ProjectCardProvider = ({ children }: { children: React.ReactNode }) => {
+  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+  return (
+    <ProjectCardContext.Provider value={{ activeProjectId, setActiveProjectId }}>
+      {children}
+    </ProjectCardContext.Provider>
+  );
+};
+
 export function ProjectCard({ project }: ProjectCardProps) {
-  const [isActive, setIsActive] = React.useState(false);
+  const { activeProjectId, setActiveProjectId } = useContext(ProjectCardContext);
   const [animationData, setAnimationData] = React.useState<LottieAnimationData | null>(null);
   const lottieRef = React.useRef<LottieRefCurrentProps>(null);
-  const [isTouchDevice, setIsTouchDevice] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-  }, []);
+  const [isTouchDevice] = React.useState(() => 
+    'ontouchstart' in window || navigator.maxTouchPoints > 0
+  );
+  
+  const isActive = activeProjectId === project.id;
 
   React.useEffect(() => {
     if (isActive && !animationData) {
       fetch(project.lottieUrl)
-        .then(response => response.json())
+        .then((response) => response.json())
         .then((data: LottieAnimationData) => setAnimationData(data))
-        .catch(error => console.error('Error loading Lottie animation:', error));
+        .catch((error) =>
+          console.error("Error loading Lottie animation:", error)
+        );
     }
   }, [isActive, animationData, project.lottieUrl]);
 
@@ -128,26 +150,25 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   const handleMouseEnter = () => {
     if (!isTouchDevice) {
-      setIsActive(true);
+      setActiveProjectId(project.id);
     }
   };
 
+
   const handleMouseLeave = () => {
     if (!isTouchDevice) {
-      setIsActive(false);
+      setActiveProjectId(null);
     }
   };
 
   const handleTouchStart = () => {
-    if (isTouchDevice) {
-      setIsActive(true);
-    }
+    setActiveProjectId(isActive ? null : project.id);
   };
 
   return (
     <Link
       href={project.link}
-      className="w-full h-full block cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
+      className="group w-full h-[50vh] block cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
@@ -176,21 +197,31 @@ export function ProjectCard({ project }: ProjectCardProps) {
           />
         )}
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
-      <div className="relative z-10 flex flex-col justify-end">
-        <CardHeader className="text-white">
-          <CardTitle className="text-2xl font-bold mb-2">
+      <div
+        className="absolute inset-0 
+                   bg-gradient-to-b from-transparent via-black/70 to-black/90 
+                   opacity-0 group-hover:opacity-100  // Fade in the gradient
+                   transition-[opacity,transform] duration-500 
+                   transform translate-y-[30%] group-hover:translate-y-0"
+      />
+
+      <div className="relative z-10 flex flex-col justify-center h-full">
+        <CardHeader className="text-white items-center text-center">
+          <CardTitle
+            className="text-7xl font-bold mb-4 transform transition-all duration-500 
+                       group-hover:-translate-y-20 group-hover:mb-8
+                       drop-shadow-[0_2px_4px_rgba(0,0,0,1)]"
+          >
             {project.title}
           </CardTitle>
-          <CardDescription className="text-gray-200 h-96">
+          <CardDescription
+            className="text-gray-200 opacity-0 group-hover:opacity-100 
+            transform transition-all duration-500 group-hover:-translate-y-20
+            text-lg"
+          >
             {project.description}
           </CardDescription>
         </CardHeader>
-        <CardFooter className="text-white">
-          <p className="text-sm hover:text-primary transition-colors duration-200">
-            View Project Details
-          </p>
-        </CardFooter>
       </div>
     </Link>
   );
@@ -198,11 +229,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
 export function ProjectGrid({ projects }: { projects: Project[] }) {
   return (
-    <div className="grid gap-0 lg:grid-cols-3 lg:gap-0 m-0">
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
-    </div>
+    <ProjectCardProvider>
+      <div className="grid gap-0 lg:grid-cols-3 lg:gap-0 m-0">
+        {projects.map((project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
+      </div>
+    </ProjectCardProvider>
   );
 }
 
