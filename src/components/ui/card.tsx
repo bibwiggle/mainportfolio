@@ -123,9 +123,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const { activeProjectId, setActiveProjectId } = useContext(ProjectCardContext);
   const [animationData, setAnimationData] = React.useState<LottieAnimationData | null>(null);
   const lottieRef = React.useRef<LottieRefCurrentProps>(null);
-  const [isTouchDevice] = React.useState(() => 
-    'ontouchstart' in window || navigator.maxTouchPoints > 0
-  );
+  const [isTouchDevice, setIsTouchDevice] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsTouchDevice(
+      'ontouchstart' in window || 
+      (navigator.maxTouchPoints > 0)
+    );
+  }, []);
   
   const isActive = activeProjectId === project.id;
 
