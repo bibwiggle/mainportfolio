@@ -6,7 +6,7 @@ import Lottie, { LottieRefCurrentProps } from "lottie-react";
 // Import the Lottie animation file
 import DCA from "../../public/lotties/3k80b.json";
 
-export function Home() {
+export function BackgroundAnimation() {
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const [size, setSize] = useState({ width: "100%", height: "100%" });
   const lottieRef = useRef<LottieRefCurrentProps>(null);

@@ -2,13 +2,27 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
+
+type LottieAnimationData = {
+  v: string;
+  fr: number;
+  ip: number;
+  op: number;
+  w: number;
+  h: number;
+  nm: string;
+  ddd: number;
+  assets: any[];
+  layers: any[];
+};
 
 interface Project {
   id: string;
   title: string;
   description: string;
   imageUrl: string;
-  gifUrl: string;
+  lottieUrl: string;
   link: string;
 }
 
@@ -88,23 +102,82 @@ const CardFooter = React.forwardRef<
 CardFooter.displayName = "CardFooter";
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const [isHovered, setIsHovered] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(false);
+  const [animationData, setAnimationData] = React.useState<LottieAnimationData | null>(null);
+  const lottieRef = React.useRef<LottieRefCurrentProps>(null);
+  const [isTouchDevice, setIsTouchDevice] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
+
+  React.useEffect(() => {
+    if (isActive && !animationData) {
+      fetch(project.lottieUrl)
+        .then(response => response.json())
+        .then((data: LottieAnimationData) => setAnimationData(data))
+        .catch(error => console.error('Error loading Lottie animation:', error));
+    }
+  }, [isActive, animationData, project.lottieUrl]);
+
+  React.useEffect(() => {
+    if (isActive && lottieRef.current) {
+      lottieRef.current.play();
+    } else if (!isActive && lottieRef.current) {
+      lottieRef.current.stop();
+    }
+  }, [isActive]);
+
+  const handleInteraction = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    if (isTouchDevice) {
+      setIsActive(!isActive);
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (!isTouchDevice) {
+      setIsActive(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isTouchDevice) {
+      setIsActive(false);
+    }
+  };
 
   return (
-    <Link href={project.link} passHref>
-      <Card
-        className="w-full h-full cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+    <div
+      className="w-full h-full cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleInteraction}
+      onTouchStart={handleInteraction}
+    >
         <div className="absolute inset-0">
-          <Image
-            src={isHovered ? project.gifUrl : project.imageUrl}
-            alt={project.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover"
-          />
+          {isActive && animationData ? (
+            <Lottie
+              lottieRef={lottieRef}
+              animationData={animationData}
+              renderer={"canvas" as "svg"}
+              loop={true}
+              autoplay={true}
+              className="w-full h-full object-cover"
+              rendererSettings={{
+                preserveAspectRatio: "xMidYMid slice",
+                progressiveLoad: true,
+              }}
+            />
+          ) : (
+            <Image
+              src={project.imageUrl || "/placeholder.svg"}
+              alt={project.title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover"
+            />
+          )}
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
         <div className="relative z-10 flex flex-col justify-end">
@@ -122,8 +195,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </p>
           </CardFooter>
         </div>
-      </Card>
-    </Link>
+        {isTouchDevice && isActive && (
+        <Link href={project.link} className="absolute inset-0 z-20" aria-label={`View ${project.title} project details`} />
+      )}
+    </div>
   );
 }
 

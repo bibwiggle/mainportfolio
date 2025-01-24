@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import Link from "next/link";
 import VideoPlayer from "@/components/VideoPlayer";
+import { AnimatedHeader } from "@/components/AnimatedHeader";
 
 // 1. Define the interface
 interface Clip {
@@ -25,71 +25,27 @@ const clips: Clip[] = [
     id: 2,
     title: "Clip Title 2",
     description: "Description 2",
-    videoId: "J2KjAoztyIA",
-    aspectRatio: "30/17",
-  },
-  {
-    id: 3,
-    title: "Clip Title 2",
-    description: "Description 2",
-    videoId: "J2KjAoztyIA",
-    aspectRatio: "17/30",
-  },
-  {
-    id: 4,
-    title: "Clip Title 2",
-    description: "Description 2",
-    videoId: "J2KjAoztyIA",
-    aspectRatio: "30/17",
-  },
-  {
-    id: 5,
-    title: "Clip Title 2",
-    description: "Description 2",
-    videoId: "J2KjAoztyIA",
-    aspectRatio: "30/30",
-  },
-  {
-    id: 6,
-    title: "Clip Title 2",
-    description: "Description 2",
-    videoId: "J2KjAoztyIA",
-    aspectRatio: "17/30",
-  },
-  {
-    id: 7,
-    title: "Clip Title 2",
-    description: "Description 2",
-    videoId: "J2KjAoztyIA",
+    videoId: "-Kx1qlzHYl4",
     aspectRatio: "17/30",
   },
   // ... etc
 ];
 
 export default function VJClips() {
-  return (
-    <div className="relative min-h-screen no-scrollbar bg-gray-900">
-      <div className="relative z-10 min-h-screen flex flex-col">
-        {/* HEADER */}
-        <header className="sticky top-0 z-50 px-4 lg:px-6 h-14 flex items-center backdrop-blur-sm shadow">
-          <nav className="mx-auto flex gap-4 sm:gap-6">
-            <Link className="text-rose-300 hover:underline" href="/">
-              Home
-            </Link>
-            <Link className="text-cyan-400 hover:underline" href="/about">
-              About
-            </Link>
-            <Link className="text-emerald-200 hover:underline" href="/contact">
-              Contact
-            </Link>
-          </nav>
-        </header>
+  const vjClipsLinks = [
+    { href: "/", label: "Home", colorClass: "text-rose-300" },
+    { href: "/about", label: "About", colorClass: "text-cyan-400" },
+    { href: "/contact", label: "Contact", colorClass: "text-emerald-200" },
+  ];
 
+  return (
+    <div className="bg-gray-900">
+        <AnimatedHeader navLinks={vjClipsLinks} />
         {/* MAIN */}
         <main className="flex-1">
           <section className="w-full">
-            <div className="container px-1 text-left">
-              <h1 className="text-emerald-200 text-6xl md:text-7xl lg:text-8xl font-thin tracking-tight leading-[0.8]">
+            <div className="container px-1 py-12 text-left">
+              <h1 className="text-emerald-200 text-6xl md:text-7xl lg:text-8xl font-thin tracking-tight leading-[1]">
                 Explore my collection of real time visuals using resolume
               </h1>
             </div>
@@ -123,6 +79,5 @@ export default function VJClips() {
           </section>
         </main>
       </div>
-    </div>
   );
 }

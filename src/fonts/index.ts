@@ -3,6 +3,7 @@ import {
   Roboto,
   Montserrat,
   Oswald,
+  Exo,
 } from "next/font/google";
 // Define Poppins font
 export const poppins = Poppins({
@@ -22,6 +23,11 @@ export const montserrat = Montserrat({
 });
 
 export const oswald = Oswald({
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+export const exo = Exo({
   subsets: ["latin"],
   weight: ["400"],
 });
