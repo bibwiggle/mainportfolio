@@ -126,13 +126,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
     }
   }, [isActive]);
 
-  const handleInteraction = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    if (isTouchDevice) {
-      setIsActive(!isActive);
-    }
-  };
-
   const handleMouseEnter = () => {
     if (!isTouchDevice) {
       setIsActive(true);
@@ -145,58 +138,61 @@ export function ProjectCard({ project }: ProjectCardProps) {
     }
   };
 
+  const handleTouchStart = () => {
+    if (isTouchDevice) {
+      setIsActive(true);
+    }
+  };
+
   return (
-    <div
-      className="w-full h-full cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
+    <Link
+      href={project.link}
+      className="w-full h-full block cursor-pointer transition-all duration-300 hover:shadow-lg relative overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={handleInteraction}
-      onTouchStart={handleInteraction}
+      onTouchStart={handleTouchStart}
     >
-        <div className="absolute inset-0">
-          {isActive && animationData ? (
-            <Lottie
-              lottieRef={lottieRef}
-              animationData={animationData}
-              renderer={"canvas" as "svg"}
-              loop={true}
-              autoplay={true}
-              className="w-full h-full object-cover"
-              rendererSettings={{
-                preserveAspectRatio: "xMidYMid slice",
-                progressiveLoad: true,
-              }}
-            />
-          ) : (
-            <Image
-              src={project.imageUrl || "/placeholder.svg"}
-              alt={project.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover"
-            />
-          )}
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
-        <div className="relative z-10 flex flex-col justify-end">
-          <CardHeader className="text-white">
-            <CardTitle className="text-2xl font-bold mb-2">
-              {project.title}
-            </CardTitle>
-            <CardDescription className="text-gray-200 h-96">
-              {project.description}
-            </CardDescription>
-          </CardHeader>
-          <CardFooter className="text-white">
-            <p className="text-sm hover:text-primary transition-colors duration-200">
-              View Project Details
-            </p>
-          </CardFooter>
-        </div>
-        {isTouchDevice && isActive && (
-        <Link href={project.link} className="absolute inset-0 z-20" aria-label={`View ${project.title} project details`} />
-      )}
-    </div>
+      <div className="absolute inset-0">
+        {isActive && animationData ? (
+          <Lottie
+            lottieRef={lottieRef}
+            animationData={animationData}
+            renderer={"canvas" as "svg"}
+            loop={true}
+            autoplay={true}
+            className="w-full h-full object-cover"
+            rendererSettings={{
+              preserveAspectRatio: "xMidYMid slice",
+              progressiveLoad: true,
+            }}
+          />
+        ) : (
+          <Image
+            src={project.imageUrl || "/placeholder.svg"}
+            alt={project.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover"
+          />
+        )}
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70"></div>
+      <div className="relative z-10 flex flex-col justify-end">
+        <CardHeader className="text-white">
+          <CardTitle className="text-2xl font-bold mb-2">
+            {project.title}
+          </CardTitle>
+          <CardDescription className="text-gray-200 h-96">
+            {project.description}
+          </CardDescription>
+        </CardHeader>
+        <CardFooter className="text-white">
+          <p className="text-sm hover:text-primary transition-colors duration-200">
+            View Project Details
+          </p>
+        </CardFooter>
+      </div>
+    </Link>
   );
 }
 
