@@ -13,8 +13,6 @@ type LottieAnimationData = {
   h: number;
   nm: string;
   ddd: number;
-  assets: any[];
-  layers: any[];
 };
 
 interface Project {

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { BackgroundAnimation } from "@/components/lottie";
 import { ProjectGrid } from "@/components/ui/card";
 import { NameAnimation } from "@/components/NameAnimation";
