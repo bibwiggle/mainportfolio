@@ -167,7 +167,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
   };
 
   const handleTouchStart = () => {
-    setActiveProjectId(isActive ? null : project.id);
+    if (!isActive) {
+      setActiveProjectId(project.id);
+    }
   };
 
   return (
