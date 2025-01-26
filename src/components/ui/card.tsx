@@ -237,7 +237,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 export function ProjectGrid({ projects }: { projects: Project[] }) {
   return (
     <ProjectCardProvider>
-      <div className="grid gap-0 lg:grid-cols-3 lg:gap-0 m-0">
+      <div className="grid gap-0 lg:grid-cols-3 m-0">
         {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
