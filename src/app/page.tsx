@@ -4,7 +4,8 @@ import { BackgroundAnimation } from "@/components/lottie";
 import { ProjectGrid } from "@/components/ui/card";
 import { NameAnimation } from "@/components/NameAnimation";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { nabla } from "@/fonts";
 
 const projects = [
   {
@@ -42,59 +43,102 @@ export default function Page() {
     { href: "/about", label: "About", colorClass: "text-cyan-400" },
     { href: "/contact", label: "Contact", colorClass: "text-emerald-200" },
   ];
-  const pageHeight = document.documentElement.scrollHeight;
-  console.log(`The page height is ${pageHeight}px`);
-  const [showProjects, setShowProjects] = useState(false);
-  const projectsRef = useRef<HTMLDivElement>(null);
+
+  const [pageHeight, setPageHeight] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      setShowProjects(scrollPosition > windowHeight * 0.3);
+    const updatePageHeight = () => {
+      const height = document.documentElement.scrollHeight;
+      setPageHeight(height);
+      console.log(`The page height is ${height}px`);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Initial update
+    updatePageHeight();
+
+    // Update on window resize
+    window.addEventListener('resize', updatePageHeight);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updatePageHeight);
   }, []);
 
   return (
     <div className="relative min-h-screen no-scrollbar">
-    <div className="relative z-10 min-h-screen flex flex-col">
-      <AnimatedHeader navLinks={homePageLinks} />  
-      <div className="fixed inset-0 z-0">
-        <BackgroundAnimation />
+      <div className="relative z-10 min-h-screen flex flex-col">
+        <AnimatedHeader navLinks={homePageLinks} />  
+        <div className="fixed inset-0 z-0">
+          <BackgroundAnimation />
+        </div>
+
+        <main className="relative z-10">
+          {/* Name Section - Full screen */}
+          <section className="h-screen flex items-center justify-center">
+            <div className="container px-4 md:px-5 mx-auto h-full flex flex-col justify-center items-center">
+              <NameAnimation />
+            </div>
+          </section>
+
+          {/* Projects Section - Full screen with centered title */}
+          <section className="min-h-screen flex flex-col items-center justify-center relative">
+            {/* Projects Title */}
+            <div className="py-[60vh]">
+              <h2 className={`${nabla.className} antialiased text-4xl tracking-wider sm:text-5xl md:text-6xl text-center max-w-4xl mx-auto px-4 custom-nabla-color-projects`}>
+                Projects Below
+              </h2>
+            </div>
+
+            {/* Project Grid */}
+            <div className="flex-1 w-full bg-black" id="projects">
+              <ProjectGrid projects={projects}/>
+            </div>
+          </section>
+        </main>
       </div>
-
-      <main className="relative z-10">
-        {/* Name Section - Full screen */}
-        <section className="h-screen flex items-center justify-center">
-          <div className="container px-4 md:px-5 mx-auto h-full flex flex-col justify-center items-center">
-            <NameAnimation />
-          </div>
-        </section>
-
-        {/* Projects Section - Full screen with centered title */}
-        <section 
-            className="min-h-screen flex flex-col items-center justify-center relative"
-        >
-          {/* Projects Title */}
-          <div className="py-[60vh]">
-            <h2 className="text-emerald-200 text-4xl font-thin tracking-wider sm:text-6xl text-center">
-              Projects Below
-            </h2>
-          </div>
-
-          {/* Project Grid */}
-          <div className="flex-1 w-full bg-black" id="projects">
-            <ProjectGrid projects={projects}/>
-          </div>
-        </section>
-      </main>
+      <style jsx global>{`
+        :root {
+          --nabla-color-name: #C7E9DE;
+          --nabla-color-projects: #C7E9DE;
+        }
+        .custom-nabla-color-name {
+          filter: url(#nabla-color-filter-name);
+        }
+        .custom-nabla-color-projects {
+          filter: url(#nabla-color-filter-projects);
+        }
+        @supports not (filter: url(#nabla-color-filter-name)) {
+          .custom-nabla-color-name {
+            color: var(--nabla-color-name);
+          }
+        }
+        @supports not (filter: url(#nabla-color-filter-projects)) {
+          .custom-nabla-color-projects {
+            color: var(--nabla-color-projects);
+          }
+        }
+      `}</style>
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+          <filter id="nabla-color-filter-name">
+            <feColorMatrix
+              type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      1 0 1 0 0
+                      0 0 0 1 0"
+            />
+          </filter>
+          <filter id="nabla-color-filter-projects">
+            <feColorMatrix
+              type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 1 0"
+            />
+          </filter>
+        </defs>
+      </svg>
     </div>
-  </div>
-  
-);
-
+  );
 }
-
