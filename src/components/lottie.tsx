@@ -100,7 +100,7 @@ export function BackgroundAnimation() {
   return (
     <div
       ref={containerRef}
-      className="relative inset-0 w-full h-[150%] overflow-hidden"
+      className="relative inset-0 w-full h-[150vh] overflow-hidden"
       style={{
         transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
         left: '100%',
