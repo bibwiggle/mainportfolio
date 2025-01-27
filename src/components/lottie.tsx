@@ -100,7 +100,7 @@ export function BackgroundAnimation() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-[150vh] overflow-hidden"
+      className="absolute inset-0 w-full h-[150dvh] overflow-hidden"
       style={{
         transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
         left: '100%',
@@ -125,7 +125,6 @@ export function BackgroundAnimation() {
             progressiveLoad: true,
           }}
         />
-
     </div>
   );
 }
