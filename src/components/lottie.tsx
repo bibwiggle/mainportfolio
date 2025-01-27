@@ -117,7 +117,7 @@ export function BackgroundAnimation() {
           style={{
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "fill",
             filter: "brightness(1.15)",
           }}
           rendererSettings={{
