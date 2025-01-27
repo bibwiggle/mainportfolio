@@ -100,14 +100,14 @@ export function BackgroundAnimation() {
   return (
     <div
       ref={containerRef}
-      className="relative inset-0 w-full h-[150vh] overflow-hidden"
+      className="absolute inset-0 w-full h-[150vh] overflow-hidden"
       style={{
         transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
         left: '100%',
         top: '100%',
       }}
     >
-
+<div className="w-screen h-screen absolute">
         <Lottie
           lottieRef={lottieRef}
           animationData={DCA}
@@ -125,6 +125,7 @@ export function BackgroundAnimation() {
             progressiveLoad: true,
           }}
         />
+        </div>
     </div>
   );
 }
