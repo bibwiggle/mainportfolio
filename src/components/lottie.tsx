@@ -8,7 +8,6 @@ import DCA from "../../public/lotties/3k80b.json";
 
 export function BackgroundAnimation() {
   const [scrollPercentage, setScrollPercentage] = useState(0);
-  const [size, setSize] = useState({ width: "100%", height: "100%" });
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const targetScrollPercentageRef = useRef(0);
@@ -94,7 +93,7 @@ export function BackgroundAnimation() {
     if (lottieRef.current && lottieRef.current.animationItem) {
       lottieRef.current.animationItem.resize();
     }
-  }, [size]);
+  }, []);
 
   const parallaxOffset = -scrollPercentage * 4.8;
 
