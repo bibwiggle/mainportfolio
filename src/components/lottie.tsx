@@ -59,7 +59,7 @@ export function BackgroundAnimation() {
   useEffect(() => {
     const updateSize = () => {
       if (containerRef.current) {
-        const aspectRatio = 1920/1080;
+        const aspectRatio = 1;
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
@@ -86,14 +86,14 @@ export function BackgroundAnimation() {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  const parallaxOffset = -scrollProgress * 4.8;
+  // const parallaxOffset = -scrollProgress * 4.8;
 
   return (
     <div
       ref={containerRef}
       className="absolute inset-0 overflow-hidden"
       style={{
-        transform: `translate(-50%, -50%) translateY(${parallaxOffset}%)`,
+        transform: `translate(-50%, -50%)`,
         left: '50%',
         top: '50%',
       }}
