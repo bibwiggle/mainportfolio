@@ -59,7 +59,7 @@ export function BackgroundAnimation() {
   useEffect(() => {
     const updateSize = () => {
       if (containerRef.current) {
-        const aspectRatio = 1;
+        const aspectRatio = 1920/1080;
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
 
