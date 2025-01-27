@@ -87,10 +87,8 @@ export function BackgroundAnimation() {
   return (
     <div
       ref={containerRef}
-      className="fixed overflow-hidden"
+      className="fixed overflow-hidden w-screen h-screen"
       style={{
-        width: `${containerSize.width}px`,
-        height: `${containerSize.height}px`,
         transform: `translate(-50%, -50%) translateY(${parallaxOffset}%)`,
         left: '50%',
         top: '50%',
@@ -105,7 +103,7 @@ export function BackgroundAnimation() {
         style={{
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit: "fill",
           filter: "brightness(1.15)",
         }}
         rendererSettings={{
