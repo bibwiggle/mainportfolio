@@ -14,8 +14,8 @@ export function BackgroundAnimation() {
   const handleScroll = useCallback(() => {
     const scrollPosition = window.scrollY;
     const windowHeight = window.innerHeight;
-    const pageHeight = document.documentElement.scrollHeight;
-    
+
+
     const desktopScalor = 3;
     const mobileScalor = 1.5;
     const scalor = window.innerWidth >= 1024 ? desktopScalor : mobileScalor;

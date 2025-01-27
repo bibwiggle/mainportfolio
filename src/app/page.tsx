@@ -4,7 +4,7 @@ import { BackgroundAnimation } from "@/components/lottie";
 import { ProjectGrid } from "@/components/ui/card";
 import { NameAnimation } from "@/components/NameAnimation";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { nabla } from "@/fonts";
 
 const projects = [
@@ -44,24 +44,6 @@ export default function Page() {
     { href: "/contact", label: "Contact", colorClass: "text-emerald-200" },
   ];
 
-  const [pageHeight, setPageHeight] = useState(0);
-
-  useEffect(() => {
-    const updatePageHeight = () => {
-      const height = document.documentElement.scrollHeight;
-      setPageHeight(height);
-      console.log(`The page height is ${height}px`);
-    };
-
-    // Initial update
-    updatePageHeight();
-
-    // Update on window resize
-    window.addEventListener('resize', updatePageHeight);
-
-    // Cleanup
-    return () => window.removeEventListener('resize', updatePageHeight);
-  }, []);
 
   return (
     <div className="relative min-h-screen no-scrollbar">
@@ -98,7 +80,7 @@ export default function Page() {
       <style jsx global>{`
         :root {
           --nabla-color-name: #C7E9DE;
-          --nabla-color-projects: #C7E9DE;
+          --nabla-color-projects: #FFD700;
         }
         .custom-nabla-color-name {
           filter: url(#nabla-color-filter-name);
@@ -122,9 +104,9 @@ export default function Page() {
           <filter id="nabla-color-filter-name">
             <feColorMatrix
               type="matrix"
-              values="1 0 0 0 0
-                      0 1 0 0 0
-                      1 0 1 0 0
+              values="1.780 0 0 0 0
+                      1 0.914 0 0 0
+                      1 0 0.871 0 0
                       0 0 0 1 0"
             />
           </filter>
@@ -132,8 +114,8 @@ export default function Page() {
             <feColorMatrix
               type="matrix"
               values="1 0 0 0 0
-                      0 1 0 0 0
-                      0 0 1 0 0
+                      0.843 0 0 0 0
+                      0 0 0 0 0
                       0 0 0 1 0"
             />
           </filter>
