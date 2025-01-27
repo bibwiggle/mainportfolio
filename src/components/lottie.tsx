@@ -100,15 +100,16 @@ export function BackgroundAnimation() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-[150vh] overflow-hidden"
+      className="absolute inset-0 w-full h-[100rem] overflow-hidden"
       style={{
         transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
         left: '100%',
         top: '100%',
       }}
     >
-<div className="w-screen h-screen absolute">
+
         <Lottie
+          className="items-center justify-center"
           lottieRef={lottieRef}
           animationData={DCA}
           loop={true}
@@ -119,13 +120,13 @@ export function BackgroundAnimation() {
             height: "100%",
             objectFit: "fill",
             filter: "brightness(1.15)",
+            
           }}
           rendererSettings={{
             preserveAspectRatio: "xMidYMid slice",
             progressiveLoad: true,
           }}
         />
-        </div>
     </div>
   );
 }
