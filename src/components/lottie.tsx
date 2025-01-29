@@ -89,8 +89,6 @@ export function BackgroundAnimation() {
       ref={containerRef}
       className="fixed overflow-hidden w-screen h-screen"
       style={{
-        width: `${containerSize.width}px`,
-        height: `${containerSize.height}px`,
         transform: `translate(-50%, -50%) translateY(${parallaxOffset}%)`,
         left: '50%',
         top: '50%',
