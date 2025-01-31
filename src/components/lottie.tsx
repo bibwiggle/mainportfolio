@@ -103,9 +103,9 @@ export function BackgroundAnimation() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-screen overflow-hidden"
+      className="absolute inset-0 w-full h-[150vh] overflow-hidden"
       style={{
-        transform: `translateY(${parallaxOffset}%)`,
+        transform: `translate(0, -16%) translateY(${parallaxOffset}%)`,
       }}
     >
 
