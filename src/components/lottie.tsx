@@ -99,7 +99,7 @@ export function BackgroundAnimation() {
         animationData={DCA}
         loop={true}
         autoplay={false}
-        renderer="svg"
+        renderer= {"canvas" as "svg"}
         style={{
           width: "100%",
           height: "100%",
