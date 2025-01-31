@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 
 // Import the Lottie animation file
-import DCA from "../../public/lotties/3k80b.json";
+import DCA from "@/../public/lotties/3k80b.json";
 
 export function BackgroundAnimation() {
   const [scrollPercentage, setScrollPercentage] = useState(0);
@@ -100,7 +100,7 @@ export function BackgroundAnimation() {
   return (
      <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-[150vh] overflow-hidden"
+      className="absolute inset-0 w-full h-[150lvh] overflow-hidden"
       style={{
         transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
         left: '100%',
