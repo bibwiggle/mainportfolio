@@ -13,7 +13,7 @@ export function BackgroundAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const targetScrollPercentageRef = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
-  console.log(screen.height)
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -98,10 +98,11 @@ export function BackgroundAnimation() {
 
   // const parallaxOffset = -scrollPercentage * 4.8;
 
+
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-[screen.height] overflow-hidden"
+      className="absolute inset-0 w-full h-screen overflow-hidden"
       // style={{
       //   transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
       //   left: '100%',
