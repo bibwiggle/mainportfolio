@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
+
+// Import the Lottie animation file
 import DCA from "../../public/lotties/3k80b.json";
 
 export function BackgroundAnimation() {
   const [scrollPercentage, setScrollPercentage] = useState(0);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [size, setSize] = useState({ width: "100%", height: "100%" });
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const targetScrollPercentageRef = useRef(0);
@@ -32,7 +34,7 @@ export function BackgroundAnimation() {
     const smoothScrollAnimation = () => {
       setScrollPercentage((prevPercentage) => {
         const diff = targetScrollPercentageRef.current - prevPercentage;
-        return prevPercentage + diff * 0.15;
+        return prevPercentage + diff * 0.15; // Adjust the 0.1 value to change smoothing speed
       });
 
       animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);
@@ -60,20 +62,24 @@ export function BackgroundAnimation() {
   useEffect(() => {
     const updateSize = () => {
       if (containerRef.current) {
+        const aspectRatio = 1 / 1; // Adjust this to match your animation's aspect ratio
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
-        const aspectRatio = 1; // Assuming the Lottie animation is square
+        const windowRatio = windowWidth / windowHeight;
+
         let width, height;
 
-        if (windowWidth / windowHeight > aspectRatio) {
-          width = windowWidth * 1;
-          height = width / aspectRatio;
+        if (windowRatio > aspectRatio) {
+          // Window is wider than the desired aspect ratio
+          width = windowWidth;
+          height = windowWidth / aspectRatio;
         } else {
-          height = windowHeight * 1;
-          width = height * aspectRatio;
+          // Window is taller than the desired aspect ratio
+          height = windowHeight;
+          width = windowHeight * aspectRatio;
         }
 
-        setContainerSize({ width, height });
+        setSize({ width: `${width}px`, height: `${height}px` });
       }
     };
 
@@ -82,37 +88,44 @@ export function BackgroundAnimation() {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
+  // Force Lottie to redraw when size changes
+  useEffect(() => {
+    if (lottieRef.current && lottieRef.current.animationItem) {
+      lottieRef.current.animationItem.resize();
+    }
+  }, [size]);
+
   const parallaxOffset = -scrollPercentage * 4.8;
 
   return (
     <div
       ref={containerRef}
-      className="fixed overflow-hidden w-screen h-screen"
+      className="absolute inset-0 w-full h-[150vh] overflow-hidden"
       style={{
-        width: `${containerSize.width}px`,
-        height: `${containerSize.height}px`,
-        transform: `translate(-50%, -50%) translateY(${parallaxOffset}%)`,
-        left: '50%',
-        top: '50%',
+        transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
+        left: '100%',
+        top: '100%',
       }}
     >
-      <Lottie
-        lottieRef={lottieRef}
-        animationData={DCA}
-        loop={true}
-        autoplay={false}
-        renderer= {"canvas" as "svg"}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "fill",
-          filter: "brightness(1.15)",
-        }}
-        rendererSettings={{
-          preserveAspectRatio: "xMidYMid slice",
-          progressiveLoad: true,
-        }}
-      />
+
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={DCA}
+          loop={true}
+          autoplay={false}
+          renderer={"canvas" as "svg"}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "brightness(1.15)",
+          }}
+          rendererSettings={{
+            preserveAspectRatio: "xMidYMid slice",
+            progressiveLoad: true,
+          }}
+        />
+
     </div>
   );
 }
