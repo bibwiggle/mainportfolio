@@ -96,18 +96,19 @@ export function BackgroundAnimation() {
     }
   }, [size]);
 
-  // const parallaxOffset = -scrollPercentage * 4.8;
+  const parallaxOffset = -scrollPercentage * 4.8;
+  // const height = screen.height 
 
 
   return (
     <div
       ref={containerRef}
       className="absolute inset-0 w-full h-screen overflow-hidden"
-      // style={{
-      //   transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
-      //   left: '100%',
-      //   top: '100%',
-      // }}
+      style={{
+        transform: `translate(-100%, -82.5%) translateY(${parallaxOffset}%)`,
+        left: '100%',
+        top: '100%',
+      }}
     >
 
         <Lottie
