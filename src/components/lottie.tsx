@@ -96,7 +96,7 @@ export function BackgroundAnimation() {
     }
   }, [size]);
 
-  const parallaxOffset = -scrollPercentage * 4.8;
+  // const parallaxOffset = -scrollPercentage * 4.8;
 
   return (
     <div
