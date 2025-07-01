@@ -2,6 +2,7 @@
 import React from "react";
 import VideoPlayer from "@/components/VideoPlayer";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
+import Image from "next/image";
 
 export default function dancingdancheong() {
   // NAVIGATION LINKS
@@ -60,7 +61,7 @@ export default function dancingdancheong() {
           /></div>
 
         <div className="flex-1 h-[80vh] flex justify-center items-center">
-          <img
+          <Image
             src={images[0].src}
             alt={images[0].alt}
             className="fill h-[70%] w-auto max-w-full object-cover"

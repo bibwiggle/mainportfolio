@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
+import Image from "next/image";
 
 export default function BeatBowl() {
   // NAVIGATION LINKS
@@ -64,7 +65,7 @@ export default function BeatBowl() {
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {images.map(({ src, alt }, i) => (
-              <img key={i} src={src} alt={alt} className="rounded-lg shadow-lg" />
+              <Image key={i} src={src} alt={alt} className="rounded-lg shadow-lg" />
             ))}
           </div>
         </section>

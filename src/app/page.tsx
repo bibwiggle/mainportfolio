@@ -5,7 +5,7 @@ import { ProjectGrid } from "@/components/ui/card";
 import { NameAnimation } from "@/components/NameAnimation";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import React from "react";
-import { exo, nabla } from "@/fonts";
+import { exo } from "@/fonts";
 
 const projects = [
   {
