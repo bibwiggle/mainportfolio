@@ -5,7 +5,7 @@ import { ProjectGrid } from "@/components/ui/card";
 import { NameAnimation } from "@/components/NameAnimation";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import React from "react";
-import { nabla } from "@/fonts";
+import { exo, nabla } from "@/fonts";
 
 const projects = [
   {
@@ -64,8 +64,8 @@ export default function Page() {
           {/* Projects Section - Full screen with centered title */}
           <section className="min-h-screen flex flex-col items-center justify-center relative">
             {/* Projects Title */}
-            <div className="py-[60vh]">
-              <h2 className={`${nabla.className} antialiased text-4xl tracking-wider sm:text-5xl md:text-6xl text-center max-w-4xl mx-auto px-4 custom-nabla-color-projects`}>
+            <div className="py-[20vh]">
+              <h2 className={`${exo.className} antialiased text-4xl tracking-wider sm:text-5xl md:text-6xl text-center max-w-4xl mx-auto px-4 custom-nabla-color-projects`}>
                 Projects Below
               </h2>
             </div>
@@ -77,50 +77,6 @@ export default function Page() {
           </section>
         </main>
       </div>
-      <style jsx global>{`
-        :root {
-          --nabla-color-name: #C7E9DE;
-          --nabla-color-projects: #FFD700;
-        }
-        .custom-nabla-color-name {
-          filter: url(#nabla-color-filter-name);
-        }
-        .custom-nabla-color-projects {
-          filter: url(#nabla-color-filter-projects);
-        }
-        @supports not (filter: url(#nabla-color-filter-name)) {
-          .custom-nabla-color-name {
-            color: var(--nabla-color-name);
-          }
-        }
-        @supports not (filter: url(#nabla-color-filter-projects)) {
-          .custom-nabla-color-projects {
-            color: var(--nabla-color-projects);
-          }
-        }
-      `}</style>
-      <svg width="0" height="0" style={{ position: 'absolute' }}>
-        <defs>
-          <filter id="nabla-color-filter-name">
-            <feColorMatrix
-              type="matrix"
-              values="1.780 0 0 0 0
-                      1 0.914 0 0 0
-                      1 0 0.871 0 0
-                      0 0 0 1 0"
-            />
-          </filter>
-          <filter id="nabla-color-filter-projects">
-            <feColorMatrix
-              type="matrix"
-              values="1 0 0 0 0
-                      0.843 0 0 0 0
-                      0 0 0 0 0
-                      0 0 0 1 0"
-            />
-          </filter>
-        </defs>
-      </svg>
     </div>
   );
 }

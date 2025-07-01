@@ -23,7 +23,7 @@ export function BackgroundAnimation() {
       const scrollRange = pageHeight - windowHeight;
 
       const desktopScalor = 3;
-      const mobileScalor = 8;
+      const mobileScalor = 13;
       const scalor = window.innerWidth >= 1024 ? desktopScalor : mobileScalor;
 
       const extendedScrollRange = scrollRange / scalor;
@@ -35,7 +35,7 @@ export function BackgroundAnimation() {
     const smoothScrollAnimation = () => {
       setScrollPercentage((prevPercentage) => {
         const diff = targetScrollPercentageRef.current - prevPercentage;
-        return prevPercentage + diff * 0.15; // Adjust the 0.1 value to change smoothing speed
+        return prevPercentage + diff * 0.25; // Adjust the 0.1 value to change smoothing speed
       });
 
       animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);
