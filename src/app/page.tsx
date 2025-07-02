@@ -85,16 +85,12 @@ export default function Page() {
       designer • artist • technologist
     </span>
   </div>
+  
 </section>
-
-          {/* Projects Section - Full screen with centered title */}
-          <section className="min-h-screen flex flex-col items-center justify-center relative">
-            {/* Projects Title */}
-            <div className="py-[20vh]">
-              <h2 className={`
+<h2 className={`
           ${exo.className} 
           antialiased 
-          text-5xl tracking-wider sm:text-2xl md:text-5xl 
+          text-5xl tracking-wider sm:text-3xl md:text-5xl 
           text-center max-w-4xl mx-auto px-4 
           font-bold
           text-white
@@ -103,6 +99,12 @@ export default function Page() {
         `}>
                 ↓
               </h2>
+
+          {/* Projects Section - Full screen with centered title */}
+          <section className="min-h-screen flex flex-col items-center justify-center relative">
+            {/* Projects Title */}
+            <div className="py-[20vh]">
+
             </div>
 
             {/* Project Grid */}
