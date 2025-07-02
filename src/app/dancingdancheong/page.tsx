@@ -3,8 +3,8 @@ import React from "react";
 import VideoPlayer from "@/components/VideoPlayer";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import Image from "next/image";
-import thesisv3 from "../../public/thesisv3.png";
-import chrome from "../../public/chrome.jpg"
+import thesisv3 from "@/assets/thesisv3.png";
+import chrome from "@/assets/chrome.jpg"
 
 export default function dancingdancheong() {
   // NAVIGATION LINKS
