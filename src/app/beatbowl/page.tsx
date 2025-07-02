@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
-import Image from "next/image";
-import DownscaleBB from "/public/DownscaleBB.jpg";
+import DownscaleBB from "@/public/DownscaleBB.jpg";
 import VideoPlayer from "@/components/VideoPlayer";
 
 export default function BeatBowl() {
