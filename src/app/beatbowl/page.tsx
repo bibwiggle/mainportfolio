@@ -2,22 +2,24 @@
 import React from "react";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import Image from "next/image";
+import DownscaleBB from "/public/DownscaleBB.jpg";
+import VideoPlayer from "@/components/VideoPlayer";
 
 export default function BeatBowl() {
   // NAVIGATION LINKS
   const navLinks = [
     { href: "/", label: "Home", colorClass: "text-rose-300" },
+    { href: "/#projects", label: "Projects", colorClass: "text-fuchsia-300" },
     { href: "/about", label: "About", colorClass: "text-cyan-400" },
     { href: "/contact", label: "Contact", colorClass: "text-emerald-200" },
-    { href: "/#projects", label: "Projects", colorClass: "text-fuchsia-300" },
   ];
 
   // PROJECT MEDIA — swap paths to your files in /public/
   const images = [
-    { src: "/media/beatbowl-1.jpg", alt: "Prototype" },
-    { src: "/DownscaleBB.jpg", alt: "In use" },
+    { src: DownscaleBB, alt: "In use" },
   ];
-  const video = { src: "/media/beatbowl-demo.mp4", type: "video/mp4" };
+  const video = { videoId: "UpqdW8SwsuE", type: "video/mp4" };
+  const test = { videoId: "FB9Jetnj4mQ", type: "video/mp4"};
 
   // TOOL LIST
   const tools = [
@@ -54,19 +56,11 @@ export default function BeatBowl() {
 
         {/* MEDIA: VIDEO & IMAGES */}
         <section className="space-y-7">
-          <video
-            src={video.src}
-            className="rounded-xl w-full"
-            autoPlay
-            muted
-            loop
-            playsInline
-            controls
+        <div className="h-fit flex justify-center"
+               style={{ aspectRatio: 30/17, maxHeight: "80vh" }}>     
+          <VideoPlayer
+            videoId={video.videoId}
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {images.map(({ src, alt }, i) => (
-              <Image key={i} src={src} alt={alt} className="rounded-lg shadow-lg" />
-            ))}
           </div>
         </section>
 
@@ -85,6 +79,14 @@ export default function BeatBowl() {
           Mapping the controls in Ableton Live and seeing the software instantly 
           respond to each new knob or button was a genuinely magical moment. 
           </p>
+        </section>
+        <section className="space-y-7">
+        <div className="h-fit flex justify-center"
+               style={{ aspectRatio: 30/26, maxHeight: "80vh" }}>     
+          <VideoPlayer
+            videoId={test.videoId}
+          />
+          </div>
         </section>
 
         {/* USER EXPERIENCE */}

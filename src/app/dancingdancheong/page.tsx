@@ -3,31 +3,34 @@ import React from "react";
 import VideoPlayer from "@/components/VideoPlayer";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import Image from "next/image";
+import thesisv3 from "/public/thesisv3.png";
+import chrome from "/public/chrome.jpg"
 
 export default function dancingdancheong() {
   // NAVIGATION LINKS
   const navLinks = [
     { href: "/", label: "Home", colorClass: "text-rose-300" },
+    { href: "/#projects", label: "Projects", colorClass: "text-fuchsia-300" },
     { href: "/about", label: "About", colorClass: "text-cyan-400" },
     { href: "/contact", label: "Contact", colorClass: "text-emerald-200" },
-    { href: "/#projects", label: "Projects", colorClass: "text-fuchsia-300" },
   ];
 
   // PROJECT MEDIA — swap paths to your files in /public/
-  const images = [
-    { src: "/thesisv3.png", alt: "In use" },
-  ];
-  const video = { videoId: "kZeOEtuZLTU", type: "video/mp4" };
+  const prototype1 = { videoId: "kZeOEtuZLTU", type: "video/mp4" };
+  const prototype2 = { videoId: "fNOX-ZMpEX0", type: "video/mp4" };
 
   // TOOL LIST
   const tools = [
-    "Arduino Pro Micro (ATmega32U4, native USB MIDI)",
+    "Arduino Pro Micro",
     "Multiplexers for analog/digital expansion",
     "Custom wiring and prototyping",
-    "Ableton Live MIDI mapping",
-    "Fusion 360 (enclosure design)",
+    "Stepper motors/drivers",
+    "Fusion 360 (mechanical/ornate design)",
     "3D Printing",
-    "Ultrasonic distance sensor",
+    "Spray paint/Top Coat",
+    "Graphite powder",
+    "Filler primer",
+    "Sand Paper",
   ];
 
   return (
@@ -39,16 +42,17 @@ export default function dancingdancheong() {
         <section>
           <h1 className="text-emerald-200 text-6xl font-thin tracking-tight">Dancing Dancheong</h1>
           <p className="mt-5 text-xl text-gray-200">
-          Beat Bowl is a collaborative MIDI instrument built from my love of DJing and VJing—the simple, 
-          tactile joy of twisting knobs and sliding faders. I wanted to create something anyone could play, 
-          no music background required: just turn a dial or push a button and hear the track change.
+          This project started from my fascination with dancheong, those intricate, repeating patterns that cover historic 
+          Korean architecture. There’s a sense of wonder in their geometry—almost like the surface is breathing. Dancing Dancheong 
+          is an experiment in making that wonder kinetic: seeing what new relationships emerge when the patterns aren’t static, 
+          but moving and alive.
           </p>
           <p className="mt-5 text-xl text-gray-200">
-          I built it as a four-sided pyramid, so up to four people can crowd around, each with their own 
-          playful set of controls. The layout’s intentionally a little chaotic—think of the sci-fi consoles 
-          you want to touch just because they look fun. Each panel lets you shape a part of a techno track: 
-          one might control the kick drum’s sound, another flips up patterns or effects, and others mess with 
-          synths or arpeggiators. I even left some mystery in; part of the fun is just discovering what everything does.
+          This project was inspired by artists like William Darrell and Florian Goerlitz, whose kinetic works have a hypnotic 
+          presence. I wanted to create something just as mesmerizing—something that could work as stage design for a DJ set or 
+          as an art installation, but as an alternative to the usual strobe lights, spotlights, and lasers. 
+          I pictured something gigantic, lit from within, moving in ways you can’t quite predict. 
+          The dream was a 6-by-6-foot piece that could transform a whole room, but I didn’t quite get there…yet.
           </p>
         </section>
 
@@ -57,14 +61,14 @@ export default function dancingdancheong() {
           <div className="h-fit flex justify-center"
                style={{ aspectRatio: 17/30, maxHeight: "80vh" }}>          
             <VideoPlayer
-            videoId={video.videoId}
+            videoId={prototype1.videoId}
           /></div>
 
         <div className="flex-1 h-[80vh] flex justify-center items-center">
           <Image
-            src={images[0].src}
-            alt={images[0].alt}
-            className="fill h-[70%] w-auto max-w-full object-cover"
+            src={thesisv3}
+            alt="In use"
+            className="fill h-[110%] w-full max-w-full object-cover"
           />
         </div>
         </section>
@@ -73,31 +77,61 @@ export default function dancingdancheong() {
         <section>
           <h2 className="text-3xl font-light text-emerald-100 mb-3">Process</h2>
           <p className="text-gray-300 leading-relaxed">
-          Getting all the multiplexers to talk to a single Arduino Pro Micro was a small 
-          victory by itself. I had to find out the hard way that you really need to “star” 
-          all your grounds together to stop weird interference between the controls. 
-          At one point, turning a single knob would cause the others to jump around—super confusing, 
-          but also kind of hilarious if you weren’t trying to demo it. It took a separate 
-          12V power supply to make things stable enough for everyone to play at once.
+          The most intense part of Dancing Dancheong was the mechanical challenge. This was easily the most complex thing I’ve ever 
+          built in Fusion 360. I designed a three-axis system using pairs of bevel gears, each connected to its own motor, 
+          with three rods of different thicknesses spinning inside one another. This let me control three layers of pattern, 
+          each moving independently but sharing the same axis. Figuring out gear ratios and how to actually get enough torque 
+          was a whole journey. I wish I’d understood mechanical advantage from the start—it would have saved me a lot of headaches. 
+          But by Prototype 3, I finally got the motion I envisioned: patterns gliding and spinning in a way that felt alive and truly 
+          new.
           </p>
           <p className="text-gray-300 leading-relaxed">
-          Mapping the controls in Ableton Live and seeing the software instantly 
-          respond to each new knob or button was a genuinely magical moment. 
+          Wiring the motors and drivers was another milestone. Every prototype taught me something, especially about getting the 
+          electrical side stable and organized. By the end, I felt a lot more confident wrangling both code and cables.
           </p>
         </section>
 
-        {/* USER EXPERIENCE */}
+        {/* Ambition, Setbacks, and What’s Next */}
         <section>
-          <h2 className="text-3xl font-light text-emerald-100 mb-3">User Experience</h2>
+          <h2 className="text-3xl font-light text-emerald-100 mb-3">Ambition, Setbacks, and What’s Next</h2>
           <p className="text-gray-300 leading-relaxed">
-          Most folks had no idea what each button or knob was supposed to do, but that became part of the fun. 
-          There was a lot of laughter and experimentation, and it turned into a kind of social game. Even though 
-          it’s still very much a prototype, the core idea came through: make music playful and accessible, 
-          even if you have no clue what you’re doing.
+          The original plan included a chrome finish, partly because I wanted to reflect and multiply the light from the LEDs 
+          I was planning to embed. I wanted the surface to feel both futuristic and sacred, something you’d want to see yourself in. 
+          But the chrome finish I managed wasn’t quite what I wanted. And right before the thesis show, the whole piece fell 
+          off its pedestal—not only the chrome petals, but the mechanical components were broken... the movement was gone. 
+          That was probably the most frustrating part of the whole process. I never got to present it at the scale or polish I envisioned.
           </p>
+          
           <p className="text-gray-300 leading-relaxed">
-          If I keep developing this, I’d want to make each panel’s role even clearer, but for now I’m happy 
-          it made people want to sit down and just mess with sound together.
+          Still, that unfinished prototype was a proof of concept. Seeing the layered motion and the patterns interacting just like 
+          I imagined was the best moment of the whole build. I know now how I’d scale it up: more torque, sturdier rods, maybe even 
+          more complex motion. I think the three-rods-one-axis design still has a ton of untapped potential. I might rebuild it one 
+          day—or maybe just move on to new territory.
+          </p>
+          <section className="flex flex-col md:flex-row gap-6 items-center justify-center">
+          <div className="h-fit flex justify-center"
+               style={{ aspectRatio: 17/30, maxHeight: "80vh" }}>          
+            <VideoPlayer
+            videoId={prototype2.videoId}
+          /></div>
+
+        <div className="flex-1 h-[80vh] flex justify-center items-center">
+          <Image
+            src={chrome}
+            alt="In use"
+            className="fill h-[95%] w-full max-w-full object-cover"
+          />
+        </div>
+        </section>
+        </section>
+        {/* REFLECTION */}
+        <section>
+          <h2 className="text-3xl font-light text-emerald-100 mb-3">Reflection</h2>
+          <p className="text-gray-300 leading-relaxed">
+          Dancing Dancheong taught me that tradition isn’t static. By breaking open the mechanics and letting patterns move, 
+          I felt like I was having a direct conversation with the past—one that’s not always neat or finished, but alive and 
+          full of surprises. If nothing else, I hope the piece leaves people a little mesmerized and curious—about art, about motion, 
+          and about the traditions they think they already know.
           </p>
         </section>
         {/* TOOLS & TECHNOLOGIES */}

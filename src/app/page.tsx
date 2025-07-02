@@ -2,7 +2,7 @@
 
 import { BackgroundAnimation } from "@/components/lottie";
 import { ProjectGrid } from "@/components/ui/card";
-import { NameAnimation } from "@/components/NameAnimation";
+// import { NameAnimation } from "@/components/NameAnimation";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import React from "react";
 import { exo } from "@/fonts";
@@ -56,17 +56,52 @@ export default function Page() {
         <main className="relative z-10">
           {/* Name Section - Full screen */}
           <section className="h-screen flex items-center justify-center">
-            <div className="container px-4 md:px-5 mx-auto h-full flex flex-col justify-center items-center">
-              <NameAnimation />
-            </div>
-          </section>
+  <div className="container px-4 md:px-5 mx-auto h-full flex flex-col justify-center items-center">
+    <h1
+      className={`
+        text-white
+        font-extrabold
+        text-6xl md:text-8xl lg:text-9xl
+        tracking-tight
+        drop-shadow-[0_5px_7px_rgba(0,255,180,1)]
+        leading-none
+        ${exo.className}
+      `}
+      style={{ letterSpacing: "0.05em" }}
+    >
+      Junu
+    </h1>
+    <span
+      className="
+        block
+        mt-0.1
+        text-2xl text-white tracking-wider
+        drop-shadow-[0_2px_2px_rgba(0,210,255,1)]
+        font-semibold
+        text-center
+        px-2
+      "
+    >
+      designer • artist • technologist
+    </span>
+  </div>
+</section>
 
           {/* Projects Section - Full screen with centered title */}
           <section className="min-h-screen flex flex-col items-center justify-center relative">
             {/* Projects Title */}
             <div className="py-[20vh]">
-              <h2 className={`${exo.className} antialiased text-4xl tracking-wider sm:text-5xl md:text-6xl text-center max-w-4xl mx-auto px-4 custom-nabla-color-projects`}>
-                Projects Below
+              <h2 className={`
+          ${exo.className} 
+          antialiased 
+          text-5xl tracking-wider sm:text-2xl md:text-5xl 
+          text-center max-w-4xl mx-auto px-4 
+          font-bold
+          text-white
+          custom-nabla-color-projects
+          drop-shadow-[0_5px_7px_rgba(255,100,100,1)]
+        `}>
+                ↓
               </h2>
             </div>
 
