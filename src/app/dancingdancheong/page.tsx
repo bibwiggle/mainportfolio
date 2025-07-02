@@ -62,13 +62,14 @@ export default function dancingdancheong() {
             videoId={prototype1.videoId}
           /></div>
 
-        <div className="relative flex-1 h-[80vh] flex justify-center items-center"
-        style={{maxHeight: "80vh"}}>
+        <div className="relative flex-1 h-[76vh] flex justify-center items-center"
+        style={{maxHeight: "76vh"}}>
           <Image
             src="/assets/thesisv3.png"
             alt="In use"
-            fill
-            className="fill h-[110%] w-full max-w-full object-cover"
+            width={500}
+            height={500}
+            className="fill h-[100%] w-full max-w-full object-cover"
           />
         </div>
         </section>
@@ -119,8 +120,9 @@ export default function dancingdancheong() {
           <Image
             src="/assets/chrome.jpg"
             alt="In use"
-            fill
-            className="fill w-full max-w-full object-cover"
+            width={500}
+            height={500}
+            className="fill h-full max-w-full object-cover"
           />
         </div>
         </section>

@@ -13,7 +13,7 @@ const projects = [
     title: "Dancing Dancheong (단청)",
     description:
       "A digital art installation inspired by traditional Korean decorative techniques.",
-    imageUrl: "/thesisv3.png",
+    imageUrl: "/assets/thesisv3.png",
     lottieUrl: "/lotties/DDlottie.json",
     link: "/dancingdancheong",
   },
@@ -22,7 +22,7 @@ const projects = [
     title: "Beat Bowl",
     description:
       "An interactive music experience that combines rhythm and visual elements.",
-    imageUrl: "/DownscaleBB.jpg",
+    imageUrl: "/assets/DownscaleBB.jpg",
     lottieUrl: "/lotties/beatbowl.json",
     link: "/beatbowl",
   },
