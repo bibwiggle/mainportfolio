@@ -61,10 +61,12 @@ export default function Page() {
       className={`
         text-white
         font-extrabold
-        text-6xl md:text-8xl lg:text-9xl
         tracking-tight
         drop-shadow-[0_5px_7px_rgba(0,255,180,1)]
         leading-none
+        text-7xl
+        md:text-8xl
+        lg:text-9xl
         ${exo.className}
       `}
       style={{ letterSpacing: "0.05em" }}
@@ -75,10 +77,14 @@ export default function Page() {
       className="
         block
         mt-0.1
-        text-2xl text-white tracking-wider
+        text-white tracking-wider
         drop-shadow-[0_2px_2px_rgba(0,210,255,1)]
         font-semibold
         text-center
+        text-xl
+        sm:text-xl
+        md:text-xl
+        lg:text-2xl
         px-2
       "
     >
