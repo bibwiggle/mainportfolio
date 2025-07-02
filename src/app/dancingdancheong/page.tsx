@@ -3,8 +3,6 @@ import React from "react";
 import VideoPlayer from "@/components/VideoPlayer";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import Image from "next/image";
-import thesisv3 from "@/assets/thesisv3.png";
-import chrome from "@/assets/chrome.jpg"
 
 export default function dancingdancheong() {
   // NAVIGATION LINKS
@@ -64,10 +62,12 @@ export default function dancingdancheong() {
             videoId={prototype1.videoId}
           /></div>
 
-        <div className="flex-1 h-[80vh] flex justify-center items-center">
+        <div className="relative flex-1 h-[80vh] flex justify-center items-center"
+        style={{maxHeight: "80vh"}}>
           <Image
-            src={thesisv3}
+            src="/assets/thesisv3.png"
             alt="In use"
+            fill
             className="fill h-[110%] w-full max-w-full object-cover"
           />
         </div>
@@ -115,11 +115,12 @@ export default function dancingdancheong() {
             videoId={prototype2.videoId}
           /></div>
 
-        <div className="flex-1 h-[80vh] flex justify-center items-center">
+        <div className="relative flex-1 h-[76vh] flex justify-center items-center" style={{maxHeight: "76vh"}}>
           <Image
-            src={chrome}
+            src="/assets/chrome.jpg"
             alt="In use"
-            className="fill h-[95%] w-full max-w-full object-cover"
+            fill
+            className="fill w-full max-w-full object-cover"
           />
         </div>
         </section>
