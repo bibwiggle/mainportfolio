@@ -14,9 +14,6 @@ export default function BeatBowl() {
   ];
 
   // PROJECT MEDIA — swap paths to your files in /public/
-  const images = [
-    { src: DownscaleBB, alt: "In use" },
-  ];
   const video = { videoId: "UpqdW8SwsuE", type: "video/mp4" };
   const test = { videoId: "FB9Jetnj4mQ", type: "video/mp4"};
 
