@@ -13,6 +13,9 @@ export function BackgroundAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const targetScrollPercentageRef = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
+  const pausedRef = useRef(false);
+
+  const EPSILON = 0.001;
 
 
   useEffect(() => {
@@ -30,15 +33,27 @@ export function BackgroundAnimation() {
       const percentage = scrollPosition / extendedScrollRange;
 
       targetScrollPercentageRef.current = percentage;
+
+      if (pausedRef.current) {
+        pausedRef.current = false;
+        animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);
+      }
     };
 
     const smoothScrollAnimation = () => {
       setScrollPercentage((prevPercentage) => {
         const diff = targetScrollPercentageRef.current - prevPercentage;
-        return prevPercentage + diff * 0.25; // Adjust the 0.1 value to change smoothing speed
+
+        if(Math.abs(diff) < EPSILON){
+          pausedRef.current = true;
+          return targetScrollPercentageRef.current;
+        }
+        return prevPercentage + diff * 0.18; // Adjust the 0.1 value to change smoothing speed
       });
 
-      animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);
+      if(!pausedRef.current){
+        animationFrameRef.current = requestAnimationFrame(smoothScrollAnimation);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
