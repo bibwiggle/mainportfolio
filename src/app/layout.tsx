@@ -1,9 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { exo } from "@/fonts";
+import { geist } from "@/fonts";
 
 export const metadata: Metadata = {
   title: "Junu Lee",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -13,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${exo.className} antialiased`}>
+      <body className={`${geist.className} antialiased`}>
         {children}
       </body>
     </html>

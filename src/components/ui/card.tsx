@@ -1,9 +1,14 @@
+"use client";
+
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import dynamic from "next/dynamic";
+import type { LottieRefCurrentProps } from "lottie-react";
 import { createContext, useContext, useState } from "react";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 type LottieAnimationData = {
   v: string;

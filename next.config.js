@@ -4,10 +4,7 @@ const nextConfig = {
 
   transpilePackages: ['three'], // This is valid and fine
 
-  webpack: (config) => {
-    // Remove unnecessary json-loader since Next.js natively supports JSON imports
-    return config;
-  }
+  turbopack: {}
 }
 
 module.exports = nextConfig;

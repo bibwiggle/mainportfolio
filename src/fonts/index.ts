@@ -5,6 +5,7 @@ import {
   Oswald,
   Exo,
   Nabla,
+  Geist,
 } from "next/font/google";
 // Define Poppins font
 export const poppins = Poppins({
@@ -36,4 +37,9 @@ export const exo = Exo({
 export const nabla = Nabla({
   subsets: ["latin"],
   weight: ["400"],
+});
+
+export const geist = Geist({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });

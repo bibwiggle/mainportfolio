@@ -1,11 +1,9 @@
 "use client";
 
-import { BackgroundAnimation } from "@/components/lottie";
 import { ProjectGrid } from "@/components/ui/card";
-// import { NameAnimation } from "@/components/NameAnimation";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
-import React from "react";
-import { exo } from "@/fonts";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const projects = [
   {
@@ -37,85 +35,129 @@ const projects = [
   },
 ];
 
+// ─── TWEAK THESE ─────────────────────────────────────────────────────────────
+const PANEL_PX = 600;  // width of each panel in pixels — gap in middle grows as window widens
+
+const LEFT_SCALE       = 1.8;
+const LEFT_SCALE_RATE  = -0.0005;
+const LEFT_TRANSLATE_X    = -80;
+const LEFT_TRANSLATE_RATE = -0.05;
+const LEFT_Y              = 0;
+
+const RIGHT_SCALE          = -.5;
+const RIGHT_SCALE_RATE     = 0.0005;
+const RIGHT_TRANSLATE_X    = 80;
+const RIGHT_TRANSLATE_RATE = 0.04;
+const RIGHT_Y              = 0;
+
+const PARALLAX_SPEED    = 0.3;
+const PARALLAX_OVERFLOW = 150;
+
+const HERO_PROJECTS_GAP = "40vh";
+
+// Text
+const HEADING_TEXT = <>Hello,<br />I&apos;m Junu!</>;
+const BIO_TEXT = (
+  <>
+    a designer and maker based in NYC.
+    I work across digital and physical design,
+    translating concepts into interactive
+    installations, 3D visuals, and fabricated prototypes.
+  </>
+);
+// font size: clamp(min, preferred_vw, max)
+const HEADING_FONT = "clamp(24px, 6vw, 72px)";
+const BIO_FONT     = "clamp(18px, 1.5vw, 24px)";
+
+const TEXT_WIDTH = "40vw";
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function Page() {
+  const [scrollY, setScrollY] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(1920);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+    const handleResize = () => { setWindowWidth(window.innerWidth); };
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const panOffset  = -scrollY * PARALLAX_SPEED;
+  const leftScale      = LEFT_SCALE      - windowWidth * LEFT_SCALE_RATE;
+  const rightScale     = RIGHT_SCALE     - windowWidth * RIGHT_SCALE_RATE;
+  const leftTranslateX = LEFT_TRANSLATE_X  - windowWidth * LEFT_TRANSLATE_RATE;
+  const rightTranslateX = RIGHT_TRANSLATE_X - windowWidth * RIGHT_TRANSLATE_RATE;
+
+
   const homePageLinks = [
     { href: "#projects", label: "Projects", colorClass: "text-rose-300" },
-    { href: "/about", label: "About", colorClass: "text-cyan-400" },
-    { href: "/contact", label: "Contact", colorClass: "text-emerald-200" },
+    { href: "/about",    label: "About",    colorClass: "text-cyan-400" },
+    { href: "/contact",  label: "Contact",  colorClass: "text-emerald-200" },
   ];
-
 
   return (
     <div className="relative min-h-screen no-scrollbar">
-      <div className="relative z-10 min-h-screen flex flex-col">
-        <AnimatedHeader navLinks={homePageLinks} />  
-        <div className="fixed inset-0 z-0">
-          <BackgroundAnimation />
+
+      {/* Background panels — outside z-10 so they sit behind everything */}
+      <div className="fixed inset-0 z-0">
+
+        {/* Left panel */}
+        <div className="absolute top-0 left-0 h-full" style={{ width: `${PANEL_PX}px`, zIndex: 1,
+          transform: `translateY(${panOffset}px) translateX(${leftTranslateX}%) scale(${leftScale})` }}>
+          <div style={{ position: "absolute", top: -PARALLAX_OVERFLOW, bottom: -PARALLAX_OVERFLOW, left: 0, right: 0 }}>
+            <Image src="/assets/Dancheong.png" alt="" fill className="object-contain"
+              style={{ transform: `translateX(-10%) translateY(${LEFT_Y}%)` }} />
+          </div>
         </div>
 
+        {/* Right panel */}
+        <div className="absolute top-0 right-0 h-full" style={{ width: `${PANEL_PX}px`,
+          transform: `translateY(${panOffset}px) translateX(${rightTranslateX}%) scale(${rightScale})` }}>
+          <div style={{ position: "absolute", top: -PARALLAX_OVERFLOW, bottom: -PARALLAX_OVERFLOW, left: 0, right: 0 }}>
+            <Image src="/assets/SpiritualM.png" alt="" fill className="object-contain"
+              style={{ transform: `translateX(10%) translateY(${RIGHT_Y}%)` }} />
+          </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 min-h-screen flex flex-col">
+        <AnimatedHeader navLinks={homePageLinks} />
         <main className="relative z-10">
-          {/* Name Section - Full screen */}
+          {/* Hero */}
           <section className="h-screen flex items-center justify-center">
-  <div className="container px-4 md:px-5 mx-auto h-full flex flex-col justify-center items-center">
-    <h1
-      className={`
-        text-white
-        font-extrabold
-        tracking-tight
-        drop-shadow-[0_5px_7px_rgba(0,255,180,1)]
-        leading-none
-        text-7xl
-        md:text-8xl
-        lg:text-9xl
-        ${exo.className}
-      `}
-      style={{ letterSpacing: "0.05em" }}
-    >
-      Junu
-    </h1>
-    <span
-      className="
-        block
-        mt-0.1
-        text-white tracking-wider
-        drop-shadow-[0_2px_2px_rgba(0,210,255,1)]
-        font-semibold
-        text-center
-        text-xl
-        sm:text-xl
-        md:text-xl
-        lg:text-2xl
-        px-2
-      "
-    >
-      designer • artist • technologist
-    </span>
-  </div>
-  
-</section>
-<h2 className={`
-          ${exo.className} 
-          antialiased 
-          text-5xl tracking-wider sm:text-3xl md:text-5xl 
-          text-center max-w-4xl mx-auto px-4 
-          font-bold
-          text-white
-          custom-nabla-color-projects
-          drop-shadow-[0_5px_7px_rgba(255,100,100,1)]
-        `}>
-                ↓
-              </h2>
-
-          {/* Projects Section - Full screen with centered title */}
-          <section className="min-h-screen flex flex-col items-center justify-center relative">
-            {/* Projects Title */}
-            <div className="py-[20vh]">
-
+            <div className="px-8 text-center" style={{ width: TEXT_WIDTH }}>
+              <h1 className="text-white font-bold leading-tight mb-6" style={{ fontSize: HEADING_FONT }}>
+                {HEADING_TEXT}
+              </h1>
+              <p className="text-white/80 leading-relaxed" style={{ fontSize: BIO_FONT }}>
+                {BIO_TEXT}
+              </p>
             </div>
+          </section>
 
-            {/* Project Grid */}
+          {/* Down arrow */}
+          <div className="flex justify-center -mt-16">
+            <a href="#projects" className="text-white flex flex-col items-center gap-1 opacity-0 animate-fadeInBounce">
+              <span className="text-sm tracking-widest uppercase">Projects</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 5v14M5 12l7 7 7-7" />
+              </svg>
+            </a>
+          </div>
+
+          <div style={{ height: HERO_PROJECTS_GAP }} />
+
+          {/* Projects */}
+          <section className="min-h-screen flex flex-col items-center justify-center relative">
             <div className="flex-1 w-full bg-black" id="projects">
-              <ProjectGrid projects={projects}/>
+              <ProjectGrid projects={projects} />
             </div>
           </section>
         </main>
