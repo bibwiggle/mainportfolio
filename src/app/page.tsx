@@ -5,8 +5,6 @@ import { AnimatedHeader } from "@/components/AnimatedHeader";
 import { useState, useEffect, useRef } from "react";
 import type { LottieRefCurrentProps } from "lottie-react";
 import dynamic from "next/dynamic";
-import dsddAnim from "../../public/lotties/dsdd.json";
-import dspfAnim from "../../public/lotties/dspf.json";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -101,6 +99,8 @@ export default function Page() {
   const [cfg, setCfg] = useState<Cfg>(DEFAULTS);
   const [windowWidth, setWindowWidth] = useState(1920);
   const [isLowEnd, setIsLowEnd] = useState(false);
+  const [dsddAnim, setDsddAnim] = useState<object | null>(null);
+  const [dspfAnim, setDspfAnim] = useState<object | null>(null);
   const [tweakerOpen, setTweakerOpen] = useState(true);
   const [copied, setCopied] = useState(false);
 
@@ -119,9 +119,8 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (window.innerWidth < 1024) return;
-    fetch("/lotties/new lottie.json").then(r => r.json());
-    fetch("/lotties/lottie.json").then(r => r.json());
+    fetch("/lotties/dsdd.json").then(r => r.json()).then(setDsddAnim);
+    fetch("/lotties/dspf.json").then(r => r.json()).then(setDspfAnim);
   }, []);
 
   // Apply idle speed whenever cfg.ANIM_SPEED changes (polls until items are ready on first load)
@@ -333,9 +332,9 @@ export default function Page() {
             <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
               transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
+              {dsddAnim && <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
                 rendererSettings={LOTTIE_RENDERER_SETTINGS}
-                style={{ width: "100%", height: "100%" }} />
+                style={{ width: "100%", height: "100%" }} />}
             </div>
           </div>
         </div>
@@ -346,9 +345,9 @@ export default function Page() {
             <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
               transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
+              {dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
                 rendererSettings={LOTTIE_RENDERER_SETTINGS}
-                style={{ width: "100%", height: "100%" }} />
+                style={{ width: "100%", height: "100%" }} />}
             </div>
           </div>
         </div>
