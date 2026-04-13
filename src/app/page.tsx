@@ -99,14 +99,15 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
 
 export default function Page() {
   const [cfg, setCfg] = useState<Cfg>(DEFAULTS);
-  const [scrollY, setScrollY] = useState(0);
   const [windowWidth, setWindowWidth] = useState(1920);
   const [isLowEnd, setIsLowEnd] = useState(false);
   const [tweakerOpen, setTweakerOpen] = useState(true);
   const [copied, setCopied] = useState(false);
 
-  const dsddRef = useRef<LottieRefCurrentProps>(null);
-  const dspfRef = useRef<LottieRefCurrentProps>(null);
+  const dsddRef     = useRef<LottieRefCurrentProps>(null);
+  const dspfRef     = useRef<LottieRefCurrentProps>(null);
+  const leftPanelRef  = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
   const cfgRef  = useRef(cfg);
   useEffect(() => { cfgRef.current = cfg; }, [cfg]);
 
@@ -219,8 +220,13 @@ export default function Page() {
     };
   }, [isLowEnd]);
 
+  // Parallax — direct DOM mutation, zero React re-renders
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => {
+      const offset = -window.scrollY * cfgRef.current.PARALLAX_SPEED;
+      if (leftPanelRef.current)  leftPanelRef.current.style.transform  = `translateY(${offset}px)`;
+      if (rightPanelRef.current) rightPanelRef.current.style.transform = `translateY(${offset}px)`;
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -233,7 +239,6 @@ export default function Page() {
   }, []);
 
   // ── Computed transforms ───────────────────────────────────────────────────
-  const panOffset       = -scrollY * cfg.PARALLAX_SPEED;
   const leftScale       = cfg.LEFT_SCALE      - windowWidth * cfg.LEFT_SCALE_RATE;
   const rightScale      = cfg.RIGHT_SCALE     - windowWidth * cfg.RIGHT_SCALE_RATE;
   const leftTranslateX  = cfg.LEFT_TRANSLATE_X  - windowWidth * cfg.LEFT_TRANSLATE_RATE;
@@ -296,27 +301,30 @@ export default function Page() {
       {/* Background panels */}
       <div className="fixed inset-0 z-0">
 
-        {/* Left panel */}
-        <div className="absolute top-0 left-0 h-full" style={{ width: `${cfg.PANEL_PX}px`, zIndex: 1,
-          transform: `translateY(${panOffset}px) translateX(${leftTranslateX}%) scale(${leftScale})` }}>
-          <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
-            transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
-            display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-            <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
-              rendererSettings={LOTTIE_RENDERER_SETTINGS}
-              style={{ width: "100%", height: "100%" }} />
+        {/* Left panel — wrapper ref'd for scroll-driven translateY only */}
+        <div ref={leftPanelRef} className="absolute top-0 left-0 h-full" style={{ width: `${cfg.PANEL_PX}px`, zIndex: 1, willChange: "transform" }}>
+          {/* React controls translateX + scale — separate div so scroll handler never clobbers it */}
+          <div style={{ width: "100%", height: "100%", transform: `translateX(${leftTranslateX}%) scale(${leftScale})` }}>
+            <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
+              transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
+              display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+              <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
+                rendererSettings={LOTTIE_RENDERER_SETTINGS}
+                style={{ width: "100%", height: "100%" }} />
+            </div>
           </div>
         </div>
 
         {/* Right panel */}
-        <div className="absolute top-0 right-0 h-full" style={{ width: `${cfg.PANEL_PX}px`, zIndex: 2,
-          transform: `translateY(${panOffset}px) translateX(${rightTranslateX}%) scale(${rightScale})` }}>
-          <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
-            transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
-            display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-            <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
-              rendererSettings={LOTTIE_RENDERER_SETTINGS}
-              style={{ width: "100%", height: "100%" }} />
+        <div ref={rightPanelRef} className="absolute top-0 right-0 h-full" style={{ width: `${cfg.PANEL_PX}px`, zIndex: 2, willChange: "transform" }}>
+          <div style={{ width: "100%", height: "100%", transform: `translateX(${rightTranslateX}%) scale(${rightScale})` }}>
+            <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
+              transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
+              display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+              <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
+                rendererSettings={LOTTIE_RENDERER_SETTINGS}
+                style={{ width: "100%", height: "100%" }} />
+            </div>
           </div>
         </div>
       </div>
