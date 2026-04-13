@@ -220,8 +220,13 @@ export default function Page() {
     };
   }, [isLowEnd]);
 
-  // Parallax — direct DOM mutation, zero React re-renders
+  // Parallax — direct DOM mutation, zero React re-renders; disabled on low-end
   useEffect(() => {
+    if (isLowEnd) {
+      if (leftPanelRef.current)  leftPanelRef.current.style.transform  = "";
+      if (rightPanelRef.current) rightPanelRef.current.style.transform = "";
+      return;
+    }
     const handleScroll = () => {
       const offset = -window.scrollY * cfgRef.current.PARALLAX_SPEED;
       if (leftPanelRef.current)  leftPanelRef.current.style.transform  = `translateY(${offset}px)`;
@@ -229,7 +234,7 @@ export default function Page() {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isLowEnd]);
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);
@@ -394,9 +399,18 @@ export default function Page() {
                 fontSize: 11,
               }}
             >
-              {/* Window width readout */}
-              <div style={{ marginBottom: 8, color: "#666", fontSize: 10 }}>
-                window: <span style={{ color: "#4ade80" }}>{windowWidth}px</span>
+              {/* Window width readout + low-end toggle */}
+              <div style={{ marginBottom: 8, color: "#666", fontSize: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span>window: <span style={{ color: "#4ade80" }}>{windowWidth}px</span></span>
+                <label style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={isLowEnd}
+                    onChange={e => setIsLowEnd(e.target.checked)}
+                    style={{ accentColor: "#4ade80", cursor: "pointer" }}
+                  />
+                  <span>low-end</span>
+                </label>
               </div>
 
               {SLIDERS.map(({ key, label, min, max, step }) => (
