@@ -119,9 +119,10 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
+    if (isLowEnd) return;
     fetch("/lotties/dsdd.json").then(r => r.json()).then(setDsddAnim);
     fetch("/lotties/dspf.json").then(r => r.json()).then(setDspfAnim);
-  }, []);
+  }, [isLowEnd]);
 
   // Apply idle speed whenever cfg.ANIM_SPEED changes (polls until items are ready on first load)
   useEffect(() => {
@@ -332,7 +333,7 @@ export default function Page() {
             <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
               transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              {dsddAnim && <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
+              {!isLowEnd && dsddAnim && <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
                 rendererSettings={LOTTIE_RENDERER_SETTINGS}
                 style={{ width: "100%", height: "100%" }} />}
             </div>
@@ -345,7 +346,7 @@ export default function Page() {
             <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
               transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              {dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
+              {!isLowEnd && dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
                 rendererSettings={LOTTIE_RENDERER_SETTINGS}
                 style={{ width: "100%", height: "100%" }} />}
             </div>
