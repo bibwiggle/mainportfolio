@@ -4,7 +4,6 @@ import { ProjectGrid } from "@/components/ui/card";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import { useState, useEffect, useRef } from "react";
 import type { LottieRefCurrentProps } from "lottie-react";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import dsddAnim from "../../public/lotties/dsdd.json";
 import dspfAnim from "../../public/lotties/dspf.json";
@@ -62,7 +61,7 @@ const DEFAULTS = {
   PARALLAX_SPEED:       0.3,
   PARALLAX_OVERFLOW:    60,
   ANIM_SPEED:           2.4,
-  SCROLL_SPEED:         0.5,
+  SCROLL_SPEED:         0.31,
   LERP:                 0.3,
 };
 
@@ -303,13 +302,9 @@ export default function Page() {
           <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
             transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
             display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-            {isLowEnd ? (
-              <Image src="/assets/Dancheong.png" alt="" fill className="object-contain" />
-            ) : (
-              <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
-                rendererSettings={LOTTIE_RENDERER_SETTINGS}
-                style={{ width: "100%", height: "100%" }} />
-            )}
+            <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
+              rendererSettings={LOTTIE_RENDERER_SETTINGS}
+              style={{ width: "100%", height: "100%" }} />
           </div>
         </div>
 
@@ -319,13 +314,9 @@ export default function Page() {
           <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
             transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
             display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-            {isLowEnd ? (
-              <Image src="/assets/SpiritualM.png" alt="" fill className="object-contain" />
-            ) : (
-              <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
-                rendererSettings={LOTTIE_RENDERER_SETTINGS}
-                style={{ width: "100%", height: "100%" }} />
-            )}
+            <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
+              rendererSettings={LOTTIE_RENDERER_SETTINGS}
+              style={{ width: "100%", height: "100%" }} />
           </div>
         </div>
       </div>
