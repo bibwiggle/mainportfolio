@@ -107,8 +107,8 @@ export function AnimatedHeader({ navLinks }: AnimatedHeaderProps) {
           {navLinks.map((link) => (
             <Link
               key={link.href}
-              className={`${link.colorClass || "text-rose-300"} 
-                          hover:underline underline-offset-4 
+              className={`${link.colorClass || "text-white"}
+                          hover:underline underline-offset-4
                           font-normal sm:text-sm md:text-base lg:text-lg`}
               href={link.href}
             >
