@@ -236,6 +236,26 @@ export default function Page() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLowEnd]);
 
+  // On low-end: pause animations during scroll so the main thread stays free
+  useEffect(() => {
+    if (!isLowEnd) return;
+    let resumeTimer: ReturnType<typeof setTimeout> | null = null;
+    const handleScroll = () => {
+      dsddRef.current?.animationItem?.pause();
+      dspfRef.current?.animationItem?.pause();
+      if (resumeTimer) clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        dsddRef.current?.animationItem?.play();
+        dspfRef.current?.animationItem?.play();
+      }, 200);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (resumeTimer) clearTimeout(resumeTimer);
+    };
+  }, [isLowEnd]);
+
   useEffect(() => {
     setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
