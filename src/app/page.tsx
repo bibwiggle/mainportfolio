@@ -108,6 +108,8 @@ export default function Page() {
   const dspfRef     = useRef<LottieRefCurrentProps>(null);
   const leftPanelRef  = useRef<HTMLDivElement>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
+  const videoLeftRef  = useRef<HTMLVideoElement>(null);
+  const videoRightRef = useRef<HTMLVideoElement>(null);
   const cfgRef  = useRef(cfg);
   useEffect(() => { cfgRef.current = cfg; }, [cfg]);
 
@@ -236,6 +238,28 @@ export default function Page() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLowEnd]);
 
+  // Force-play videos on low-end (bypasses iOS low-power-mode autoplay block)
+  useEffect(() => {
+    if (!isLowEnd) return;
+    const tryPlay = () => {
+      videoLeftRef.current?.play().catch(() => {});
+      videoRightRef.current?.play().catch(() => {});
+    };
+    tryPlay();
+    // Retry on first user gesture — the only reliable unlock on iOS low-power mode
+    const onGesture = () => {
+      tryPlay();
+      document.removeEventListener("touchstart", onGesture);
+      document.removeEventListener("click", onGesture);
+    };
+    document.addEventListener("touchstart", onGesture, { passive: true });
+    document.addEventListener("click", onGesture);
+    return () => {
+      document.removeEventListener("touchstart", onGesture);
+      document.removeEventListener("click", onGesture);
+    };
+  }, [isLowEnd]);
+
   // On low-end: pause animations during scroll so the main thread stays free
   useEffect(() => {
     if (!isLowEnd) return;
@@ -334,7 +358,7 @@ export default function Page() {
               transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               {isLowEnd
-                ? <video autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Lottie_web.mp4" type="video/mp4" /></video>
+                ? <video ref={videoLeftRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Lottie_web.mp4" type="video/mp4" /></video>
                 : dsddAnim && <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
                     rendererSettings={LOTTIE_RENDERER_SETTINGS}
                     style={{ width: "100%", height: "100%" }} />}
@@ -349,7 +373,7 @@ export default function Page() {
               transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               {isLowEnd
-                ? <video autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web.mp4" type="video/mp4" /></video>
+                ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web.mp4" type="video/mp4" /></video>
                 : dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
                     rendererSettings={LOTTIE_RENDERER_SETTINGS}
                     style={{ width: "100%", height: "100%" }} />}
