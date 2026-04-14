@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(/c/Users/Junu/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -i Comp_1.mp4 -vcodec libx264 -profile:v baseline -level 3.0 -pix_fmt yuv420p -an -movflags +faststart Comp_1_web.mp4 -y)"
     ]
   }
 }

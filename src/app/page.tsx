@@ -334,7 +334,7 @@ export default function Page() {
               transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               {isLowEnd
-                ? <video autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Lottie.mp4" type="video/mp4" /></video>
+                ? <video autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Lottie_web.mp4" type="video/mp4" /></video>
                 : dsddAnim && <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
                     rendererSettings={LOTTIE_RENDERER_SETTINGS}
                     style={{ width: "100%", height: "100%" }} />}
@@ -349,7 +349,7 @@ export default function Page() {
               transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               {isLowEnd
-                ? <video autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1.mp4" type="video/mp4" /></video>
+                ? <video autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web.mp4" type="video/mp4" /></video>
                 : dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
                     rendererSettings={LOTTIE_RENDERER_SETTINGS}
                     style={{ width: "100%", height: "100%" }} />}
