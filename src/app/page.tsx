@@ -222,13 +222,8 @@ export default function Page() {
     };
   }, [isLowEnd]);
 
-  // Parallax — direct DOM mutation, zero React re-renders; disabled on low-end
+  // Parallax — direct DOM mutation, zero React re-renders
   useEffect(() => {
-    if (isLowEnd) {
-      if (leftPanelRef.current)  leftPanelRef.current.style.transform = "";
-      if (rightPanelRef.current) rightPanelRef.current.style.transform = "";
-      return;
-    }
     const handleScroll = () => {
       const offset = -window.scrollY * cfgRef.current.PARALLAX_SPEED;
       if (leftPanelRef.current)  leftPanelRef.current.style.transform  = `translateY(${offset}px)`;
@@ -236,7 +231,7 @@ export default function Page() {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLowEnd]);
+  }, []);
 
   // Force-play videos on low-end (bypasses iOS low-power-mode autoplay block)
   useEffect(() => {
