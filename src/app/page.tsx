@@ -220,13 +220,8 @@ export default function Page() {
     };
   }, [isLowEnd]);
 
-  // Parallax — direct DOM mutation, zero React re-renders; disabled on low-end
+  // Parallax — direct DOM mutation, zero React re-renders
   useEffect(() => {
-    if (isLowEnd) {
-      if (leftPanelRef.current)  leftPanelRef.current.style.transform  = "";
-      if (rightPanelRef.current) rightPanelRef.current.style.transform = "";
-      return;
-    }
     const handleScroll = () => {
       const offset = -window.scrollY * cfgRef.current.PARALLAX_SPEED;
       if (leftPanelRef.current)  leftPanelRef.current.style.transform  = `translateY(${offset}px)`;
@@ -234,7 +229,7 @@ export default function Page() {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLowEnd]);
+  }, []);
 
   // On low-end: pause animations during scroll so the main thread stays free
   useEffect(() => {
@@ -333,9 +328,11 @@ export default function Page() {
             <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
               transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              {!isLowEnd && dsddAnim && <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
-                rendererSettings={LOTTIE_RENDERER_SETTINGS}
-                style={{ width: "100%", height: "100%" }} />}
+              {isLowEnd
+                ? <video autoPlay muted loop playsInline style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Lottie.mp4" type="video/mp4" /></video>
+                : dsddAnim && <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
+                    rendererSettings={LOTTIE_RENDERER_SETTINGS}
+                    style={{ width: "100%", height: "100%" }} />}
             </div>
           </div>
         </div>
@@ -346,9 +343,11 @@ export default function Page() {
             <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
               transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              {!isLowEnd && dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
-                rendererSettings={LOTTIE_RENDERER_SETTINGS}
-                style={{ width: "100%", height: "100%" }} />}
+              {isLowEnd
+                ? <video autoPlay muted loop playsInline style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1.mp4" type="video/mp4" /></video>
+                : dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
+                    rendererSettings={LOTTIE_RENDERER_SETTINGS}
+                    style={{ width: "100%", height: "100%" }} />}
             </div>
           </div>
         </div>
