@@ -46,6 +46,7 @@ const projects = [
 // ─── TWEAK THESE (edit defaults here once you've dialled them in) ─────────────
 const DEFAULTS = {
   PANEL_PX:             590,
+  PANEL_PX:             590,
   LEFT_SCALE:           0.58,
   LEFT_SCALE_RATE:     -0.0013,
   LEFT_TRANSLATE_X:    -53,
@@ -63,6 +64,8 @@ const DEFAULTS = {
   LERP:                 0.3,
   // Text
   HERO_PT:              188,
+  ARROW_X:              41,
+  ARROW_BOTTOM:         2,
   TEXT_WIDTH_VW:        40,
   TEXT_Y:               -15,
   HEADING_MIN:          44,
@@ -101,6 +104,8 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
   { key: "SCROLL_SPEED",         label: "Scroll Speed",      min: 0,      max: 2,     step: 0.01   },
   { key: "LERP",                 label: "Scroll Lerp",       min: 0.01,   max: 1,     step: 0.01   },
   { key: "HERO_PT",               label: "Hero Top Pad (px)", min: 0,      max: 300,   step: 2,     section: "── text ──" },
+  { key: "ARROW_X",              label: "Arrow X",           min: -200,   max: 200,   step: 1      },
+  { key: "ARROW_BOTTOM",         label: "Arrow Bottom",      min: 0,      max: 200,   step: 2      },
   { key: "TEXT_WIDTH_VW",        label: "Text Width",        min: 5,      max: 100,   step: 1      },
   { key: "TEXT_Y",               label: "Text Y (vh)",       min: -50,    max: 50,    step: 1      },
   { key: "HEADING_MIN",          label: "H Min px",          min: 10,     max: 100,   step: 1      },
@@ -128,6 +133,9 @@ export default function Page() {
   const videoLeftRef  = useRef<HTMLVideoElement>(null);
   const videoRightRef = useRef<HTMLVideoElement>(null);
   const cfgRef  = useRef(cfg);
+  const arrowRef = useRef<HTMLDivElement>(null);
+  const projectsSectionRef = useRef<HTMLElement>(null);
+  const updateArrowPos = useRef<() => void>(() => {});
   useEffect(() => { cfgRef.current = cfg; }, [cfg]);
 
   useEffect(() => {
@@ -299,6 +307,44 @@ export default function Page() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Arrow scroll — fixed to viewport bottom, stops at projects section top
+  useEffect(() => {
+    let rafId: number;
+    const update = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const arrow = arrowRef.current;
+        if (!arrow) return;
+        const { ARROW_X, ARROW_BOTTOM } = cfgRef.current;
+        const projects = projectsSectionRef.current;
+        let lift = ARROW_BOTTOM;
+        if (projects) {
+          const projectsTop = projects.getBoundingClientRect().top;
+          const arrowH = arrow.offsetHeight || 60;
+          // Stop the arrow just above the projects section
+          const clamp = window.innerHeight - projectsTop - arrowH + 56;
+          lift = Math.max(ARROW_BOTTOM, clamp);
+          // Hide once projects section has scrolled fully past
+          arrow.style.opacity = projectsTop < -arrowH ? "0" : "1";
+        }
+        // Only update transform — never layout-triggering bottom
+        arrow.style.transform = `translateX(calc(-50% + ${ARROW_X}px)) translateY(-${lift}px)`;
+      });
+    };
+    updateArrowPos.current = update;
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  // Re-apply arrow position when ARROW_X / ARROW_BOTTOM change from tweaker
+  useEffect(() => { updateArrowPos.current(); }, [cfg.ARROW_X, cfg.ARROW_BOTTOM]);
+
   // ── Computed transforms ───────────────────────────────────────────────────
   const leftScale       = cfg.LEFT_SCALE      - windowWidth * cfg.LEFT_SCALE_RATE;
   const rightScale      = cfg.RIGHT_SCALE     - windowWidth * cfg.RIGHT_SCALE_RATE;
@@ -344,6 +390,8 @@ export default function Page() {
       `  LERP:                 ${cfg.LERP},`,
       `  // Text`,
       `  HERO_PT:              ${cfg.HERO_PT},`,
+      `  ARROW_X:              ${cfg.ARROW_X},`,
+      `  ARROW_BOTTOM:         ${cfg.ARROW_BOTTOM},`,
       `  TEXT_WIDTH_VW:        ${cfg.TEXT_WIDTH_VW},`,
       `  TEXT_Y:               ${cfg.TEXT_Y},`,
       `  HEADING_MIN:          ${cfg.HEADING_MIN},`,
@@ -423,26 +471,32 @@ export default function Page() {
               </p>
             </div>
 
-            {/* Down arrow — absolutely pinned to bottom of hero */}
-            <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-              <a href="#projects" className="text-white flex flex-col items-center gap-1 opacity-0 animate-fadeInBounce">
-                <span className="text-sm tracking-widest uppercase">Projects</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 5v14M5 12l7 7 7-7" />
-                </svg>
-              </a>
-            </div>
           </section>
 
           <div style={{ height: HERO_PROJECTS_GAP }} />
 
           {/* Projects */}
-          <section className="min-h-screen flex flex-col items-center justify-center relative">
+          <section ref={projectsSectionRef} className="min-h-screen flex flex-col items-center justify-center relative">
             <div className="flex-1 w-full bg-black" id="projects">
               <ProjectGrid projects={projects} />
             </div>
           </section>
         </main>
+      </div>
+
+      {/* ── Projects arrow — fixed, scroll-driven ────────────────────────── */}
+      <div
+        ref={arrowRef}
+        style={{ position: "fixed", left: "50%", bottom: 0, zIndex: 20,
+          transform: `translateX(calc(-50% + ${cfg.ARROW_X}px)) translateY(-${cfg.ARROW_BOTTOM}px)`,
+          willChange: "transform" }}
+      >
+        <a href="#projects" className="text-white flex flex-col items-center gap-1 opacity-0 animate-fadeInBounce">
+          <span className="text-sm tracking-widest uppercase">Projects</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+        </a>
       </div>
 
       {/* ── Dev Tweaker Panel (dev mode only) ─────────────────────────────── */}
