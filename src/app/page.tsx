@@ -63,7 +63,7 @@ const DEFAULTS = {
   LERP:                 0.3,
   // Text
   HERO_PT:              188,
-  ARROW_X:              41,
+  ARROW_X:              8,
   ARROW_BOTTOM:         2,
   TEXT_WIDTH_VW:        40,
   TEXT_Y:               -15,
