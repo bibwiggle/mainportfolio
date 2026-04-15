@@ -46,7 +46,6 @@ const projects = [
 // ─── TWEAK THESE (edit defaults here once you've dialled them in) ─────────────
 const DEFAULTS = {
   PANEL_PX:             590,
-  PANEL_PX:             590,
   LEFT_SCALE:           0.58,
   LEFT_SCALE_RATE:     -0.0013,
   LEFT_TRANSLATE_X:    -53,
