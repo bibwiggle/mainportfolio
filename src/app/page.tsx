@@ -406,7 +406,7 @@ export default function Page() {
         <AnimatedHeader navLinks={homePageLinks} />
         <main className="relative z-10">
           {/* Hero */}
-          <section className="relative h-screen flex items-center justify-center">
+          <section className="relative h-screen flex items-center justify-center py-20 md:py-0">
             <div className="px-8" style={{
               width: `${cfg.TEXT_WIDTH_VW}vw`,
               textAlign,
