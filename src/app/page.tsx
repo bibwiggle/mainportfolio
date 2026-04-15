@@ -62,6 +62,7 @@ const DEFAULTS = {
   SCROLL_SPEED:         0.31,
   LERP:                 0.3,
   // Text
+  HERO_PT:              188,
   TEXT_WIDTH_VW:        40,
   TEXT_Y:               -15,
   HEADING_MIN:          44,
@@ -99,7 +100,8 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
   { key: "ANIM_SPEED",           label: "Anim Speed",        min: 0,      max: 10,    step: 0.1    },
   { key: "SCROLL_SPEED",         label: "Scroll Speed",      min: 0,      max: 2,     step: 0.01   },
   { key: "LERP",                 label: "Scroll Lerp",       min: 0.01,   max: 1,     step: 0.01   },
-  { key: "TEXT_WIDTH_VW",        label: "Text Width",        min: 5,      max: 100,   step: 1,     section: "── text ──" },
+  { key: "HERO_PT",               label: "Hero Top Pad (px)", min: 0,      max: 300,   step: 2,     section: "── text ──" },
+  { key: "TEXT_WIDTH_VW",        label: "Text Width",        min: 5,      max: 100,   step: 1      },
   { key: "TEXT_Y",               label: "Text Y (vh)",       min: -50,    max: 50,    step: 1      },
   { key: "HEADING_MIN",          label: "H Min px",          min: 10,     max: 100,   step: 1      },
   { key: "HEADING_VW",           label: "H vw",              min: 0,      max: 20,    step: 0.1    },
@@ -341,6 +343,7 @@ export default function Page() {
       `  SCROLL_SPEED:         ${cfg.SCROLL_SPEED},`,
       `  LERP:                 ${cfg.LERP},`,
       `  // Text`,
+      `  HERO_PT:              ${cfg.HERO_PT},`,
       `  TEXT_WIDTH_VW:        ${cfg.TEXT_WIDTH_VW},`,
       `  TEXT_Y:               ${cfg.TEXT_Y},`,
       `  HEADING_MIN:          ${cfg.HEADING_MIN},`,
@@ -406,16 +409,16 @@ export default function Page() {
         <AnimatedHeader navLinks={homePageLinks} />
         <main className="relative z-10">
           {/* Hero */}
-          <section className="relative h-screen flex items-center justify-center py-20 md:py-0">
+          <section className="relative min-h-screen h-screen flex items-center justify-center pb-8 md:pb-0" style={{ paddingTop: cfg.HERO_PT }}>
             <div className="px-8" style={{
               width: `${cfg.TEXT_WIDTH_VW}vw`,
               textAlign,
               transform: `translateY(${cfg.TEXT_Y}vh)`,
             }}>
-              <h1 className="text-white font-bold leading-tight mb-2 md:mb-6" style={{ fontSize: `clamp(${cfg.HEADING_MIN}px, ${cfg.HEADING_VW}vw, ${cfg.HEADING_MAX}px)` }}>
+              <h1 className="text-white font-bold leading-tight mb-2 md:mb-6" style={{ fontSize: `clamp(${cfg.HEADING_MIN}px, min(${cfg.HEADING_VW}vw, 12vh), ${cfg.HEADING_MAX}px)` }}>
                 {HEADING_TEXT}
               </h1>
-              <p className="text-white/80 leading-relaxed" style={{ fontSize: `clamp(${cfg.BIO_MIN}px, ${cfg.BIO_VW}vw, ${cfg.BIO_MAX}px)` }}>
+              <p className="text-white/80 leading-relaxed" style={{ fontSize: `clamp(${cfg.BIO_MIN}px, min(${cfg.BIO_VW}vw, 4vh), ${cfg.BIO_MAX}px)` }}>
                 {bioText}
               </p>
             </div>
