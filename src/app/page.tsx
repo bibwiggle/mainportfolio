@@ -61,22 +61,28 @@ const DEFAULTS = {
   ANIM_SPEED:           2.4,
   SCROLL_SPEED:         0.31,
   LERP:                 0.3,
+  // Text
+  TEXT_WIDTH_VW:        40,
+  TEXT_Y:               -15,
+  HEADING_MIN:          44,
+  HEADING_VW:           8.2,
+  HEADING_MAX:          83,
+  BIO_MIN:              19,
+  BIO_VW:               2.1,
+  BIO_MAX:              27,
+// textAlign: "right"
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 
 const HERO_PROJECTS_GAP = "40vh";
-// font size: clamp(min, preferred_vw, max)
-const HEADING_FONT = "clamp(24px, 6vw, 72px)";
-const BIO_FONT     = "clamp(18px, 1.5vw, 24px)";
-const TEXT_WIDTH   = "40vw";
 
 const HEADING_TEXT = <>Hello,<br />I&apos;m Junu!</>;
 
 type Cfg = typeof DEFAULTS;
 
 // Slider config for the dev panel
-const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: number }[] = [
+const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: number; section?: string }[] = [
   { key: "PANEL_PX",             label: "Panel Width",       min: 100,    max: 1500,  step: 10     },
   { key: "LEFT_SCALE",           label: "L Scale",           min: 0,      max: 5,     step: 0.01   },
   { key: "LEFT_SCALE_RATE",      label: "L Scale Rate",      min: -0.005, max: 0.005, step: 0.0001 },
@@ -93,6 +99,14 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
   { key: "ANIM_SPEED",           label: "Anim Speed",        min: 0,      max: 10,    step: 0.1    },
   { key: "SCROLL_SPEED",         label: "Scroll Speed",      min: 0,      max: 2,     step: 0.01   },
   { key: "LERP",                 label: "Scroll Lerp",       min: 0.01,   max: 1,     step: 0.01   },
+  { key: "TEXT_WIDTH_VW",        label: "Text Width",        min: 5,      max: 100,   step: 1,     section: "── text ──" },
+  { key: "TEXT_Y",               label: "Text Y (vh)",       min: -50,    max: 50,    step: 1      },
+  { key: "HEADING_MIN",          label: "H Min px",          min: 10,     max: 100,   step: 1      },
+  { key: "HEADING_VW",           label: "H vw",              min: 0,      max: 20,    step: 0.1    },
+  { key: "HEADING_MAX",          label: "H Max px",          min: 20,     max: 200,   step: 1      },
+  { key: "BIO_MIN",              label: "Bio Min px",        min: 8,      max: 48,    step: 1      },
+  { key: "BIO_VW",               label: "Bio vw",            min: 0,      max: 10,    step: 0.1    },
+  { key: "BIO_MAX",              label: "Bio Max px",        min: 12,     max: 72,    step: 1      },
 ];
 
 export default function Page() {
@@ -102,6 +116,7 @@ export default function Page() {
   const [dsddAnim, setDsddAnim] = useState<object | null>(null);
   const [dspfAnim, setDspfAnim] = useState<object | null>(null);
   const [tweakerOpen, setTweakerOpen] = useState(true);
+  const [textAlign, setTextAlign] = useState<"left" | "center" | "right">("right");
   const [copied, setCopied] = useState(false);
 
   const dsddRef     = useRef<LottieRefCurrentProps>(null);
@@ -325,6 +340,16 @@ export default function Page() {
       `  ANIM_SPEED:           ${cfg.ANIM_SPEED},`,
       `  SCROLL_SPEED:         ${cfg.SCROLL_SPEED},`,
       `  LERP:                 ${cfg.LERP},`,
+      `  // Text`,
+      `  TEXT_WIDTH_VW:        ${cfg.TEXT_WIDTH_VW},`,
+      `  TEXT_Y:               ${cfg.TEXT_Y},`,
+      `  HEADING_MIN:          ${cfg.HEADING_MIN},`,
+      `  HEADING_VW:           ${cfg.HEADING_VW},`,
+      `  HEADING_MAX:          ${cfg.HEADING_MAX},`,
+      `  BIO_MIN:              ${cfg.BIO_MIN},`,
+      `  BIO_VW:               ${cfg.BIO_VW},`,
+      `  BIO_MAX:              ${cfg.BIO_MAX},`,
+      `// textAlign: "${textAlign}"`,
     ].join("\n");
     navigator.clipboard.writeText(lines);
     setCopied(true);
@@ -382,11 +407,15 @@ export default function Page() {
         <main className="relative z-10">
           {/* Hero */}
           <section className="relative h-screen flex items-center justify-center">
-            <div className="px-8 text-center" style={{ width: TEXT_WIDTH }}>
-              <h1 className="text-white font-bold leading-tight mb-6" style={{ fontSize: HEADING_FONT }}>
+            <div className="px-8" style={{
+              width: `${cfg.TEXT_WIDTH_VW}vw`,
+              textAlign,
+              transform: `translateY(${cfg.TEXT_Y}vh)`,
+            }}>
+              <h1 className="text-white font-bold leading-tight mb-2 md:mb-6" style={{ fontSize: `clamp(${cfg.HEADING_MIN}px, ${cfg.HEADING_VW}vw, ${cfg.HEADING_MAX}px)` }}>
                 {HEADING_TEXT}
               </h1>
-              <p className="text-white/80 leading-relaxed" style={{ fontSize: BIO_FONT }}>
+              <p className="text-white/80 leading-relaxed" style={{ fontSize: `clamp(${cfg.BIO_MIN}px, ${cfg.BIO_VW}vw, ${cfg.BIO_MAX}px)` }}>
                 {bioText}
               </p>
             </div>
@@ -456,21 +485,49 @@ export default function Page() {
                 </label>
               </div>
 
-              {SLIDERS.map(({ key, label, min, max, step }) => (
-                <div key={key} style={{ marginBottom: 8 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-                    <span style={{ color: "#888" }}>{label}</span>
-                    <span style={{ color: "#fff" }}>{cfg[key]}</span>
+              {SLIDERS.map(({ key, label, min, max, step, section }) => (
+                <div key={key}>
+                  {section && (
+                    <div style={{ color: "#555", fontSize: 9, textTransform: "uppercase", letterSpacing: 1, margin: "10px 0 6px", borderTop: "1px solid #333", paddingTop: 8 }}>
+                      {section}
+                    </div>
+                  )}
+                  {key === "TEXT_WIDTH_VW" && (
+                    <div style={{ marginBottom: 8 }}>
+                      <div style={{ color: "#888", marginBottom: 4, fontSize: 11 }}>Align</div>
+                      <div style={{ display: "flex", gap: 4 }}>
+                        {(["left", "center", "right"] as const).map(a => (
+                          <button
+                            key={a}
+                            onClick={() => setTextAlign(a)}
+                            style={{
+                              flex: 1, padding: "3px 0", fontSize: 10, borderRadius: 4, cursor: "pointer",
+                              background: textAlign === a ? "#14532d" : "#1a1a1a",
+                              border: `1px solid ${textAlign === a ? "#4ade80" : "#444"}`,
+                              color: textAlign === a ? "#4ade80" : "#aaa",
+                            }}
+                          >
+                            {a}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+                      <span style={{ color: "#888" }}>{label}</span>
+                      <span style={{ color: "#fff" }}>{cfg[key]}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={min}
+                      max={max}
+                      step={step}
+                      value={cfg[key]}
+                      onChange={e => set(key, parseFloat(e.target.value))}
+                      style={{ width: "100%", accentColor: "#4ade80", cursor: "pointer" }}
+                    />
                   </div>
-                  <input
-                    type="range"
-                    min={min}
-                    max={max}
-                    step={step}
-                    value={cfg[key]}
-                    onChange={e => set(key, parseFloat(e.target.value))}
-                    style={{ width: "100%", accentColor: "#4ade80", cursor: "pointer" }}
-                  />
                 </div>
               ))}
 
