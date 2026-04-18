@@ -21,15 +21,15 @@ const SKILLS: string[] = [
 ];
 
 const LOCAL_VIDEOS: { src: string; label?: string }[] = [
-  { src: "/mp4/rendered rotation_web.mp4" },
-  { src: "/mp4/Rendered video_web.mp4" },
+  { src: "/doki assets/rendered rotation_web.mp4" },
+  { src: "/doki assets/Rendered video_web.mp4" },
 ];
 
-const PROOF_OF_CONCEPT = { src: "/mp4/proof of concept doki helmet_web.mp4", label: "Proof of concept — 3D printed lower half" };
+const PROOF_OF_CONCEPT = { src: "/doki assets/proof of concept doki helmet_web.mp4", label: "Proof of concept — 3D printed lower half" };
 
 const CONCEPT_MEDIA: { src: string; label?: string; type: "video" | "image" }[] = [
-  { src: "/mp4/4bar_web.mp4", label: "Four-bar linkage - cheaks open/close mechanism", type: "video" },
-  { src: "/mp4/Bevel gear.png", label: "Bevel gear — chin open/close mechanism", type: "image" },
+  { src: "/doki assets/4bar_web.mp4", label: "Four-bar linkage - cheaks open/close mechanism", type: "video" },
+  { src: "/doki assets/Bevel gear.png", label: "Bevel gear — chin open/close mechanism", type: "image" },
 ];
 
 const YOUTUBE_VIDEOS: string[] = [];
@@ -130,6 +130,16 @@ export default function DokiHelmet() {
             </div>
           )}
 
+          {/* Tools & Tech */}
+          <div className="mt-8 space-y-3">
+            <h2 className="text-xs uppercase tracking-widest text-white/40">Tools & Tech</h2>
+            <div className="flex flex-wrap gap-3">
+              {SKILLS.map((s) => (
+                <span key={s} className="px-4 py-2 border border-white/20 rounded-full text-sm text-white/80">{s}</span>
+              ))}
+            </div>
+          </div>
+
           {/* 4bar video + bevel gear image side by side */}
           <div className="mt-8 flex gap-4">
             {CONCEPT_MEDIA.map(({ src, label, type }) => (
@@ -180,15 +190,6 @@ export default function DokiHelmet() {
           <VideoPlayer videoId={id} />
         </section>
       ))}
-
-      <section className="px-8 py-16">
-        <h2 className="text-xs uppercase tracking-widest text-white/40 mb-6">Skills Used</h2>
-        <div className="flex flex-wrap gap-3">
-          {SKILLS.map((s) => (
-            <span key={s} className="px-4 py-2 border border-white/20 rounded-full text-sm text-white/80">{s}</span>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }

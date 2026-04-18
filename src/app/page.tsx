@@ -15,11 +15,19 @@ const LOTTIE_RENDERER_SETTINGS = {
 
 const projects = [
   {
+    id: "4",
+    title: "Doki Helmet",
+    description: "",
+    imageUrl: "/doki assets/DokiThumb.png",
+    lottieUrl: "",
+    link: "/dokihelmet",
+  },
+  {
     id: "1",
     title: "Dancing Dancheong (단청)",
     description:
       "A digital art installation inspired by traditional Korean decorative techniques.",
-    imageUrl: "/assets/thesisv3.png",
+    imageUrl: "/assets/DDthumb2.png",
     lottieUrl: "/lotties/DDlottie.json",
     link: "/dancingdancheong",
   },
@@ -34,20 +42,12 @@ const projects = [
   },
   {
     id: "3",
-    title: "VJ clips",
+    title: "Visual Works",
     description:
       "A collection of visually stunning video clips for live performances and events.",
     imageUrl: "/VJtn.jpg",
     lottieUrl: "/lotties/VJclips.json",
     link: "/vjclips",
-  },
-  {
-    id: "4",
-    title: "Doki Helmet",
-    description: "",
-    imageUrl: "/assets/DokiHelmet.jpg", // ← replace with your thumbnail
-    lottieUrl: "",
-    link: "/dokihelmet",
   },
 ];
 
@@ -61,7 +61,7 @@ const DEFAULTS = {
   LEFT_Y:               0,
   RIGHT_SCALE:         -0.72,
   RIGHT_SCALE_RATE:     0.0005,
-  RIGHT_TRANSLATE_X:    66,
+  RIGHT_TRANSLATE_X:    69,
   RIGHT_TRANSLATE_RATE: 0.04,
   RIGHT_Y:             1,
   PARALLAX_SPEED:       0.3,
@@ -74,7 +74,7 @@ const DEFAULTS = {
   ARROW_X:              8,
   ARROW_BOTTOM:         2,
   TEXT_WIDTH_VW:        40,
-  TEXT_Y:               -15,
+  TEXT_Y:               -7,
   HEADING_MIN:          44,
   HEADING_VW:           8.2,
   HEADING_MAX:          83,
