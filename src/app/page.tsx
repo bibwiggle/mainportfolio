@@ -41,6 +41,14 @@ const projects = [
     lottieUrl: "/lotties/VJclips.json",
     link: "/vjclips",
   },
+  {
+    id: "4",
+    title: "Doki Helmet",
+    description: "",
+    imageUrl: "/assets/DokiHelmet.jpg", // ← replace with your thumbnail
+    lottieUrl: "",
+    link: "/dokihelmet",
+  },
 ];
 
 // ─── TWEAK THESE (edit defaults here once you've dialled them in) ─────────────
