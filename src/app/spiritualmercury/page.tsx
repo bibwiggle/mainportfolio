@@ -1,9 +1,9 @@
 "use client";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import VideoPlayer from "@/components/VideoPlayer";
-import Image from "next/image";
+import { LightboxImage } from "@/components/LightboxImage";
+import { LightboxVideo } from "@/components/LightboxVideo";
 
-// ─── EDIT THESE ───────────────────────────────────────────────────────────────
 const TITLE    = "Spiritual Mercury";
 const SUBTITLE = "A kinetic sculpture imagining a futuristic energy artifact, where reflective fluid forms rotate within a custom hubless ring structure.";
 
@@ -37,11 +37,10 @@ const LOCAL_VIDEOS: { src: string; label?: string }[] = [
   { src: "/spirtualm assets/led poc_web.mp4",           label: "LED test — unmounted" },
 ];
 const IMAGES: { src: string; label?: string }[] = [
-  { src: "/spirtualm assets/sm gear design.png", },
+  { src: "/spirtualm assets/sm gear design.png" },
   { src: "/spirtualm assets/Hubless gear.png" },
   { src: "/spirtualm assets/hubless gear mount.png", label: "Hubless gear design" },
 ];
-// ─────────────────────────────────────────────────────────────────────────────
 
 const navLinks = [
   { href: "/",          label: "Home",     colorClass: "text-white" },
@@ -82,13 +81,21 @@ export default function SpiritualMercury() {
             </div>
           )}
 
+          {/* Mobile-only: render animation first after text */}
+          <div className="mt-8 flex justify-center lg:hidden">
+            <LightboxVideo src="/mp4/Comp_1_web2.mp4" className="w-full rounded-lg" wrapperStyle={{ width: "45%" }} />
+          </div>
+
           {/* Screenshots under text */}
           <div className="mt-8 grid grid-cols-2 gap-4">
             {IMAGES.map(({ src, label }) => (
               <div key={src}>
-                <div className="relative w-full rounded-lg overflow-hidden" style={{ aspectRatio: "4/3" }}>
-                  <Image src={src} alt={label ?? ""} fill className="object-cover" />
-                </div>
+                <LightboxImage
+                  src={src}
+                  alt={label ?? ""}
+                  className="w-full rounded-lg"
+                  style={{ aspectRatio: "4/3" }}
+                />
                 {label && <p className="mt-2 text-xs text-white/30 uppercase tracking-widest">{label}</p>}
               </div>
             ))}
@@ -97,16 +104,14 @@ export default function SpiritualMercury() {
 
         {/* RIGHT — render animation, constrained size */}
         <div className="space-y-4">
-          <div className="flex justify-center">
-            <video src="/mp4/Comp_1_web2.mp4" autoPlay muted loop playsInline
-              className="rounded-lg" style={{ display: "block", width: "30%" }} />
+          <div className="hidden lg:flex justify-center">
+            <LightboxVideo src="/mp4/Comp_1_web2.mp4" className="w-full rounded-lg" wrapperStyle={{ width: "25%" }} />
           </div>
 
           <div className="flex gap-4">
             {LOCAL_VIDEOS.map(({ src, label }) => (
               <div key={src} className="flex-1">
-                <video src={src} autoPlay muted loop playsInline
-                  className="w-full rounded-lg" style={{ display: "block" }} />
+                <LightboxVideo src={src} className="w-full rounded-lg" />
                 {label && <p className="mt-2 text-xs text-white/30 uppercase tracking-widest">{label}</p>}
               </div>
             ))}

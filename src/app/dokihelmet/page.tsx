@@ -1,7 +1,8 @@
 "use client";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import VideoPlayer from "@/components/VideoPlayer";
-import Image from "next/image";
+import { LightboxImage } from "@/components/LightboxImage";
+import { LightboxVideo } from "@/components/LightboxVideo";
 
 // ─── EDIT THESE ───────────────────────────────────────────────────────────────
 const TITLE    = "Doki Helmet";
@@ -49,7 +50,8 @@ export default function DokiHelmet() {
 
         {/* LEFT: title, subtitle, concept, tools, 4bar + bevel gear */}
         <div>
-          <h1 className="text-5xl font-bold tracking-tight mb-6">{TITLE}</h1>
+          <h1 className="text-5xl font-bold tracking-tight mb-2">{TITLE}</h1>
+          <p className="text-white/30 text-lg mb-6">도깨비</p>
 
           {SUBTITLE && <p className="text-white/50 text-lg leading-relaxed">{SUBTITLE}</p>}
 
@@ -76,12 +78,14 @@ export default function DokiHelmet() {
             {CONCEPT_MEDIA.map(({ src, label, type }) => (
               <div key={src} style={{ width: "48%" }}>
                 {type === "video" ? (
-                  <video src={src} autoPlay muted loop playsInline
-                    className="w-full rounded-lg" style={{ display: "block" }} />
+                  <LightboxVideo src={src} className="w-full rounded-lg" />
                 ) : (
-                  <div className="relative w-full rounded-lg overflow-hidden" style={{ aspectRatio: "1424 / 1552" }}>
-                    <Image src={src} alt={label ?? ""} fill className="object-cover" />
-                  </div>
+                  <LightboxImage
+                    src={src}
+                    alt={label ?? ""}
+                    className="w-full rounded-lg"
+                    style={{ aspectRatio: "1424 / 1552" }}
+                  />
                 )}
                 {label && <p className="mt-2 text-xs text-white/30 uppercase tracking-widest">{label}</p>}
               </div>
@@ -94,10 +98,12 @@ export default function DokiHelmet() {
           <div style={{ display: "flex", gap: 0 }}>
             {LOCAL_VIDEOS.map(({ src, label }) => (
               <div key={src} style={{ width: `${100 / LOCAL_VIDEOS.length}%`, flexShrink: 0 }}>
-                <div style={{ width: "100%", aspectRatio: "0.71", overflow: "hidden", borderRadius: 8 }}>
-                  <video src={src} autoPlay muted loop playsInline
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                </div>
+                <LightboxVideo
+                  src={src}
+                  className=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  wrapperStyle={{ width: "100%", aspectRatio: "0.71", overflow: "hidden", borderRadius: 8 }}
+                />
                 {label && <p className="mt-2 text-xs text-white/30 uppercase tracking-widest">{label}</p>}
               </div>
             ))}
@@ -105,8 +111,7 @@ export default function DokiHelmet() {
 
           <div className="mt-8 flex justify-center">
             <div style={{ width: "60%" }}>
-              <video src={PROOF_OF_CONCEPT.src} autoPlay muted loop playsInline
-                className="w-full rounded-lg" style={{ display: "block" }} />
+              <LightboxVideo src={PROOF_OF_CONCEPT.src} className="w-full rounded-lg" />
               {PROOF_OF_CONCEPT.label && (
                 <p className="mt-2 text-xs text-white/30 uppercase tracking-widest text-center">{PROOF_OF_CONCEPT.label}</p>
               )}

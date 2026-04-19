@@ -458,7 +458,7 @@ export default function Page() {
               transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               {isLowEnd
-                ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web.mp4" type="video/mp4" /></video>
+                ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web2.mp4" type="video/mp4" /></video>
                 : dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
                     rendererSettings={LOTTIE_RENDERER_SETTINGS}
                     style={{ width: "100%", height: "100%" }} />}

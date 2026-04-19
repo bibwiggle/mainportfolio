@@ -1,7 +1,8 @@
 "use client";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import VideoPlayer from "@/components/VideoPlayer";
-import Image from "next/image";
+import { LightboxImage } from "@/components/LightboxImage";
+import { LightboxVideo } from "@/components/LightboxVideo";
 
 const TITLE    = "Dancing Dancheong";
 const SUBTITLE = "A kinetic sculpture that reinterprets traditional Korean decorative painting through motion and contemporary technology.";
@@ -43,7 +44,9 @@ export default function DancingDancheong() {
 
         {/* LEFT */}
         <div>
-          <h1 className="text-5xl font-bold tracking-tight mb-6">{TITLE}</h1>
+          <h1 className="text-5xl font-bold tracking-tight mb-2">{TITLE}</h1>
+          <p className="text-white/30 text-lg mb-6">단청</p>
+
           <p className="text-white/50 text-lg leading-relaxed">{SUBTITLE}</p>
 
           {SECTIONS.map(({ label, body }) => (
@@ -64,29 +67,37 @@ export default function DancingDancheong() {
             </div>
           </div>
 
-          {/* Second video + chrome image under text */}
+          {/* Mobile-only: render animation first after text */}
+          <LightboxVideo src="/mp4/Lottie_web.mp4" className="w-full rounded-lg" wrapperClassName="mt-8 lg:hidden" />
+
+          {/* Second video + chrome image */}
           <div className="mt-8 flex gap-4">
             <div className="flex-1 rounded-lg overflow-hidden" style={{ aspectRatio: "17/30" }}>
               <VideoPlayer videoId="fNOX-ZMpEX0" />
             </div>
-            <div className="flex-1 relative rounded-lg overflow-hidden" style={{ aspectRatio: "17/30" }}>
-              <Image src="/assets/chrome.jpg" alt="Chrome finish" fill className="object-cover" />
-            </div>
+            <LightboxImage
+              src="/assets/chrome.jpg"
+              alt="Chrome finish"
+              className="flex-1 rounded-lg"
+              style={{ aspectRatio: "17/30" }}
+            />
           </div>
         </div>
 
         {/* RIGHT — blender render + first video + DDthumb */}
         <div className="space-y-4">
-          <video src="/mp4/Lottie_web.mp4" autoPlay muted loop playsInline
-            className="w-full rounded-lg" style={{ display: "block" }} />
-        <div className="flex gap-4">
-          <div className="flex-1 rounded-lg overflow-hidden" style={{ aspectRatio: "17/30" }}>
-            <VideoPlayer videoId="kZeOEtuZLTU" />
+          <LightboxVideo src="/mp4/Lottie_web.mp4" className="w-full rounded-lg" wrapperClassName="hidden lg:block" />
+          <div className="flex gap-4">
+            <div className="flex-1 rounded-lg overflow-hidden" style={{ aspectRatio: "17/30" }}>
+              <VideoPlayer videoId="kZeOEtuZLTU" />
+            </div>
+            <LightboxImage
+              src="/assets/DDthumb2.png"
+              alt="Dancing Dancheong"
+              className="flex-1 rounded-lg"
+              style={{ aspectRatio: "17/30" }}
+            />
           </div>
-          <div className="flex-1 relative rounded-lg overflow-hidden" style={{ aspectRatio: "17/30" }}>
-            <Image src="/assets/DDthumb2.png" alt="Dancing Dancheong" fill className="object-cover" />
-          </div>
-        </div>
         </div>
       </section>
 
