@@ -26,6 +26,12 @@ export function LightboxVideo({ src, className = "w-full rounded-lg", style, wra
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-zoom-out"
           onClick={() => setOpen(false)}
         >
+          <button
+            className="absolute top-4 right-4 text-white/60 hover:text-white text-3xl leading-none cursor-pointer"
+            onClick={() => setOpen(false)}
+          >
+            ×
+          </button>
           <video
             src={src}
             controls
