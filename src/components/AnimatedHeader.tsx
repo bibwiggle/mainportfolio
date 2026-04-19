@@ -29,7 +29,7 @@ export function AnimatedHeader({ navLinks }: AnimatedHeaderProps) {
   }
 
   const handleScroll = useCallback(() => {
-    const scrollY = window.scrollY;
+    const scrollY = Math.max(0, window.scrollY); // clamp negatives from iOS overscroll
 
     if (scrollY === 0) {
       setIsAtTop(true);
@@ -38,20 +38,20 @@ export function AnimatedHeader({ navLinks }: AnimatedHeaderProps) {
       clearHideTimer();
     } else {
       setIsAtTop(false);
-      
+
       if (scrollY < lastScrollY) {
         // Scrolling up
         setIsScrollingUp(true);
         setShowHeader(true);
         clearHideTimer();
-      } else if (scrollY > lastScrollY) {
-        // Scrolling down
+      } else if (scrollY > lastScrollY && scrollY > 5) {
+        // Scrolling down — ignore tiny snapback from overscroll
         setIsScrollingUp(false);
         if (showHeader) {
           clearHideTimer();
           hideTimer.current = setTimeout(() => {
             setShowHeader(false);
-          }, 0); // Increased delay to 1000ms
+          }, 0);
         }
       }
     }
