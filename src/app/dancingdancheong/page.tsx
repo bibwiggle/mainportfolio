@@ -4,16 +4,16 @@ import VideoPlayer from "@/components/VideoPlayer";
 import Image from "next/image";
 
 const TITLE    = "Dancing Dancheong";
-const SUBTITLE = "A kinetic sculpture inspired by traditional Korean decorative techniques, reimagined through motion and contemporary technology.";
+const SUBTITLE = "A kinetic sculpture that reinterprets traditional Korean decorative painting through motion and contemporary technology.";
 
 const SECTIONS = [
   {
     label: "Concept",
-    body: `Dancing Dancheong is a kinetic sculpture that reinterprets traditional Korean decorative painting through motion and contemporary technology. Inspired by the structured patterns and symbolic color systems of dancheong, the work translates these historically static designs into a dynamic, multi-axis mechanical form. By animating cultural ornamentation through robotics and digital fabrication, the piece explores how traditional visual languages can evolve and exist within contemporary technological systems.`,
+    body: `Dancing Dancheong reinterprets traditional Korean decorative painting through motion and contemporary technology. Inspired by the structured patterns and symbolic color systems of dancheong found across historic Korean architecture, the work translates these historically static designs into a dynamic, multi-axis mechanical form. By animating cultural ornamentation through robotics and digital fabrication, the piece explores how traditional visual languages can evolve and exist within contemporary technological systems.`,
   },
   {
     label: "Process",
-    body: `The most intense part of Dancing Dancheong was the mechanical challenge. This was easily the most complex thing I've ever built in Fusion 360. I designed a three-axis system using pairs of bevel gears, each connected to its own motor, with three rods of different thicknesses spinning inside one another. This let me control three layers of pattern, each moving independently but sharing the same axis. Figuring out gear ratios and how to actually get enough torque was a whole journey. I wish I'd understood mechanical advantage from the start—it would have saved me a lot of headaches. But by Prototype 3, I finally got the motion I envisioned: patterns gliding and spinning in a way that felt alive and truly new.\n\nWiring the motors and drivers was another milestone. Every prototype taught me something, especially about getting the electrical side stable and organized. By the end, I felt a lot more confident wrangling both code and cables.`,
+    body: `The mechanical design was the hardest thing I had built at that point. A three-axis system with pairs of bevel gears, each connected to its own motor, with rods of different thicknesses nested inside one another. Getting the gear ratios right and finding enough torque was a long journey. I wish I had understood mechanical advantage from the start. But by Prototype 3, the motion was finally what I had imagined: layers of pattern gliding and spinning in a way that felt alive.\n\nWiring the motors and drivers was its own education. Every prototype taught me something new about keeping the electrical side stable. By the end, I felt much more confident managing both the code and the cables.`,
   },
 ];
 
@@ -31,7 +31,6 @@ const SKILLS: string[] = [
 const navLinks = [
   { href: "/",          label: "Home",     colorClass: "text-white" },
   { href: "/#projects", label: "Projects", colorClass: "text-white" },
-  { href: "/about",     label: "About",    colorClass: "text-white" },
   { href: "/contact",   label: "Contact",  colorClass: "text-white" },
 ];
 
@@ -76,7 +75,10 @@ export default function DancingDancheong() {
           </div>
         </div>
 
-        {/* RIGHT — first video + DDthumb side by side, smaller */}
+        {/* RIGHT — blender render + first video + DDthumb */}
+        <div className="space-y-4">
+          <video src="/mp4/Lottie_web.mp4" autoPlay muted loop playsInline
+            className="w-full rounded-lg" style={{ display: "block" }} />
         <div className="flex gap-4">
           <div className="flex-1 rounded-lg overflow-hidden" style={{ aspectRatio: "17/30" }}>
             <VideoPlayer videoId="kZeOEtuZLTU" />
@@ -84,6 +86,7 @@ export default function DancingDancheong() {
           <div className="flex-1 relative rounded-lg overflow-hidden" style={{ aspectRatio: "17/30" }}>
             <Image src="/assets/DDthumb2.png" alt="Dancing Dancheong" fill className="object-cover" />
           </div>
+        </div>
         </div>
       </section>
 

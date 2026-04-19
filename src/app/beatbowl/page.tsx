@@ -3,20 +3,20 @@ import { AnimatedHeader } from "@/components/AnimatedHeader";
 import VideoPlayer from "@/components/VideoPlayer";
 
 const TITLE    = "Beat Bowl";
-const SUBTITLE = "Beat Bowl is a collaborative MIDI instrument built from my love of DJing and VJing.";
+const SUBTITLE = "A four-sided MIDI instrument designed for four players at once, built out of an obsession with knobs, faders, and what happens when you hand a stranger something they have never touched before.";
 
 const SECTIONS = [
   {
     label: "Concept",
-    body: `I built it as a four-sided pyramid, so up to four people can crowd around, each with their own playful set of controls. The layout's intentionally a little chaotic—think of the sci-fi consoles you want to touch just because they look fun. Each panel lets you shape a part of a techno track: one might control the kick drum's sound, another flips up patterns or effects, and others mess with synths or arpeggiators. I even left some mystery in; part of the fun is just discovering what everything does.`,
+    body: `The shape came first: a pyramid with one face per player. The idea was to give each person a panel that controlled a section of a live techno track, without requiring any musical background. Some panels handled the kick, others ran effects or arpeggiators. A few controls were left deliberately ambiguous. Part of the experience was just figuring out what everything did.\n\nThe layout was intentionally a little chaotic, closer to a sci-fi console you want to touch than an instrument you know how to play.`,
   },
   {
     label: "Process",
-    body: `Getting all the multiplexers to talk to a single Arduino Pro Micro was a small victory by itself. I had to find out the hard way that you really need to "star" all your grounds together to stop weird interference between the controls. At one point, turning a single knob would cause the others to jump around—super confusing, but also kind of hilarious if you weren't trying to demo it. It took a separate 12V power supply to make things stable enough for everyone to play at once.\n\nMapping the controls in Ableton Live and seeing the software instantly respond to each new knob or button was a genuinely magical moment.`,
+    body: `Getting all the multiplexers talking to a single Arduino Pro Micro was a victory by itself. The hard lesson was that grounding everything in a star configuration is non-negotiable. At one point, turning one knob sent the others jumping around. It took a separate 12V power supply to make everything stable enough for four people to play simultaneously.\n\nThe moment the controls mapped cleanly in Ableton and every knob responded in real time was genuinely satisfying. That was when it stopped being a wiring project and started being an instrument.`,
   },
   {
     label: "User Experience",
-    body: `Most folks had no idea what each button or knob was supposed to do, but that became part of the fun. There was a lot of laughter and experimentation, and it turned into a kind of social game. Even though it's still very much a prototype, the core idea came through: make music playful and accessible, even if you have no clue what you're doing.\n\nIf I keep developing this, I'd want to make each panel's role even clearer, but for now I'm happy it made people want to sit down and just mess with sound together.`,
+    body: `Nobody knew what anything did, and that became the whole point. People crowded around, experimented, and occasionally made something genuinely good by accident. There was a lot of laughter. The best moments were the ones nobody planned for.\n\nThe core idea held up: music can be playful and accessible without needing explanation. I'd want to make each panel's role clearer in the next version, but for now I'm glad it made people want to sit down and mess with sound together.`,
   },
 ];
 
@@ -38,7 +38,6 @@ const VIDEOS = [
 const navLinks = [
   { href: "/",          label: "Home",     colorClass: "text-white" },
   { href: "/#projects", label: "Projects", colorClass: "text-white" },
-  { href: "/about",     label: "About",    colorClass: "text-white" },
   { href: "/contact",   label: "Contact",  colorClass: "text-white" },
 ];
 

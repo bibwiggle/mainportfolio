@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(/c/Users/Junu/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -i Comp_1.mp4 -vcodec libx264 -profile:v baseline -level 3.0 -pix_fmt yuv420p -an -movflags +faststart Comp_1_web.mp4 -y)"
+      "Bash(/c/Users/Junu/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -i Comp_1.mp4 -vcodec libx264 -profile:v baseline -level 3.0 -pix_fmt yuv420p -an -movflags +faststart Comp_1_web.mp4 -y)",
+      "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffprobe.exe -v error -select_streams v:0 -show_entries stream=width,height,codec_name -of csv=p=0 c:/Users/korea/Documents/GitHub/mainportfolio/public/mp4/Comp_1_web.mp4)",
+      "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -i c:/Users/korea/Documents/GitHub/mainportfolio/public/mp4/Comp_1_web.mp4 -vf scale=360:-2 -crf 28 -preset veryslow -an -movflags +faststart c:/Users/korea/Documents/GitHub/mainportfolio/public/mp4/Comp_1_web2.mp4 -y)",
+      "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffprobe.exe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/proof of concept.MOV')",
+      "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffprobe.exe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/led poc.MOV')",
+      "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -i '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/proof of concept.MOV' -vf scale=1080:-2 -crf 24 -preset veryslow -an -movflags +faststart '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/proof of concept_web.mp4' -y)"
     ]
   }
 }

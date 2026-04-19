@@ -15,6 +15,14 @@ const LOTTIE_RENDERER_SETTINGS = {
 
 const projects = [
   {
+    id: "5",
+    title: "Spiritual Mercury",
+    description: "",
+    imageUrl: "/assets/SMthumb.png",
+    lottieUrl: "",
+    link: "/spiritualmercury",
+  },
+  {
     id: "4",
     title: "Doki Helmet",
     description: "",
@@ -418,7 +426,6 @@ export default function Page() {
 
   const homePageLinks = [
     { href: "#projects", label: "Projects", colorClass: "text-white" },
-    { href: "/about",    label: "About",    colorClass: "text-white" },
     { href: "/contact",  label: "Contact",  colorClass: "text-white" },
   ];
 

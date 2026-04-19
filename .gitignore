@@ -39,6 +39,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# original unoptimized assets (local backup only)
+/_originals
+
 # next-video
 videos/*
 !videos/*.json

@@ -17,7 +17,7 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
         <Link
           key={project.id}
           href={project.link}
-          className="group relative w-full h-[100vh] block overflow-hidden"
+          className="group relative w-full h-[85vh] block overflow-hidden"
         >
           <Image
             src={project.imageUrl}
