@@ -27,7 +27,7 @@ export function LightboxImage({ src, alt = "", className = "", style, imageClass
           onClick={() => setOpen(false)}
         >
           <button
-            className="absolute top-4 right-4 text-white/60 hover:text-white text-3xl leading-none cursor-pointer"
+            className="absolute top-16 right-6 text-white/60 hover:text-white text-3xl leading-none cursor-pointer"
             onClick={() => setOpen(false)}
           >
             ×
