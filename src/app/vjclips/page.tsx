@@ -1,8 +1,6 @@
 "use client";
-import { useEffect } from "react";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import VideoPlayer from "@/components/VideoPlayer";
-import Script from "next/script";
 
 const TITLE    = "Visual Works";
 const SUBTITLE = "Real-time visual work made in Resolume, TouchDesigner, and Blender. This is where it all started.";
@@ -16,12 +14,10 @@ const SKILLS: string[] = [
 interface Clip { id: number; videoId: string; aspectRatio: string; }
 
 const clips: Clip[] = [
-  { id: 1, videoId: "J2KjAoztyIA", aspectRatio: "17/30" },
-  { id: 2, videoId: "-Kx1qlzHYl4", aspectRatio: "17/30" },
-];
-
-const INSTAGRAM_REELS: string[] = [
-  "https://www.instagram.com/reel/DWPxoy1kdNF/?utm_source=ig_embed&utm_campaign=loading",
+  { id: 1, videoId: "J2KjAoztyIA",   aspectRatio: "17/30" },
+  { id: 2, videoId: "-Kx1qlzHYl4",   aspectRatio: "17/30" },
+  { id: 3, videoId: "v8VdSTnSmL4",   aspectRatio: "17/30" },
+  { id: 4, videoId: "Dxh-egyEjxM",   aspectRatio: "17/30" },
 ];
 
 const navLinks = [
@@ -31,12 +27,6 @@ const navLinks = [
 ];
 
 export default function VJClips() {
-  useEffect(() => {
-    if (typeof window !== "undefined" && (window as any).instgrm) {
-      (window as any).instgrm.Embeds.process();
-    }
-  }, []);
-
   return (
     <div className="bg-black text-white min-h-screen">
       <AnimatedHeader navLinks={navLinks} />
@@ -64,30 +54,8 @@ export default function VJClips() {
               <VideoPlayer videoId={clip.videoId} />
             </div>
           ))}
-          {INSTAGRAM_REELS.map((permalink) => (
-            <blockquote
-              key={permalink}
-              className="instagram-media"
-              data-instgrm-captioned
-              data-instgrm-permalink={permalink}
-              data-instgrm-version="14"
-              style={{
-                background: "#FFF",
-                border: 0,
-                borderRadius: "3px",
-                boxShadow: "0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)",
-                margin: 0,
-                maxWidth: "540px",
-                minWidth: "326px",
-                padding: 0,
-                width: "100%",
-              }}
-            />
-          ))}
         </div>
       </section>
-
-      <Script src="//www.instagram.com/embed.js" strategy="afterInteractive" />
     </div>
   );
 }

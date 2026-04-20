@@ -150,8 +150,35 @@ export default function Page() {
   const cfgRef  = useRef(cfg);
   const arrowRef = useRef<HTMLDivElement>(null);
   const projectsSectionRef = useRef<HTMLElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const [heroVisible, setHeroVisible] = useState(true);
   const updateArrowPos = useRef<() => void>(() => {});
   useEffect(() => { cfgRef.current = cfg; }, [cfg]);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry.isIntersecting;
+        setHeroVisible(visible);
+        if (visible) {
+          videoLeftRef.current?.play();
+          videoRightRef.current?.play();
+          dsddRef.current?.play();
+          dspfRef.current?.play();
+        } else {
+          videoLeftRef.current?.pause();
+          videoRightRef.current?.pause();
+          dsddRef.current?.pause();
+          dspfRef.current?.pause();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -433,7 +460,7 @@ export default function Page() {
     <div className="relative min-h-screen no-scrollbar">
 
       {/* Background panels */}
-      <div className="fixed inset-0 z-0">
+      <div className="fixed inset-0 z-0" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.6s ease" }}>
 
         {/* Left panel — wrapper ref'd for scroll-driven translateY only */}
         <div ref={leftPanelRef} className="absolute top-0 left-0 h-full" style={{ width: `${cfg.PANEL_PX}px`, zIndex: 1, willChange: "transform" }}>
@@ -471,7 +498,7 @@ export default function Page() {
         <AnimatedHeader navLinks={homePageLinks} />
         <main className="relative z-10">
           {/* Hero */}
-          <section className="relative min-h-screen h-screen flex items-center justify-center pb-8 md:pb-0" style={{ paddingTop: cfg.HERO_PT }}>
+          <section ref={heroRef} className="relative min-h-screen h-screen flex items-center justify-center pb-8 md:pb-0" style={{ paddingTop: cfg.HERO_PT }}>
             <div className="px-8" style={{
               width: `${cfg.TEXT_WIDTH_VW}vw`,
               textAlign,

@@ -29,9 +29,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
       {/* Thumbnail */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+        src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
         alt="Video thumbnail"
         className="w-full h-full object-cover"
+        onError={(e) => { (e.currentTarget as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; }}
       />
 
       {/* Dark overlay on hover */}
