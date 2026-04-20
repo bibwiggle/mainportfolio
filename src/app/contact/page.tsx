@@ -18,10 +18,10 @@ export default function Contact() {
         <div>
           <h1 className="text-5xl font-bold tracking-tight mb-8">My name is Junu</h1>
           <p className="text-white/50 text-lg leading-relaxed">
-            I'm a designer and recent Parsons School of Design graduate based in New York. My work sits at the intersection of fabrication, technology, and creative experimentation — from kinetic sculpture and interactive installations to custom electronics and digital design.
+            I'm a designer and recent Parsons School of Design graduate based in New York. My work sits at the intersection of fabrication, technology, and creative experimentation: from kinetic sculpture and interactive installations to custom electronics and digital design.
           </p>
           <p className="mt-6 text-white/50 text-lg leading-relaxed">
-            With a background spanning computer science, digital fabrication, and visual storytelling, I gravitate toward projects that move, react, and invite curiosity. I'm drawn to the moment an idea becomes physical — whether that's a mechanism finally turning the way it should, or a room full of people discovering something together for the first time.
+            With a background spanning computer science, digital fabrication, and visual storytelling, I gravitate toward projects that move, react, and invite curiosity. I'm drawn to the moment an idea becomes physical, whether that's a mechanism finally turning the way it should, or a room full of people discovering something together for the first time.
           </p>
 
           <div className="mt-10 space-y-3">

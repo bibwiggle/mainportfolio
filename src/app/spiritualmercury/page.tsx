@@ -33,8 +33,8 @@ const SKILLS: string[] = [
 
 const YOUTUBE_VIDEOS: string[] = [];
 const LOCAL_VIDEOS: { src: string; label?: string }[] = [
-  { src: "/spirtualm assets/proof of concept_web.mp4", label: "Proof of concept — fully mounted sculpture" },
-  { src: "/spirtualm assets/led poc_web.mp4",           label: "LED test — unmounted" },
+  { src: "/spirtualm assets/proof of concept_web.mp4", label: "Proof of concept, fully mounted sculpture" },
+  { src: "/spirtualm assets/led poc_web.mp4",           label: "LED test, unmounted" },
 ];
 const IMAGES: { src: string; label?: string }[] = [
   { src: "/spirtualm assets/sm gear design.png" },

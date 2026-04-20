@@ -25,11 +25,11 @@ const LOCAL_VIDEOS: { src: string; label?: string }[] = [
   { src: "/doki assets/Rendered video_web.mp4" },
 ];
 
-const PROOF_OF_CONCEPT = { src: "/doki assets/proof of concept doki helmet_web.mp4", label: "Proof of concept — 3D printed lower half" };
+const PROOF_OF_CONCEPT = { src: "/doki assets/proof of concept doki helmet_web.mp4", label: "Proof of concept, 3D printed lower half" };
 
 const CONCEPT_MEDIA: { src: string; label?: string; type: "video" | "image" }[] = [
   { src: "/doki assets/4bar_web.mp4", label: "Four-bar linkage - cheeks open/close mechanism", type: "video" },
-  { src: "/doki assets/Bevel gear.png", label: "Bevel gear — chin open/close mechanism", type: "image" },
+  { src: "/doki assets/Bevel gear.png", label: "Bevel gear, chin open/close mechanism", type: "image" },
 ];
 
 const YOUTUBE_VIDEOS: string[] = [];
