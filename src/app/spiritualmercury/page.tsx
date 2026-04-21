@@ -104,8 +104,18 @@ export default function SpiritualMercury() {
 
         {/* RIGHT — render animation, constrained size */}
         <div className="space-y-4">
-          <div className="hidden lg:flex justify-center">
+          <div className="hidden lg:flex flex-col items-center gap-3">
             <LightboxVideo src="/mp4/Comp_1_web2.mp4" className="w-full rounded-lg" wrapperStyle={{ width: "25%" }} />
+
+            {/* Digital artifact study Short — crop black bars */}
+            <div style={{ width: "100%" }}>
+              <div className="rounded-lg overflow-hidden" style={{ aspectRatio: "30/17", position: "relative" }}>
+                <div style={{ position: "absolute", top: "-10%", left: 0, right: 0, bottom: "-10%" }}>
+                  <VideoPlayer videoId="pAUZBQt2tmk" />
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-white/30 uppercase tracking-widest text-center">Digital artifact study</p>
+            </div>
           </div>
 
           <div className="flex gap-4">
