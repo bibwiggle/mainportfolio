@@ -1,4 +1,4 @@
-# junu.design
+# Junu.Lee
 
 Personal portfolio built with Next.js. Covers kinetic sculpture, interactive installation, custom electronics, VJing, and 3D work.
 
