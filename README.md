@@ -2,7 +2,7 @@
 
 Personal portfolio built with Next.js. Covers kinetic sculpture, interactive installation, custom electronics, VJing, and 3D work.
 
-**Live:** [junu.design](https://junu.design)
+**Live:** [dokidesigns.com](https://dokidesigns.com)
 
 ## Projects
 
