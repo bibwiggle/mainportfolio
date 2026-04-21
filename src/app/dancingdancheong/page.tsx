@@ -10,7 +10,7 @@ const SUBTITLE = "A kinetic sculpture that reinterprets traditional Korean decor
 const SECTIONS = [
   {
     label: "Concept",
-    body: `Dancing Dancheong reinterprets traditional Korean decorative painting through motion and contemporary technology. Inspired by the structured patterns and symbolic color systems of dancheong found across historic Korean architecture, the work translates these historically static designs into a dynamic, multi-axis mechanical form. By animating cultural ornamentation through robotics and digital fabrication, the piece explores how traditional visual languages can evolve and exist within contemporary technological systems.`,
+    body: `Dancing Dancheong reinterprets traditional Korean decorative painting through motion and contemporary technology. Inspired by the structured patterns of dancheong found across historic Korean architecture, the work translates these historically static designs into a dynamic, multi-axis mechanical form. By animating cultural ornamentation through robotics and digital fabrication, the piece explores how traditional visual languages can evolve and exist within contemporary technological systems.`,
   },
   {
     label: "Process",
@@ -20,13 +20,11 @@ const SECTIONS = [
 
 const SKILLS: string[] = [
   "Arduino Pro Micro",
-  "Multiplexers",
+  "Electronics & Wiring",
   "Stepper Motors & Drivers",
   "Fusion 360",
   "3D Printing",
   "Spray Paint & Top Coat",
-  "Graphite Powder",
-  "Filler Primer",
 ];
 
 const navLinks = [

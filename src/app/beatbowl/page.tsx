@@ -12,7 +12,7 @@ const SECTIONS = [
   },
   {
     label: "Process",
-    body: `Getting all the multiplexers talking to a single Arduino Pro Micro was a victory by itself. The hard lesson was that grounding everything in a star configuration is non-negotiable. At one point, turning one knob sent the others jumping around. It took a separate 12V power supply to make everything stable enough for four people to play simultaneously.\n\nThe moment the controls mapped cleanly in Ableton and every knob responded in real time was genuinely satisfying. That was when it stopped being a wiring project and started being an instrument.`,
+    body: `Getting all the multiplexers talking to a single Arduino Pro Micro was a victory by itself. The hard lesson was that every component needs its own dedicated ground wire running back to a single common point. Merging multiple ground wires into one lets current from one component bleed into another, which is why turning one knob was sending the others jumping. A separate 12V power supply solved the other half of it, giving everything stable voltage instead of pulling from the Arduino's onboard power.\n\nThe moment the controls mapped cleanly in Ableton and every knob responded in real time was genuinely satisfying. That was when it stopped being a wiring project and started being an instrument.`,
   },
   {
     label: "User Experience",
@@ -22,7 +22,7 @@ const SECTIONS = [
 
 const SKILLS: string[] = [
   "Arduino Pro Micro (ATmega32U4, native USB MIDI)",
-  "Electronics",
+  "Electronics & Wiring",
   "Soldering",
   "Ableton Live",
   "Resolume",
@@ -31,6 +31,7 @@ const SKILLS: string[] = [
 ];
 
 const VIDEOS = [
+  { videoId: "RQUgp40epTk", aspect: 17 / 30, width: "50%" },
   { videoId: "UpqdW8SwsuE", aspect: 30 / 17 },
   { videoId: "FB9Jetnj4mQ", aspect: 30 / 26 },
 ];
@@ -74,9 +75,11 @@ export default function BeatBowl() {
 
         {/* RIGHT */}
         <div className="space-y-6">
-          {VIDEOS.map(({ videoId, aspect }) => (
-            <div key={videoId} className="w-full rounded-lg overflow-hidden" style={{ aspectRatio: aspect }}>
-              <VideoPlayer videoId={videoId} />
+          {VIDEOS.map(({ videoId, aspect, width }) => (
+            <div key={videoId} className="flex justify-center">
+              <div className="rounded-lg overflow-hidden" style={{ width: width ?? "100%", aspectRatio: aspect }}>
+                <VideoPlayer videoId={videoId} />
+              </div>
             </div>
           ))}
         </div>
