@@ -19,6 +19,15 @@ video::-webkit-media-controls-start-playback-button {
   -webkit-appearance: none;
 }
 
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 0.9s step-start infinite;
+}
+
 @keyframes fadeInBounce {
   0%   { opacity: 0; transform: translateY(10px); }
   60%  { opacity: 1; transform: translateY(-4px); }

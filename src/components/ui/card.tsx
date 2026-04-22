@@ -26,11 +26,19 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            <p className="text-white text-2xl font-bold text-center drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+          <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-400 px-8">
+            <h3 className="text-white text-2xl font-bold text-center drop-shadow-lg">
               {project.title}
-            </p>
+            </h3>
+            {project.description && (
+              <p className="text-white/85 text-sm text-center max-w-xs leading-relaxed">
+                {project.description}
+              </p>
+            )}
+            <span className="mt-1 text-xs tracking-widest uppercase text-white/60">
+              click to see more
+            </span>
           </div>
         </Link>
       ))}

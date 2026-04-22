@@ -3,7 +3,7 @@ import { AnimatedHeader } from "@/components/AnimatedHeader";
 import VideoPlayer from "@/components/VideoPlayer";
 
 const TITLE    = "Visual Works";
-const SUBTITLE = "Real-time visual work made in Resolume, TouchDesigner, and Blender. This is where it all started.";
+const SUBTITLE = "Real-time visual work made with Resolume, TouchDesigner, and Blender. This is where it all started.";
 
 const SKILLS: string[] = [
   "TouchDesigner",

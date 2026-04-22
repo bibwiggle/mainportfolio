@@ -17,7 +17,7 @@ const projects = [
   {
     id: "5",
     title: "Spiritual Mercury",
-    description: "",
+    description: "A kinetic sculpture imagining a futuristic energy artifact, where reflective fluid forms rotate within a custom hubless ring structure.",
     imageUrl: "/assets/SMthumb.png",
     lottieUrl: "",
     link: "/spiritualmercury",
@@ -25,7 +25,7 @@ const projects = [
   {
     id: "4",
     title: "Doki Helmet",
-    description: "",
+    description: "A fully mechanical helmet built around the Dokkaebi of Korean folklore, filtered through the design language of Iron Man, Power Rangers, and Titanfall.",
     imageUrl: "/doki assets/DokiThumb.png",
     lottieUrl: "",
     link: "/dokihelmet",
@@ -34,7 +34,7 @@ const projects = [
     id: "1",
     title: "Dancing Dancheong (단청)",
     description:
-      "A digital art installation inspired by traditional Korean decorative techniques.",
+      "A kinetic sculpture that reinterprets traditional Korean decorative painting through motion and contemporary technology.",
     imageUrl: "/assets/DDthumb2.png",
     lottieUrl: "/lotties/DDlottie.json",
     link: "/dancingdancheong",
@@ -43,7 +43,7 @@ const projects = [
     id: "2",
     title: "Beat Bowl",
     description:
-      "An interactive music experience that combines rhythm and visual elements.",
+      "A four-sided MIDI instrument designed for four players at once, built out of an obsession with knobs, faders, and what happens when you hand a stranger something they have never touched before.",
     imageUrl: "/assets/DownscaleBB.jpg",
     lottieUrl: "/lotties/beatbowl.json",
     link: "/beatbowl",
@@ -52,7 +52,7 @@ const projects = [
     id: "3",
     title: "Visual Works",
     description:
-      "A collection of visually stunning video clips for live performances and events.",
+      "Real-time visual work made with Resolume, TouchDesigner, and Blender. This is where it all started.",
     imageUrl: "/VJtn.jpg",
     lottieUrl: "/lotties/VJclips.json",
     link: "/vjclips",
@@ -96,7 +96,7 @@ const DEFAULTS = {
 
 const HERO_PROJECTS_GAP = "40vh";
 
-const HEADING_TEXT = <>Hello,<br />I&apos;m Junu!</>;
+const HEADING_FULL = "Hello,\nI'm Junu";
 
 type Cfg = typeof DEFAULTS;
 
@@ -140,6 +140,8 @@ export default function Page() {
   const [tweakerOpen, setTweakerOpen] = useState(true);
   const [textAlign, setTextAlign] = useState<"left" | "center" | "right">("right");
   const [copied, setCopied] = useState(false);
+  const [typedCount, setTypedCount] = useState(0);
+  const typingDone = typedCount >= HEADING_FULL.length;
 
   const dsddRef     = useRef<LottieRefCurrentProps>(null);
   const dspfRef     = useRef<LottieRefCurrentProps>(null);
@@ -387,6 +389,13 @@ export default function Page() {
   // Re-apply arrow position when ARROW_X / ARROW_BOTTOM change from tweaker
   useEffect(() => { updateArrowPos.current(); }, [cfg.ARROW_X, cfg.ARROW_BOTTOM]);
 
+  // Typewriter effect for heading
+  useEffect(() => {
+    if (typedCount >= HEADING_FULL.length) return;
+    const id = setTimeout(() => setTypedCount(c => c + 1), 75);
+    return () => clearTimeout(id);
+  }, [typedCount]);
+
   // ── Computed transforms ───────────────────────────────────────────────────
   const leftScale       = cfg.LEFT_SCALE      - windowWidth * cfg.LEFT_SCALE_RATE;
   const rightScale      = cfg.RIGHT_SCALE     - windowWidth * cfg.RIGHT_SCALE_RATE;
@@ -505,9 +514,16 @@ export default function Page() {
               transform: `translateY(${cfg.TEXT_Y}vh)`,
             }}>
               <h1 className="text-white font-bold leading-tight mb-2 md:mb-6" style={{ fontSize: `clamp(${cfg.HEADING_MIN}px, min(${cfg.HEADING_VW}vw, 12vh), ${cfg.HEADING_MAX}px)` }}>
-                {HEADING_TEXT}
+                {HEADING_FULL.slice(0, typedCount).split("\n").map((line, i) => (
+                  <span key={i}>{i > 0 && <br />}{line}</span>
+                ))}
+                <span className="animate-blink inline-block align-middle" style={{ width: 2, height: "0.85em", background: "white", marginLeft: 2 }} />
               </h1>
-              <p className="text-white/80 leading-relaxed" style={{ fontSize: `clamp(${cfg.BIO_MIN}px, min(${cfg.BIO_VW}vw, 4vh), ${cfg.BIO_MAX}px)` }}>
+              <p className="text-white/80 leading-relaxed transition-opacity duration-700"
+                style={{
+                  fontSize: `clamp(${cfg.BIO_MIN}px, min(${cfg.BIO_VW}vw, 4vh), ${cfg.BIO_MAX}px)`,
+                  opacity: typingDone ? 1 : 0,
+                }}>
                 {bioText}
               </p>
             </div>
