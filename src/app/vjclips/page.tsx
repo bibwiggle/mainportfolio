@@ -14,10 +14,11 @@ const SKILLS: string[] = [
 interface Clip { id: number; videoId: string; aspectRatio: string; }
 
 const clips: Clip[] = [
-  { id: 1, videoId: "J2KjAoztyIA",   aspectRatio: "17/30" },
-  { id: 2, videoId: "-Kx1qlzHYl4",   aspectRatio: "17/30" },
-  { id: 3, videoId: "v8VdSTnSmL4",   aspectRatio: "17/30" },
+  { id: 5, videoId: "vlvMBKK9rqE",   aspectRatio: "17/30" },
   { id: 4, videoId: "Dxh-egyEjxM",   aspectRatio: "17/30" },
+  { id: 3, videoId: "v8VdSTnSmL4",   aspectRatio: "17/30" },
+  { id: 2, videoId: "-Kx1qlzHYl4",   aspectRatio: "17/30" },
+  { id: 1, videoId: "J2KjAoztyIA",   aspectRatio: "17/30" },
 ];
 
 const navLinks = [

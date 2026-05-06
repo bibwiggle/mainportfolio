@@ -15,6 +15,15 @@ const LOTTIE_RENDERER_SETTINGS = {
 
 const projects = [
   {
+    id: "3",
+    title: "Visual Works",
+    description:
+      "A collection of visually stunning video clips for live performances and events.",
+    imageUrl: "/VJtn.jpg",
+    lottieUrl: "/lotties/VJclips.json",
+    link: "/vjclips",
+  },
+  {
     id: "5",
     title: "Spiritual Mercury",
     description: "A kinetic sculpture imagining a futuristic energy artifact, where reflective fluid forms rotate within a custom hubless ring structure.",
@@ -47,15 +56,6 @@ const projects = [
     imageUrl: "/assets/DownscaleBB.jpg",
     lottieUrl: "/lotties/beatbowl.json",
     link: "/beatbowl",
-  },
-  {
-    id: "3",
-    title: "Visual Works",
-    description:
-      "Real-time visual work made with Resolume, TouchDesigner, and Blender. This is where it all started.",
-    imageUrl: "/VJtn.jpg",
-    lottieUrl: "/lotties/VJclips.json",
-    link: "/vjclips",
   },
 ];
 
