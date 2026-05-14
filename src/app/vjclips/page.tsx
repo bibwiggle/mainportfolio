@@ -17,6 +17,7 @@ type Clip =
   | { id: number; type: "local";   src: string; poster?: string; aspectRatio: string };
 
 const clips: Clip[] = [
+  { id: 8, type: "youtube", videoId: "pW2tnAm-4s8",                        aspectRatio: "17/30" },
   { id: 5, type: "youtube", videoId: "vlvMBKK9rqE",                        aspectRatio: "17/30" },
   { id: 4, type: "youtube", videoId: "Dxh-egyEjxM",                        aspectRatio: "17/30" },
   { id: 3, type: "youtube", videoId: "v8VdSTnSmL4",                        aspectRatio: "17/30" },
