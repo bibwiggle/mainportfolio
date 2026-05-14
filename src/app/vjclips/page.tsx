@@ -1,9 +1,10 @@
 "use client";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import VideoPlayer from "@/components/VideoPlayer";
+import LocalVideoPlayer from "@/components/LocalVideoPlayer";
 
 const TITLE    = "Visual Works";
-const SUBTITLE = "Real-time visual work made with Resolume, TouchDesigner, and Blender. This is where it all started.";
+const SUBTITLE = "Video work spanning live visual performance, editing, and original footage. Made with Resolume, TouchDesigner, Blender, and a camera.";
 
 const SKILLS: string[] = [
   "TouchDesigner",
@@ -11,14 +12,18 @@ const SKILLS: string[] = [
   "Resolume",
 ];
 
-interface Clip { id: number; videoId: string; aspectRatio: string; }
+type Clip =
+  | { id: number; type: "youtube"; videoId: string; aspectRatio: string }
+  | { id: number; type: "local";   src: string; poster?: string; aspectRatio: string };
 
 const clips: Clip[] = [
-  { id: 5, videoId: "vlvMBKK9rqE",   aspectRatio: "17/30" },
-  { id: 4, videoId: "Dxh-egyEjxM",   aspectRatio: "17/30" },
-  { id: 3, videoId: "v8VdSTnSmL4",   aspectRatio: "17/30" },
-  { id: 2, videoId: "-Kx1qlzHYl4",   aspectRatio: "17/30" },
-  { id: 1, videoId: "J2KjAoztyIA",   aspectRatio: "17/30" },
+  { id: 5, type: "youtube", videoId: "vlvMBKK9rqE",                        aspectRatio: "17/30" },
+  { id: 4, type: "youtube", videoId: "Dxh-egyEjxM",                        aspectRatio: "17/30" },
+  { id: 3, type: "youtube", videoId: "v8VdSTnSmL4",                        aspectRatio: "17/30" },
+  { id: 2, type: "youtube", videoId: "-Kx1qlzHYl4",                        aspectRatio: "17/30" },
+  { id: 6, type: "local",   src: "/mp4/v09044ce0000bu2k28rrspql4e61ee10.mp4", poster: "/mp4/v09044ce0000bu2k28rrspql4e61ee10_thumb.jpg", aspectRatio: "17/30" },
+  { id: 7, type: "local",   src: "/mp4/export_1730350545125.mp4",           poster: "/mp4/export_1730350545125_thumb.jpg",           aspectRatio: "17/30" },
+  { id: 1, type: "youtube", videoId: "J2KjAoztyIA",                        aspectRatio: "17/30" },
 ];
 
 const navLinks = [
@@ -52,7 +57,9 @@ export default function VJClips() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 items-start">
           {clips.map((clip) => (
             <div key={clip.id} className="w-full rounded-lg overflow-hidden" style={{ aspectRatio: clip.aspectRatio }}>
-              <VideoPlayer videoId={clip.videoId} />
+              {clip.type === "youtube"
+                ? <VideoPlayer videoId={clip.videoId} />
+                : <LocalVideoPlayer src={clip.src} poster={clip.poster} />}
             </div>
           ))}
         </div>

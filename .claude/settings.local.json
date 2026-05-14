@@ -7,7 +7,11 @@
       "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -i c:/Users/korea/Documents/GitHub/mainportfolio/public/mp4/Comp_1_web.mp4 -vf scale=360:-2 -crf 28 -preset veryslow -an -movflags +faststart c:/Users/korea/Documents/GitHub/mainportfolio/public/mp4/Comp_1_web2.mp4 -y)",
       "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffprobe.exe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/proof of concept.MOV')",
       "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffprobe.exe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/led poc.MOV')",
-      "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -i '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/proof of concept.MOV' -vf scale=1080:-2 -crf 24 -preset veryslow -an -movflags +faststart '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/proof of concept_web.mp4' -y)"
+      "Bash(/c/Users/korea/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -i '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/proof of concept.MOV' -vf scale=1080:-2 -crf 24 -preset veryslow -an -movflags +faststart '/c/Users/korea/Documents/GitHub/mainportfolio/public/spirtualm assets/proof of concept_web.mp4' -y)",
+      "Bash(ffmpeg -version)",
+      "Bash(ffmpeg -i \"c:/Users/Junu/Desktop/mainportfolio/public/mp4/export_1730350545125.mov\" -vcodec h264 -acodec aac -crf 23 \"c:/Users/Junu/Desktop/mainportfolio/public/mp4/export_1730350545125.mp4\")",
+      "Bash(ffmpeg -i \"c:/Users/Junu/Desktop/mainportfolio/public/mp4/v09044ce0000bu2k28rrspql4e61ee10.mp4\" -ss 00:00:01 -frames:v 1 \"c:/Users/Junu/Desktop/mainportfolio/public/mp4/v09044ce0000bu2k28rrspql4e61ee10_thumb.jpg\" -y)",
+      "Bash(ffmpeg -i \"c:/Users/Junu/Desktop/mainportfolio/public/mp4/export_1730350545125.mp4\" -ss 00:00:01 -frames:v 1 \"c:/Users/Junu/Desktop/mainportfolio/public/mp4/export_1730350545125_thumb.jpg\" -y)"
     ]
   }
 }

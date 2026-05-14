@@ -18,7 +18,7 @@ const projects = [
     id: "3",
     title: "Visual Works",
     description:
-      "A collection of visually stunning video clips for live performances and events.",
+      "Video work spanning live visual performance, editing, and original footage.",
     imageUrl: "/VJtn.jpg",
     lottieUrl: "/lotties/VJclips.json",
     link: "/vjclips",
@@ -406,15 +406,8 @@ export default function Page() {
   const bioText =
     windowWidth < 640 ? (
       <>a designer and maker in NYC.</>
-    ) : windowWidth < 1024 ? (
-      <>a designer and maker in NYC,<br />working across digital and physical design.</>
     ) : (
-      <>
-        a designer and maker based in NYC.
-        I work across digital and physical design,
-        translating concepts into interactive
-        installations, 3D visuals, and fabricated prototypes.
-      </>
+      <>a designer and maker in NYC, creating objects, visuals, and everything in between.</>
     );
 
   // ── Dev tweaker helpers ───────────────────────────────────────────────────
