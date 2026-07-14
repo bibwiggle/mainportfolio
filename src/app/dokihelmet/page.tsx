@@ -18,6 +18,7 @@ const SKILLS: string[] = [
   "Mechanical Design",
   "Fabrication",
   "Arduino",
+  "Electronics & Wiring",
 ];
 
 const LOCAL_VIDEOS: { src: string; label?: string }[] = [

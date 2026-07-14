@@ -4,27 +4,32 @@ import VideoPlayer from "@/components/VideoPlayer";
 import LocalVideoPlayer from "@/components/LocalVideoPlayer";
 
 const TITLE    = "Visual Works";
-const SUBTITLE = "Video work spanning live visual performance, editing, and original footage. Made with Resolume, TouchDesigner, Blender, and a camera.";
+const SUBTITLE = "Video work spanning live visual performance, editing, and original footage. Made with Resolume, TouchDesigner, Blender, and a adobe suite.";
 
 const SKILLS: string[] = [
   "TouchDesigner",
   "Blender",
   "Resolume",
+  "Video Editing",
+  "Camera Work",
 ];
 
 type Clip =
   | { id: number; type: "youtube"; videoId: string; aspectRatio: string }
-  | { id: number; type: "local";   src: string; poster?: string; aspectRatio: string };
+  | { id: number; type: "local";   src: string; poster?: string; aspectRatio: string; autoplay?: boolean };
 
 const clips: Clip[] = [
-  { id: 8, type: "youtube", videoId: "rG-gCH8Vhus",                        aspectRatio: "17/30" },
-  { id: 5, type: "youtube", videoId: "vlvMBKK9rqE",                        aspectRatio: "17/30" },
-  { id: 4, type: "youtube", videoId: "Dxh-egyEjxM",                        aspectRatio: "17/30" },
-  { id: 3, type: "youtube", videoId: "v8VdSTnSmL4",                        aspectRatio: "17/30" },
-  { id: 2, type: "youtube", videoId: "-Kx1qlzHYl4",                        aspectRatio: "17/30" },
-  { id: 6, type: "local",   src: "/mp4/v09044ce0000bu2k28rrspql4e61ee10.mp4", poster: "/mp4/v09044ce0000bu2k28rrspql4e61ee10_thumb.jpg", aspectRatio: "17/30" },
-  { id: 7, type: "local",   src: "/mp4/export_1730350545125.mp4",           poster: "/mp4/export_1730350545125_thumb.jpg",           aspectRatio: "17/30" },
-  { id: 1, type: "youtube", videoId: "J2KjAoztyIA",                        aspectRatio: "17/30" },
+  { id: 9,  type: "youtube", videoId: "kThJ-WOY3SI",                                  aspectRatio: "17/30" },
+  { id: 10, type: "youtube", videoId: "3YqU2R2awY0",                                  aspectRatio: "17/30" },
+  { id: 11, type: "youtube", videoId: "VeDs-DxPeUk",                                  aspectRatio: "17/30" },
+  { id: 8,  type: "youtube", videoId: "rG-gCH8Vhus",                                  aspectRatio: "17/30" },
+  { id: 5,  type: "youtube", videoId: "vlvMBKK9rqE",                                  aspectRatio: "17/30" },
+  { id: 4,  type: "youtube", videoId: "Dxh-egyEjxM",                                  aspectRatio: "17/30" },
+  { id: 3,  type: "youtube", videoId: "v8VdSTnSmL4",                                  aspectRatio: "17/30" },
+  { id: 2,  type: "youtube", videoId: "-Kx1qlzHYl4",                                  aspectRatio: "17/30" },
+  { id: 6,  type: "local",   src: "/mp4/v09044ce0000bu2k28rrspql4e61ee10.mp4", poster: "/mp4/v09044ce0000bu2k28rrspql4e61ee10_thumb.jpg", aspectRatio: "17/30" },
+  { id: 7,  type: "local",   src: "/mp4/export_1730350545125.mp4",             poster: "/mp4/export_1730350545125_thumb.jpg",             aspectRatio: "17/30" },
+  { id: 1,  type: "youtube", videoId: "J2KjAoztyIA",                                  aspectRatio: "17/30" },
 ];
 
 const navLinks = [
@@ -60,7 +65,7 @@ export default function VJClips() {
             <div key={clip.id} className="w-full rounded-lg overflow-hidden" style={{ aspectRatio: clip.aspectRatio }}>
               {clip.type === "youtube"
                 ? <VideoPlayer videoId={clip.videoId} />
-                : <LocalVideoPlayer src={clip.src} poster={clip.poster} />}
+                : <LocalVideoPlayer src={clip.src} poster={clip.poster} autoplay={clip.autoplay} />}
             </div>
           ))}
         </div>
