@@ -14,6 +14,7 @@ const LOTTIE_RENDERER_SETTINGS = {
   preserveAspectRatio: "xMidYMid meet",
   progressiveLoad: true,
 };
+const HERO_SOURCE_FPS = 30;
 
 const projects = [
   {
@@ -128,6 +129,7 @@ export default function Page() {
   const bloomId = useId();
   const [cfg, setCfg] = useState<Cfg>(DEFAULTS);
   const [windowWidth, setWindowWidth] = useState(1920);
+  const isPhoneViewport = windowWidth <= 640;
   const [isLowEnd, setIsLowEnd] = useState(false);
   const [useCompatibleBloom, setUseCompatibleBloom] = useState(false);
   const [dspfAnim, setDspfAnim] = useState<object | null>(null);
@@ -182,7 +184,7 @@ export default function Page() {
     fetch("/lotties/dspf.json").then(r => r.json()).then(setDspfAnim);
   }, [isLowEnd, dspfAnim]);
 
-  // Scrub source frames with scroll distance while idle playback continues slowly.
+  // Keep idle playback on phones; scrub source frames with scroll on larger screens.
   useEffect(() => {
     if (isLowEnd || !heroVisible) return;
     const readScrollY = () => Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
@@ -230,13 +232,61 @@ export default function Page() {
       rafId = requestAnimationFrame(tick);
     };
 
+    if (!isPhoneViewport) window.addEventListener("scroll", handleScroll, { passive: true });
+    rafId = requestAnimationFrame(tick);
+    return () => {
+      if (!isPhoneViewport) window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, [isLowEnd, heroVisible, isPhoneViewport]);
+
+  // The lightweight MP4 has interpolated 60 fps output, but its source timeline
+  // is 30 fps. Keep the scrub slider's frame-per-pixel behavior across modes.
+  useEffect(() => {
+    if (!isLowEnd || !heroVisible || isPhoneViewport) return;
+    const video = videoRightRef.current;
+    if (!video) return;
+    const readScrollY = () => Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+    let lastY = readScrollY();
+    let pendingSeconds = 0;
+    let lastTime = performance.now();
+    let rafId: number;
+
+    const handleScroll = () => {
+      const y = readScrollY();
+      if (Number.isFinite(video.duration) && video.duration > 0) {
+        pendingSeconds = Math.min(
+          pendingSeconds + Math.abs(y - lastY) * cfgRef.current.SCROLL_SPEED / HERO_SOURCE_FPS,
+          video.duration / 2
+        );
+      }
+      lastY = y;
+    };
+
+    const tick = (now: number) => {
+      const elapsed = Math.max(1, now - lastTime);
+      lastTime = now;
+      if (elapsed > 100) pendingSeconds = 0;
+      if (pendingSeconds > 0 && !video.seeking && video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+        const smoothing = 1 - Math.pow(1 - cfgRef.current.LERP, Math.min(elapsed, 100) / (1000 / 60));
+        const nudge = pendingSeconds * smoothing;
+        if (nudge >= 1 / 60) {
+          video.currentTime = (video.currentTime + nudge) % video.duration;
+          pendingSeconds -= nudge;
+        } else {
+          pendingSeconds = 0;
+        }
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     rafId = requestAnimationFrame(tick);
     return () => {
       window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(rafId);
     };
-  }, [isLowEnd, heroVisible]);
+  }, [isLowEnd, heroVisible, isPhoneViewport]);
 
   // Keep one pending update so rapid scroll events cannot postpone a paint.
   useEffect(() => {
@@ -390,7 +440,7 @@ export default function Page() {
             <div style={{ position: "relative", width: "100%", height: "100%", isolation: "isolate" }}>
               <div ref={animationSourceRef} style={{ width: "100%", height: "100%" }}>
                 {isLowEnd
-                  ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web2.mp4" type="video/mp4" /></video>
+                  ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_mobile_576_60.mp4" type="video/mp4" /></video>
                   : dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
                       rendererSettings={LOTTIE_RENDERER_SETTINGS}
                       style={{ width: "100%", height: "100%" }} />}
@@ -509,7 +559,7 @@ export default function Page() {
                     onChange={e => setIsLowEnd(e.target.checked)}
                     style={{ accentColor: "#4ade80", cursor: "pointer" }}
                   />
-                  <span>low-end</span>
+                  <span>lightweight video</span>
                 </label>
               </div>
 
