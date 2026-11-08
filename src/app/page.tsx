@@ -37,18 +37,18 @@ const projects = [
 // ─── TWEAK THESE (edit defaults here once you've dialled them in) ─────────────
 const DEFAULTS = {
   ...DEFAULT_CHROME_SETTINGS,
-  PANEL_PX:             590,
-  RIGHT_SCALE:         -1.06,
-  RIGHT_SCALE_RATE:     0.0011,
-  RIGHT_TRANSLATE_X:    -3,
-  RIGHT_TRANSLATE_RATE: 0.001,
-  RIGHT_Y:             32,
   RIGHT_ROTATION:      90,
+  ANIMATION_WIDTH_VW: 250,
+  ANIMATION_MAX_PX: 1940,
+  ANIMATION_GAP: -64,
+  ANIMATION_X: 0,
+  MOBILE_ANIMATION_WIDTH_VW: 376,
+  MOBILE_ANIMATION_MAX_PX: 1940,
+  MOBILE_ANIMATION_GAP: -62,
   PARALLAX_SPEED:       0.69,
-  BLOOM_AMOUNT:        1.5,
-  BLOOM_THRESHOLD:     0.01,
-  BLOOM_SIZE:          4,
-  PARALLAX_OVERFLOW:    60,
+  BLOOM_AMOUNT:        1.2,
+  BLOOM_THRESHOLD:     0.19,
+  BLOOM_SIZE:          12,
   IDLE_FPS:             60,
   SCROLL_SPEED:         0.5,
   LERP:                 0.3,
@@ -60,11 +60,11 @@ const DEFAULTS = {
   TEXT_MIN_PX:          576,
   TEXT_Y:               -24,
   MOBILE_TEXT_Y:        -20,
-  HEADING_MIN:          45,
-  HEADING_VW:           11.9,
+  HEADING_MIN:          33,
+  HEADING_VW:           12.1,
   HEADING_MAX:          76,
-  BIO_MIN:              18,
-  BIO_VW:               1.6,
+  BIO_MIN:              29,
+  BIO_VW:               2,
   BIO_MAX:              26,
 // textAlign: "center"
 };
@@ -97,15 +97,15 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
   { key: "BLOOM_AMOUNT", label: "Bloom amount", min: 0, max: 3, step: 0.05, section: "Bloom" },
   { key: "BLOOM_THRESHOLD", label: "Bloom threshold", min: 0, max: 0.99, step: 0.01 },
   { key: "BLOOM_SIZE", label: "Bloom size (px)", min: 0, max: 60, step: 1 },
-  { key: "PANEL_PX",             label: "Panel Width",       min: 100,    max: 1500,  step: 10     },
-  { key: "RIGHT_SCALE",          label: "Animation Scale",           min: -3,     max: 3,     step: 0.01   },
-  { key: "RIGHT_SCALE_RATE",     label: "Animation Scale Rate",      min: -0.005, max: 0.005, step: 0.0001 },
-  { key: "RIGHT_TRANSLATE_X",    label: "Animation Translate X",     min: -300,   max: 300,   step: 1      },
-  { key: "RIGHT_TRANSLATE_RATE", label: "Animation Y Rate",  min: -0.3,   max: 0.3,   step: 0.001  },
+  { key: "ANIMATION_WIDTH_VW", label: "Desktop width (% screen)", min: 50, max: 800, step: 1, section: "Animation below bio" },
+  { key: "ANIMATION_MAX_PX", label: "Maximum width (px)", min: 600, max: 4000, step: 20 },
+  { key: "ANIMATION_GAP", label: "Gap below bio (px)", min: -300, max: 300, step: 2 },
+  { key: "ANIMATION_X", label: "Horizontal offset (px)", min: -300, max: 300, step: 1 },
+  { key: "MOBILE_ANIMATION_WIDTH_VW", label: "Phone width (% screen)", min: 50, max: 800, step: 1, section: "Phone animation (blends into desktop)" },
+  { key: "MOBILE_ANIMATION_MAX_PX", label: "Phone maximum width (px)", min: 600, max: 4000, step: 20 },
+  { key: "MOBILE_ANIMATION_GAP", label: "Phone gap below bio (px)", min: -300, max: 500, step: 2 },
   { key: "RIGHT_ROTATION", label: "Rotation (degrees)", min: -180, max: 180, step: 1 },
-  { key: "RIGHT_Y",              label: "Animation Y",               min: -100,   max: 100,   step: 1      },
   { key: "PARALLAX_SPEED",       label: "Scroll movement (1 = text)",    min: 0,      max: 2,     step: 0.01   },
-  { key: "PARALLAX_OVERFLOW",    label: "Parallax Overflow", min: 0,      max: 500,   step: 10     },
   { key: "IDLE_FPS",             label: "Idle FPS",          min: 0,      max: 60,    step: 1      },
   { key: "SCROLL_SPEED",         label: "Scrub frames / px",      min: 0,      max: 2,     step: 0.01   },
   { key: "LERP",                 label: "Scrub smoothing",       min: 0.01,   max: 1,     step: 0.01   },
@@ -143,6 +143,8 @@ export default function Page() {
   const videoRightRef = useRef<HTMLVideoElement>(null);
   const animationSourceRef = useRef<HTMLDivElement>(null);
   const cfgRef  = useRef(cfg);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [animationTop, setAnimationTop] = useState(500);
   const heroRef = useRef<HTMLElement>(null);
   const [heroVisible, setHeroVisible] = useState(true);
   useEffect(() => { cfgRef.current = cfg; }, [cfg]);
@@ -154,13 +156,7 @@ export default function Page() {
       ([entry]) => {
         const visible = entry.isIntersecting;
         setHeroVisible(visible);
-        if (visible) {
-          videoRightRef.current?.play();
-          dspfRef.current?.play();
-        } else {
-          videoRightRef.current?.pause();
-          dspfRef.current?.pause();
-        }
+
       },
       { threshold: 0.1 }
     );
@@ -287,24 +283,6 @@ export default function Page() {
     };
   }, [isLowEnd]);
 
-  // On low-end: pause animations during scroll so the main thread stays free
-  useEffect(() => {
-    if (!isLowEnd) return;
-    let resumeTimer: ReturnType<typeof setTimeout> | null = null;
-    const handleScroll = () => {
-      dspfRef.current?.animationItem?.pause();
-      if (resumeTimer) clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => {
-        dspfRef.current?.animationItem?.play();
-      }, 200);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (resumeTimer) clearTimeout(resumeTimer);
-    };
-  }, [isLowEnd]);
-
   useEffect(() => {
     setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -321,10 +299,6 @@ export default function Page() {
 
   // ── Computed transforms ───────────────────────────────────────────────────
   const compactWindow = windowWidth > 640 && windowWidth <= 1366;
-  const rightScale      = cfg.RIGHT_SCALE     - windowWidth * cfg.RIGHT_SCALE_RATE;
-  const rightTranslateX = cfg.RIGHT_TRANSLATE_X;
-  // Lift the artwork on phones so it sits closer to the intro copy.
-  const rightTranslateY = cfg.RIGHT_Y - windowWidth * cfg.RIGHT_TRANSLATE_RATE - (windowWidth <= 640 ? 12 : 0);
   const headingFontSize = compactWindow
     ? `clamp(${cfg.HEADING_MIN * 0.8}px, min(${cfg.HEADING_VW * 0.7}vw, 9vh), ${Math.min(cfg.HEADING_MAX * 0.8, 61)}px)`
     : `clamp(${cfg.HEADING_MIN}px, min(${cfg.HEADING_VW}vw, 12vh), ${cfg.HEADING_MAX}px)`;
@@ -333,6 +307,25 @@ export default function Page() {
     : `clamp(${cfg.BIO_MIN}px, min(${cfg.BIO_VW}vw, 4vh), ${cfg.BIO_MAX}px)`;
   const phoneHeadingFontSize = `clamp(${Math.min(cfg.HEADING_MIN * 0.62, 28)}px, min(${cfg.HEADING_VW * 0.8}vw, 5.5vh), ${Math.min(cfg.HEADING_MAX * 0.5, 38)}px)`;
   const phoneBioFontSize = `clamp(${Math.min(cfg.BIO_MIN * 0.8, 14)}px, min(${cfg.BIO_VW * 2.2}vw, 3.2vh), ${Math.min(cfg.BIO_MAX * 0.65, 18)}px)`;
+
+  // Full phone settings below 640px, smoothly blending to desktop at 1024px.
+  const phoneMix = Math.max(0, Math.min(1, (1024 - windowWidth) / 384));
+  const responsiveWidth = cfg.ANIMATION_WIDTH_VW + (cfg.MOBILE_ANIMATION_WIDTH_VW - cfg.ANIMATION_WIDTH_VW) * phoneMix;
+  const responsiveMaximum = cfg.ANIMATION_MAX_PX + (cfg.MOBILE_ANIMATION_MAX_PX - cfg.ANIMATION_MAX_PX) * phoneMix;
+  const responsiveGap = cfg.ANIMATION_GAP + (cfg.MOBILE_ANIMATION_GAP - cfg.ANIMATION_GAP) * phoneMix;
+  const animationWidth = Math.min(windowWidth * responsiveWidth / 100, responsiveMaximum);
+  const animationHeight = animationWidth * 800 / 2778;
+
+  useEffect(() => {
+    const text = textRef.current;
+    if (!text) return;
+    const update = () => setAnimationTop(text.getBoundingClientRect().bottom + window.scrollY + responsiveGap);
+    const observer = new ResizeObserver(update);
+    observer.observe(text);
+    update();
+    window.addEventListener("resize", update);
+    return () => { observer.disconnect(); window.removeEventListener("resize", update); };
+  }, [cfg, windowWidth, responsiveGap]);
 
   const bioText = "a designer and maker in NYC, specializing in fabrication and visual media.";
 
@@ -389,13 +382,12 @@ export default function Page() {
       </svg>
 
       {/* Background panels */}
-      <div className="fixed inset-0 z-0" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.6s ease" }}>
+      <div className="fixed inset-0 z-0" style={{ opacity: heroVisible ? 1 : 0.04, transition: "opacity 0.6s ease" }}>
 
         {/* Right panel */}
-        <div ref={rightPanelRef} className="absolute top-0 left-1/2 h-full" style={{ width: `${cfg.PANEL_PX}px`, marginLeft: -cfg.PANEL_PX / 2, zIndex: 2, willChange: "transform" }}>
-          <div data-bloom-renderer={useCompatibleBloom ? "compatible" : "svg"} style={{ width: "100%", height: "100%", filter: !useCompatibleBloom && cfg.BLOOM_AMOUNT > 0 ? `url(#${bloomId})` : undefined, transform: `translateX(${rightTranslateX}%) translateY(${rightTranslateY}%) scale(${rightScale}) rotate(${cfg.RIGHT_ROTATION}deg)` }}>
-            <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
-              display: "flex", alignItems: "center", justifyContent: "center", isolation: "isolate" }}>
+        <div ref={rightPanelRef} className="absolute left-1/2" style={{ top: animationTop, width: animationWidth, height: animationHeight, marginLeft: -animationWidth / 2 + cfg.ANIMATION_X, zIndex: 2, willChange: "transform" }}>
+          <div data-bloom-renderer={useCompatibleBloom ? "compatible" : "svg"} style={{ position: "absolute", left: "50%", top: "50%", width: animationHeight, height: animationWidth, filter: !useCompatibleBloom && cfg.BLOOM_AMOUNT > 0 ? `url(#${bloomId})` : undefined, transform: `translate(-50%, -50%) rotate(${cfg.RIGHT_ROTATION}deg) scale(-1)` }}>
+            <div style={{ position: "relative", width: "100%", height: "100%", isolation: "isolate" }}>
               <div ref={animationSourceRef} style={{ width: "100%", height: "100%" }}>
                 {isLowEnd
                   ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web2.mp4" type="video/mp4" /></video>
@@ -405,7 +397,7 @@ export default function Page() {
               </div>
               {useCompatibleBloom && (
                 <CompatibleBloom sourceRef={animationSourceRef} videoRef={videoRightRef}
-                  mode={isLowEnd ? "video" : "svg"} active={heroVisible}
+                  mode={isLowEnd ? "video" : "svg"} active={true}
                   amount={cfg.BLOOM_AMOUNT} threshold={cfg.BLOOM_THRESHOLD} size={cfg.BLOOM_SIZE} />
               )}
             </div>
@@ -419,7 +411,7 @@ export default function Page() {
           <div className="relative">
           {/* Hero */}
           <section ref={heroRef} className="relative min-h-screen h-screen flex items-center justify-center pb-8 md:pb-0" style={{ paddingTop: cfg.HERO_PT }}>
-            <div className="px-6 sm:px-8" style={{
+            <div ref={textRef} className="px-6 sm:px-8" style={{
               width: `min(100%, max(${cfg.TEXT_MIN_PX}px, ${cfg.TEXT_WIDTH_VW}vw))`,
               textAlign,
               transform: `translateY(${windowWidth < 640 ? cfg.MOBILE_TEXT_Y : cfg.TEXT_Y}vh)`,
