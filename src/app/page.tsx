@@ -4,17 +4,32 @@ import { ProjectGrid } from "@/components/ui/card";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import { DEFAULT_CHROME_SETTINGS } from "@/components/ChromeNavBackground";
 import { CompatibleBloom } from "@/components/CompatibleBloom";
-import { useState, useEffect, useRef, useId } from "react";
-import type { LottieRefCurrentProps } from "lottie-react";
+import { useState, useEffect, useRef, useId, type ComponentType } from "react";
+import type { LottieComponentProps, LottieRefCurrentProps } from "lottie-react";
 import dynamic from "next/dynamic";
 
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+// lottie-react's component type defaults to SVG, but its runtime supports Canvas.
+type HeroLottieProps = Omit<LottieComponentProps, "renderer"> & { renderer: "svg" | "canvas" };
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false }) as ComponentType<HeroLottieProps>;
 
 const LOTTIE_RENDERER_SETTINGS = {
   preserveAspectRatio: "xMidYMid meet",
   progressiveLoad: true,
 };
-const HERO_SOURCE_FPS = 30;
+const HERO_FRAME_STEP = 3;
+const HERO_TIMELINE_FPS = 30;
+const HERO_TIMELINE_FRAMES = 191;
+const MOBILE_FRAME_COUNT = 64;
+const wrapFrame = (frame: number, length: number) => ((frame % length) + length) % length;
+
+const mobileFrameSrc = (frame: number) =>
+  `/frames/dspf-mobile/frame_${String(frame + 1).padStart(2, "0")}.webp`;
+
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    || window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+}
 
 const projects = [
   {
@@ -46,13 +61,13 @@ const DEFAULTS = {
   MOBILE_ANIMATION_WIDTH_VW: 376,
   MOBILE_ANIMATION_MAX_PX: 1940,
   MOBILE_ANIMATION_GAP: -62,
-  PARALLAX_SPEED:       0.69,
+  PARALLAX_SPEED:       0.78,
   BLOOM_AMOUNT:        1.2,
   BLOOM_THRESHOLD:     0.19,
   BLOOM_SIZE:          12,
   IDLE_FPS:             60,
-  SCROLL_SPEED:         0.5,
-  LERP:                 0.3,
+  SCROLL_SPEED:         0.39,
+  MOBILE_SCRUB_LAG_MS:  110,
   // Text
   HERO_PT:              164,
   ARROW_X:              8,
@@ -107,9 +122,9 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
   { key: "MOBILE_ANIMATION_GAP", label: "Phone gap below bio (px)", min: -300, max: 500, step: 2 },
   { key: "RIGHT_ROTATION", label: "Rotation (degrees)", min: -180, max: 180, step: 1 },
   { key: "PARALLAX_SPEED",       label: "Scroll movement (1 = text)",    min: 0,      max: 2,     step: 0.01   },
-  { key: "IDLE_FPS",             label: "Idle FPS",          min: 0,      max: 60,    step: 1      },
-  { key: "SCROLL_SPEED",         label: "Scrub frames / px",      min: 0,      max: 2,     step: 0.01   },
-  { key: "LERP",                 label: "Scrub smoothing",       min: 0.01,   max: 1,     step: 0.01   },
+  { key: "IDLE_FPS",             label: "Lottie idle FPS",       min: 0,    max: 60,    step: 1      },
+  { key: "SCROLL_SPEED",         label: "Scroll scrub frames / px", min: 0,    max: 2,     step: 0.01   },
+  { key: "MOBILE_SCRUB_LAG_MS", label: "Phone scrub lag (ms)", min: 0, max: 250, step: 10 },
   { key: "HERO_PT",               label: "Hero Top Pad (px)", min: 0,      max: 300,   step: 2,     section: "── text ──" },
   { key: "ARROW_X",              label: "Arrow X",           min: -200,   max: 200,   step: 1      },
   { key: "ARROW_BOTTOM",         label: "Arrow Bottom",      min: 0,      max: 200,   step: 2      },
@@ -129,9 +144,11 @@ export default function Page() {
   const bloomId = useId();
   const [cfg, setCfg] = useState<Cfg>(DEFAULTS);
   const [windowWidth, setWindowWidth] = useState(1920);
-  const isPhoneViewport = windowWidth <= 640;
   const [isLowEnd, setIsLowEnd] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileFrame, setMobileFrame] = useState(0);
   const [useCompatibleBloom, setUseCompatibleBloom] = useState(false);
+  const [useCanvasRenderer, setUseCanvasRenderer] = useState(false);
   const [dspfAnim, setDspfAnim] = useState<object | null>(null);
   const [tweakerOpen, setTweakerOpen] = useState(true);
   const [textAlign, setTextAlign] = useState<"left" | "center" | "right">("center");
@@ -143,6 +160,10 @@ export default function Page() {
   const dspfRef     = useRef<LottieRefCurrentProps>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const videoRightRef = useRef<HTMLVideoElement>(null);
+  const mobileFrameRef = useRef(0);
+  const mobileTargetRef = useRef(0);
+  const mobileDisplayRef = useRef(0);
+  const mobileFrameCacheRef = useRef<Map<number, HTMLImageElement>>(new Map());
   const animationSourceRef = useRef<HTMLDivElement>(null);
   const cfgRef  = useRef(cfg);
   const textRef = useRef<HTMLDivElement>(null);
@@ -167,6 +188,8 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
+    const mobile = isMobileDevice();
+    setIsMobile(mobile);
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const lowCores = (navigator.hardwareConcurrency ?? 8) <= 4;
     const lowMemory = ("deviceMemory" in navigator) && (navigator as { deviceMemory: number }).deviceMemory < 4;
@@ -177,116 +200,190 @@ export default function Page() {
     const safari = /Safari/.test(navigator.userAgent)
       && !/Chrome|Chromium|Android|Edg|OPR/.test(navigator.userAgent);
     setUseCompatibleBloom(ios || safari);
+    setUseCanvasRenderer(!mobile && !safari);
   }, []);
 
   useEffect(() => {
     if (isLowEnd || dspfAnim) return;
-    fetch("/lotties/dspf.json").then(r => r.json()).then(setDspfAnim);
+    fetch("/lotties/dspf_10fps.json").then(r => r.json()).then(setDspfAnim);
   }, [isLowEnd, dspfAnim]);
 
-  // Keep idle playback on phones; scrub source frames with scroll on larger screens.
+  // Desktop combines idle playback and scroll scrubbing; phones draw only on scroll.
   useEffect(() => {
-    if (isLowEnd || !heroVisible) return;
+    if (isLowEnd) return;
     const readScrollY = () => Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
     let lastY = readScrollY();
     let pendingFrames = 0;
-    let lastTime = performance.now();
-    let lastIdleSpeed = -1;
-    let rafId: number;
+    let playhead = 0;
+    let lastDrawnFrame = -1;
+    let lastTime = 0;
+    let lastScrollAt = -Infinity;
+    let initRaf = 0;
+    let tickRaf = 0;
 
     const handleScroll = () => {
       const y = readScrollY();
       const anim = dspfRef.current?.animationItem;
-      // Preserve the original forward scrubbing in either scroll direction.
-      // Limit queued travel so a fast fling cannot leave a long catch-up tail.
       if (anim && anim.totalFrames > 0) {
-        pendingFrames = Math.min(
-          pendingFrames + Math.abs(y - lastY) * cfgRef.current.SCROLL_SPEED,
-          anim.totalFrames / 2
-        );
+        pendingFrames += (y - lastY) * cfg.SCROLL_SPEED;
+        if (y !== lastY) lastScrollAt = performance.now();
+        if (isMobile && !tickRaf) tickRaf = requestAnimationFrame(tick);
       }
       lastY = y;
     };
 
     const tick = (now: number) => {
-      const elapsed = Math.max(1, now - lastTime);
+      tickRaf = 0;
+      const elapsed = Math.min(100, Math.max(0, now - lastTime));
       lastTime = now;
       const anim = dspfRef.current?.animationItem;
-      if (anim) {
-        const { IDLE_FPS, LERP } = cfgRef.current;
-        const idleSpeed = IDLE_FPS / (anim.frameRate || 30);
-        if (idleSpeed !== lastIdleSpeed) {
-          anim.setSpeed(idleSpeed);
-          lastIdleSpeed = idleSpeed;
-        }
-        if (elapsed > 100) pendingFrames = 0;
-        const smoothing = 1 - Math.pow(1 - LERP, Math.min(elapsed, 100) / (1000 / 60));
-        const nudge = pendingFrames * smoothing;
-        if (nudge > 0.01 && anim.totalFrames > 0) {
-          pendingFrames -= nudge;
-          anim.goToAndPlay((anim.currentFrame + nudge) % anim.totalFrames, true);
-        } else {
-          pendingFrames = 0;
+      if (anim && anim.totalFrames > 0) {
+        const idleFrames = !isMobile && now - lastScrollAt >= 180 ? cfg.IDLE_FPS * elapsed / 1000 : 0;
+        playhead = wrapFrame(playhead + idleFrames + pendingFrames, anim.totalFrames);
+        pendingFrames = 0;
+        const frame = Math.floor(playhead / HERO_FRAME_STEP) * HERO_FRAME_STEP;
+        if (frame !== lastDrawnFrame) {
+          anim.goToAndStop(frame, true);
+          lastDrawnFrame = frame;
         }
       }
-      rafId = requestAnimationFrame(tick);
+      if (!isMobile) tickRaf = requestAnimationFrame(tick);
     };
 
-    if (!isPhoneViewport) window.addEventListener("scroll", handleScroll, { passive: true });
-    rafId = requestAnimationFrame(tick);
+    const initialize = () => {
+      const anim = dspfRef.current?.animationItem;
+      if (!anim) {
+        initRaf = requestAnimationFrame(initialize);
+        return;
+      }
+      anim.setSubframe(false);
+      anim.pause();
+      playhead = anim.currentFrame;
+      lastTime = performance.now();
+      if (!isMobile) tickRaf = requestAnimationFrame(tick);
+    };
+
+    if (heroVisible) window.addEventListener("scroll", handleScroll, { passive: true });
+    initRaf = requestAnimationFrame(initialize);
     return () => {
-      if (!isPhoneViewport) window.removeEventListener("scroll", handleScroll);
+      if (heroVisible) window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(initRaf);
+      cancelAnimationFrame(tickRaf);
+    };
+  }, [isLowEnd, isMobile, heroVisible, useCanvasRenderer, useCompatibleBloom, cfg.IDLE_FPS, cfg.SCROLL_SPEED]);
+
+  // The lightweight phone renderer displays one of 64 stills only when scrolled.
+  useEffect(() => {
+    if (!isLowEnd || !isMobile || !heroVisible) return;
+    const readScrollY = () => Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+    let lastY = readScrollY();
+    let rafId = 0;
+    let requestId = 0;
+    let requestedFrame = mobileFrameRef.current;
+    let lastTime = 0;
+    let active = true;
+    const cache = mobileFrameCacheRef.current;
+    const getImage = (frame: number) => {
+      const index = frame % MOBILE_FRAME_COUNT;
+      let image = cache.get(index);
+      if (!image) {
+        image = new Image();
+        image.decoding = "async";
+        image.src = mobileFrameSrc(index);
+        cache.set(index, image);
+        if (cache.size > 12) cache.delete(cache.keys().next().value!);
+      }
+      return image;
+    };
+    getImage(0);
+    getImage(1);
+    getImage(2);
+
+    const requestFrame = (next: number) => {
+      if (next === requestedFrame) return;
+      requestedFrame = next;
+      const currentRequest = ++requestId;
+      if (next === mobileFrameRef.current) return;
+
+      const image = getImage(next);
+      const show = () => {
+        if (!active || currentRequest !== requestId || !image.naturalWidth) return;
+        mobileFrameRef.current = next;
+        setMobileFrame(next);
+        getImage(next + 1);
+        getImage(next + 2);
+      };
+      if (image.complete) show();
+      else image.decode().then(show, () => image.addEventListener("load", show, { once: true }));
+    };
+    const updateFrame = (now: number) => {
+      rafId = 0;
+      const elapsed = lastTime ? Math.min(64, now - lastTime) : 16;
+      lastTime = now;
+      const lag = cfg.MOBILE_SCRUB_LAG_MS;
+      const alpha = lag === 0 ? 1 : 1 - Math.exp(-elapsed / lag);
+      mobileDisplayRef.current += (mobileTargetRef.current - mobileDisplayRef.current) * alpha;
+      if (Math.abs(mobileTargetRef.current - mobileDisplayRef.current) < 0.25) {
+        mobileDisplayRef.current = mobileTargetRef.current;
+      }
+      const position = wrapFrame(mobileDisplayRef.current, HERO_TIMELINE_FRAMES);
+      requestFrame(Math.min(MOBILE_FRAME_COUNT - 1, Math.floor(position / HERO_FRAME_STEP)));
+      if (mobileDisplayRef.current !== mobileTargetRef.current) rafId = requestAnimationFrame(updateFrame);
+    };
+    const handleScroll = () => {
+      const y = readScrollY();
+      mobileTargetRef.current += (y - lastY) * cfg.SCROLL_SPEED;
+      lastY = y;
+      if (!rafId) rafId = requestAnimationFrame(updateFrame);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    if (mobileTargetRef.current !== mobileDisplayRef.current) rafId = requestAnimationFrame(updateFrame);
+    return () => {
+      active = false;
+      window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(rafId);
     };
-  }, [isLowEnd, heroVisible, isPhoneViewport]);
+  }, [isLowEnd, isMobile, heroVisible, cfg.SCROLL_SPEED, cfg.MOBILE_SCRUB_LAG_MS]);
 
-  // The lightweight MP4 has interpolated 60 fps output, but its source timeline
-  // is 30 fps. Keep the scrub slider's frame-per-pixel behavior across modes.
+  // Each scroll adds the same timeline travel as Lottie. Coalesce video seeks
+  // so touch-scroll events don't queue them up.
   useEffect(() => {
-    if (!isLowEnd || !heroVisible || isPhoneViewport) return;
+    if (!isLowEnd || isMobile || !heroVisible) return;
     const video = videoRightRef.current;
     if (!video) return;
     const readScrollY = () => Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
     let lastY = readScrollY();
     let pendingSeconds = 0;
-    let lastTime = performance.now();
-    let rafId: number;
+    let rafId = 0;
 
+    const flush = () => {
+      rafId = 0;
+      if (video.seeking || !Number.isFinite(video.duration) || video.duration <= 0) return;
+      if (Math.abs(pendingSeconds) < 1 / 60) return;
+      video.currentTime = wrapFrame(video.currentTime + pendingSeconds, video.duration);
+      pendingSeconds = 0;
+    };
+    const schedule = () => {
+      if (!rafId) rafId = requestAnimationFrame(flush);
+    };
     const handleScroll = () => {
       const y = readScrollY();
-      if (Number.isFinite(video.duration) && video.duration > 0) {
-        pendingSeconds = Math.min(
-          pendingSeconds + Math.abs(y - lastY) * cfgRef.current.SCROLL_SPEED / HERO_SOURCE_FPS,
-          video.duration / 2
-        );
-      }
+      pendingSeconds += (y - lastY) * cfg.SCROLL_SPEED / HERO_TIMELINE_FPS;
       lastY = y;
-    };
-
-    const tick = (now: number) => {
-      const elapsed = Math.max(1, now - lastTime);
-      lastTime = now;
-      if (elapsed > 100) pendingSeconds = 0;
-      if (pendingSeconds > 0 && !video.seeking && video.readyState >= HTMLMediaElement.HAVE_METADATA) {
-        const smoothing = 1 - Math.pow(1 - cfgRef.current.LERP, Math.min(elapsed, 100) / (1000 / 60));
-        const nudge = pendingSeconds * smoothing;
-        if (nudge >= 1 / 60) {
-          video.currentTime = (video.currentTime + nudge) % video.duration;
-          pendingSeconds -= nudge;
-        } else {
-          pendingSeconds = 0;
-        }
-      }
-      rafId = requestAnimationFrame(tick);
+      schedule();
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    rafId = requestAnimationFrame(tick);
+    video.addEventListener("loadedmetadata", schedule);
+    video.addEventListener("seeked", schedule);
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      video.removeEventListener("loadedmetadata", schedule);
+      video.removeEventListener("seeked", schedule);
       cancelAnimationFrame(rafId);
     };
-  }, [isLowEnd, heroVisible, isPhoneViewport]);
+  }, [isLowEnd, isMobile, heroVisible, cfg.SCROLL_SPEED]);
 
   // Keep one pending update so rapid scroll events cannot postpone a paint.
   useEffect(() => {
@@ -312,11 +409,13 @@ export default function Page() {
     };
   }, [cfg.PARALLAX_SPEED]);
 
-  // Force-play videos on low-end (bypasses iOS low-power-mode autoplay block)
+  // Keep the video playing so Safari has decoded frames ready for scroll seeks.
   useEffect(() => {
-    if (!isLowEnd) return;
+    if (!isLowEnd || isMobile) return;
+    const video = videoRightRef.current;
+    if (!video) return;
     const tryPlay = () => {
-      videoRightRef.current?.play().catch(() => {});
+      video.play().catch(() => {});
     };
     tryPlay();
     // Retry on first user gesture — the only reliable unlock on iOS low-power mode
@@ -331,7 +430,7 @@ export default function Page() {
       document.removeEventListener("touchstart", onGesture);
       document.removeEventListener("click", onGesture);
     };
-  }, [isLowEnd]);
+  }, [isLowEnd, isMobile]);
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);
@@ -386,7 +485,7 @@ export default function Page() {
   const settingsExport = JSON.stringify({
     page: "Homepage hero",
     viewport: { width: windowWidth, height: typeof window === "undefined" ? null : window.innerHeight },
-    rendering: isLowEnd ? "video" : "lottie",
+    rendering: isLowEnd ? (isMobile ? "frames" : "video") : "lottie",
     bloomRendering: useCompatibleBloom ? "compatible" : "svg",
     settings: cfg,
     textAlign,
@@ -440,14 +539,19 @@ export default function Page() {
             <div style={{ position: "relative", width: "100%", height: "100%", isolation: "isolate" }}>
               <div ref={animationSourceRef} style={{ width: "100%", height: "100%" }}>
                 {isLowEnd
-                  ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_mobile_576_60.mp4" type="video/mp4" /></video>
-                  : dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
+                  ? isMobile
+                    ? <img src={mobileFrameSrc(mobileFrame)} alt="" draggable={false} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                    : <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_mobile_576_60.mp4" type="video/mp4" /></video>
+                  : dspfAnim && <Lottie key={useCanvasRenderer && !useCompatibleBloom ? "canvas" : "svg"}
+                      lottieRef={dspfRef} animationData={dspfAnim} loop autoplay={!isMobile}
+                      renderer={useCanvasRenderer && !useCompatibleBloom ? "canvas" : "svg"}
                       rendererSettings={LOTTIE_RENDERER_SETTINGS}
                       style={{ width: "100%", height: "100%" }} />}
               </div>
               {useCompatibleBloom && (
                 <CompatibleBloom sourceRef={animationSourceRef} videoRef={videoRightRef}
-                  mode={isLowEnd ? "video" : "svg"} active={true}
+                  mode={isLowEnd ? (isMobile ? "image" : "video") : "svg"}
+                  imageSrc={isLowEnd && isMobile ? mobileFrameSrc(mobileFrame) : undefined} active={true}
                   amount={cfg.BLOOM_AMOUNT} threshold={cfg.BLOOM_THRESHOLD} size={cfg.BLOOM_SIZE} />
               )}
             </div>
@@ -559,7 +663,7 @@ export default function Page() {
                     onChange={e => setIsLowEnd(e.target.checked)}
                     style={{ accentColor: "#4ade80", cursor: "pointer" }}
                   />
-                  <span>lightweight video</span>
+                  <span>lightweight {isMobile ? "frames" : "video"}</span>
                 </label>
               </div>
 

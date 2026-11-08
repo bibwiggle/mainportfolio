@@ -5,7 +5,8 @@ import { useEffect, useId, useRef, useState, type RefObject } from "react";
 interface CompatibleBloomProps {
   sourceRef: RefObject<HTMLDivElement>;
   videoRef: RefObject<HTMLVideoElement>;
-  mode: "svg" | "video";
+  mode: "svg" | "video" | "image";
+  imageSrc?: string;
   active: boolean;
   amount: number;
   threshold: number;
@@ -21,7 +22,7 @@ interface SvgSource {
 
 const DEFAULT_VIEW_BOX = [0, 0, 800, 2778];
 
-export function CompatibleBloom({ sourceRef, videoRef, mode, active, amount, threshold, size }: CompatibleBloomProps) {
+export function CompatibleBloom({ sourceRef, videoRef, mode, imageSrc, active, amount, threshold, size }: CompatibleBloomProps) {
   const sourceId = `compatible-bloom-${useId().replace(/:/g, "")}`;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [svgSource, setSvgSource] = useState<SvgSource | null>(null);
@@ -169,6 +170,7 @@ export function CompatibleBloom({ sourceRef, videoRef, mode, active, amount, thr
         </svg>
       )}
       {mode === "video" && <canvas ref={canvasRef} className="block h-full w-full" />}
+      {mode === "image" && imageSrc && <img src={imageSrc} alt="" draggable={false} className="block h-full w-full object-contain" />}
     </div>
   );
 }
