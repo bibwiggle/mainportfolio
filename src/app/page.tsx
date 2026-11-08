@@ -3,6 +3,7 @@
 import { ProjectGrid } from "@/components/ui/card";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import { DEFAULT_CHROME_SETTINGS } from "@/components/ChromeNavBackground";
+import { CompatibleBloom } from "@/components/CompatibleBloom";
 import { useState, useEffect, useRef, useId } from "react";
 import type { LottieRefCurrentProps } from "lottie-react";
 import dynamic from "next/dynamic";
@@ -126,6 +127,7 @@ export default function Page() {
   const [cfg, setCfg] = useState<Cfg>(DEFAULTS);
   const [windowWidth, setWindowWidth] = useState(1920);
   const [isLowEnd, setIsLowEnd] = useState(false);
+  const [useCompatibleBloom, setUseCompatibleBloom] = useState(false);
   const [dspfAnim, setDspfAnim] = useState<object | null>(null);
   const [tweakerOpen, setTweakerOpen] = useState(true);
   const [textAlign, setTextAlign] = useState<"left" | "center" | "right">("center");
@@ -137,6 +139,7 @@ export default function Page() {
   const dspfRef     = useRef<LottieRefCurrentProps>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const videoRightRef = useRef<HTMLVideoElement>(null);
+  const animationSourceRef = useRef<HTMLDivElement>(null);
   const cfgRef  = useRef(cfg);
   const heroRef = useRef<HTMLElement>(null);
   const [heroVisible, setHeroVisible] = useState(true);
@@ -168,12 +171,18 @@ export default function Page() {
     const lowCores = (navigator.hardwareConcurrency ?? 8) <= 4;
     const lowMemory = ("deviceMemory" in navigator) && (navigator as { deviceMemory: number }).deviceMemory < 4;
     setIsLowEnd(reducedMotion || lowCores || lowMemory);
+    // WebKit can drop SVG URL filters on accelerated media layers.
+    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent)
+      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const safari = /Safari/.test(navigator.userAgent)
+      && !/Chrome|Chromium|Android|Edg|OPR/.test(navigator.userAgent);
+    setUseCompatibleBloom(ios || safari);
   }, []);
 
   useEffect(() => {
-    if (isLowEnd) return;
+    if (isLowEnd || dspfAnim) return;
     fetch("/lotties/dspf.json").then(r => r.json()).then(setDspfAnim);
-  }, [isLowEnd]);
+  }, [isLowEnd, dspfAnim]);
 
   // Scrub source frames with scroll distance while idle playback continues slowly.
   useEffect(() => {
@@ -313,13 +322,7 @@ export default function Page() {
   const rightTranslateX = cfg.RIGHT_TRANSLATE_X;
   const rightTranslateY = cfg.RIGHT_Y - windowWidth * cfg.RIGHT_TRANSLATE_RATE;
 
-  // ── Responsive bio text ───────────────────────────────────────────────────
-  const bioText =
-    windowWidth < 640 ? (
-      <>a designer and maker in NYC.</>
-    ) : (
-      <>a designer and maker in NYC, creating objects, visuals, and everything in between.</>
-    );
+  const bioText = "a designer and maker in NYC, specializing in fabrication and visual media.";
 
   // ── Dev tweaker helpers ───────────────────────────────────────────────────
   const set = (key: keyof Cfg, val: number) =>
@@ -329,6 +332,7 @@ export default function Page() {
     page: "Homepage hero",
     viewport: { width: windowWidth, height: typeof window === "undefined" ? null : window.innerHeight },
     rendering: isLowEnd ? "video" : "lottie",
+    bloomRendering: useCompatibleBloom ? "compatible" : "svg",
     settings: cfg,
     textAlign,
   }, null, 2);
@@ -377,14 +381,21 @@ export default function Page() {
 
         {/* Right panel */}
         <div ref={rightPanelRef} className="absolute top-0 left-1/2 h-full" style={{ width: `${cfg.PANEL_PX}px`, marginLeft: -cfg.PANEL_PX / 2, zIndex: 2, willChange: "transform" }}>
-          <div style={{ width: "100%", height: "100%", filter: cfg.BLOOM_AMOUNT > 0 ? `url(#${bloomId})` : undefined, transform: `translateX(${rightTranslateX}%) translateY(${rightTranslateY}%) scale(${rightScale}) rotate(${cfg.RIGHT_ROTATION}deg)` }}>
+          <div data-bloom-renderer={useCompatibleBloom ? "compatible" : "svg"} style={{ width: "100%", height: "100%", filter: !useCompatibleBloom && cfg.BLOOM_AMOUNT > 0 ? `url(#${bloomId})` : undefined, transform: `translateX(${rightTranslateX}%) translateY(${rightTranslateY}%) scale(${rightScale}) rotate(${cfg.RIGHT_ROTATION}deg)` }}>
             <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
-              display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              {isLowEnd
-                ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web2.mp4" type="video/mp4" /></video>
-                : dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
-                    rendererSettings={LOTTIE_RENDERER_SETTINGS}
-                    style={{ width: "100%", height: "100%" }} />}
+              display: "flex", alignItems: "center", justifyContent: "center", isolation: "isolate" }}>
+              <div ref={animationSourceRef} style={{ width: "100%", height: "100%" }}>
+                {isLowEnd
+                  ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web2.mp4" type="video/mp4" /></video>
+                  : dspfAnim && <Lottie lottieRef={dspfRef} animationData={dspfAnim} loop autoplay
+                      rendererSettings={LOTTIE_RENDERER_SETTINGS}
+                      style={{ width: "100%", height: "100%" }} />}
+              </div>
+              {useCompatibleBloom && (
+                <CompatibleBloom sourceRef={animationSourceRef} videoRef={videoRightRef}
+                  mode={isLowEnd ? "video" : "svg"} active={heroVisible}
+                  amount={cfg.BLOOM_AMOUNT} threshold={cfg.BLOOM_THRESHOLD} size={cfg.BLOOM_SIZE} />
+              )}
             </div>
           </div>
         </div>
@@ -497,6 +508,12 @@ export default function Page() {
                   <span>low-end</span>
                 </label>
               </div>
+
+              <label className="mb-4 flex items-center gap-2 text-xs text-white/60">
+                <input type="checkbox" checked={useCompatibleBloom}
+                  onChange={e => setUseCompatibleBloom(e.target.checked)} />
+                Safari glow preview
+              </label>
 
               {SLIDERS.map(({ key, label, min, max, step, section }) => (
                 <div key={key}>
