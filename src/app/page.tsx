@@ -39,10 +39,10 @@ const DEFAULTS = {
   ...DEFAULT_CHROME_SETTINGS,
   PANEL_PX:             590,
   RIGHT_SCALE:         -1.06,
-  RIGHT_SCALE_RATE:     0.0005,
+  RIGHT_SCALE_RATE:     0.0011,
   RIGHT_TRANSLATE_X:    -3,
   RIGHT_TRANSLATE_RATE: 0.001,
-  RIGHT_Y:             26,
+  RIGHT_Y:             32,
   RIGHT_ROTATION:      90,
   PARALLAX_SPEED:       0.69,
   BLOOM_AMOUNT:        1.5,
@@ -61,7 +61,7 @@ const DEFAULTS = {
   TEXT_Y:               -24,
   MOBILE_TEXT_Y:        -20,
   HEADING_MIN:          45,
-  HEADING_VW:           8.2,
+  HEADING_VW:           11.9,
   HEADING_MAX:          76,
   BIO_MIN:              18,
   BIO_VW:               1.6,
@@ -320,9 +320,19 @@ export default function Page() {
   }, [typedCount]);
 
   // ── Computed transforms ───────────────────────────────────────────────────
+  const compactWindow = windowWidth > 640 && windowWidth <= 1366;
   const rightScale      = cfg.RIGHT_SCALE     - windowWidth * cfg.RIGHT_SCALE_RATE;
   const rightTranslateX = cfg.RIGHT_TRANSLATE_X;
-  const rightTranslateY = cfg.RIGHT_Y - windowWidth * cfg.RIGHT_TRANSLATE_RATE;
+  // Lift the artwork on phones so it sits closer to the intro copy.
+  const rightTranslateY = cfg.RIGHT_Y - windowWidth * cfg.RIGHT_TRANSLATE_RATE - (windowWidth <= 640 ? 12 : 0);
+  const headingFontSize = compactWindow
+    ? `clamp(${cfg.HEADING_MIN * 0.8}px, min(${cfg.HEADING_VW * 0.7}vw, 9vh), ${Math.min(cfg.HEADING_MAX * 0.8, 61)}px)`
+    : `clamp(${cfg.HEADING_MIN}px, min(${cfg.HEADING_VW}vw, 12vh), ${cfg.HEADING_MAX}px)`;
+  const bioFontSize = compactWindow
+    ? `clamp(${cfg.BIO_MIN * 0.9}px, min(${cfg.BIO_VW * 0.8}vw, 3.2vh), ${Math.min(cfg.BIO_MAX * 0.8, 21)}px)`
+    : `clamp(${cfg.BIO_MIN}px, min(${cfg.BIO_VW}vw, 4vh), ${cfg.BIO_MAX}px)`;
+  const phoneHeadingFontSize = `clamp(${Math.min(cfg.HEADING_MIN * 0.62, 28)}px, min(${cfg.HEADING_VW * 0.8}vw, 5.5vh), ${Math.min(cfg.HEADING_MAX * 0.5, 38)}px)`;
+  const phoneBioFontSize = `clamp(${Math.min(cfg.BIO_MIN * 0.8, 14)}px, min(${cfg.BIO_VW * 2.2}vw, 3.2vh), ${Math.min(cfg.BIO_MAX * 0.65, 18)}px)`;
 
   const bioText = "a designer and maker in NYC, specializing in fabrication and visual media.";
 
@@ -414,7 +424,7 @@ export default function Page() {
               textAlign,
               transform: `translateY(${windowWidth < 640 ? cfg.MOBILE_TEXT_Y : cfg.TEXT_Y}vh)`,
             }}>
-              <h1 className="text-white font-bold leading-tight mb-2 md:mb-6" style={{ fontSize: `clamp(${cfg.HEADING_MIN}px, min(${cfg.HEADING_VW}vw, 12vh), ${cfg.HEADING_MAX}px)` }}>
+              <h1 className="text-white font-bold leading-tight mb-2 md:mb-6" style={{ fontSize: windowWidth <= 640 ? phoneHeadingFontSize : headingFontSize }}>
                 {HEADING_FULL.slice(0, typedCount).split("\n").map((line, i, lines) => (
                   <span key={i}>
                     {i > 0 && <br />}
@@ -432,7 +442,7 @@ export default function Page() {
               </h1>
               <p className="text-white/80 leading-relaxed text-balance transition-opacity duration-700"
                 style={{
-                  fontSize: `clamp(${cfg.BIO_MIN}px, min(${cfg.BIO_VW}vw, 4vh), ${cfg.BIO_MAX}px)`,
+                  fontSize: windowWidth <= 640 ? phoneBioFontSize : bioFontSize,
                   opacity: typingDone ? 1 : 0,
                 }}>
                 {bioText}
