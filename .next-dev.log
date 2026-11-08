@@ -88,3 +88,48 @@ Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
 Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
 Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
  GET / 200 in 699ms (compile: 244ms, render: 454ms)
+ GET / 200 in 86ms (compile: 15ms, render: 71ms)
+ GET / 200 in 80ms (compile: 5ms, render: 75ms)
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+✓ Compiled in 135ms
+ GET / 200 in 234ms (compile: 76ms, render: 159ms)
+ GET / 200 in 108ms (compile: 70ms, render: 37ms)
+✓ Compiled in 136ms
+ GET / 200 in 49ms (compile: 6ms, render: 43ms)
+ GET /fabrication 200 in 265ms (compile: 202ms, render: 63ms)
+ GET / 200 in 54ms (compile: 7ms, render: 47ms)
+✓ Compiled in 71ms
+✓ Compiled in 61ms
+✓ Compiled in 311ms
+✓ Compiled in 119ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 390ms (compile: 126ms, render: 263ms)
+ GET / 200 in 127ms (compile: 14ms, render: 113ms)
+✓ Compiled in 31ms
+✓ Compiled in 31ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 367ms (compile: 145ms, render: 223ms)
+ GET / 200 in 134ms (compile: 14ms, render: 119ms)
+✓ Compiled in 73ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 366ms (compile: 132ms, render: 235ms)
+✓ Compiled in 54ms
+✓ Compiled in 144ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 282ms (compile: 99ms, render: 183ms)
+✓ Compiled in 30ms

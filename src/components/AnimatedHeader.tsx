@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { ChromeNavBackground, type ChromeNavSettings } from "@/components/ChromeNavBackground";
 
 interface NavLink {
   href: string;
@@ -11,9 +12,10 @@ interface NavLink {
 
 interface AnimatedHeaderProps {
   navLinks: NavLink[];
+  chromeSettings?: ChromeNavSettings;
 }
 
-export function AnimatedHeader({ navLinks }: AnimatedHeaderProps) {
+export function AnimatedHeader({ navLinks, chromeSettings }: AnimatedHeaderProps) {
   const [isAtTop, setIsAtTop] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -93,8 +95,7 @@ export function AnimatedHeader({ navLinks }: AnimatedHeaderProps) {
       )}
 
       <motion.header
-        className="fixed top-0 left-0 right-0 z-[9999] h-14 flex items-center 
-                   backdrop-blur-sm shadow bg-opacity-30 px-4 lg:px-6"
+        className="chrome-nav-header isolate overflow-hidden fixed top-0 left-0 right-0 z-[9999] h-14 flex items-center px-4 lg:px-6"
         onMouseLeave={handleMouseLeaveHeader}
         initial={false}
         animate={{
@@ -103,13 +104,15 @@ export function AnimatedHeader({ navLinks }: AnimatedHeaderProps) {
         }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
-        <nav className="mx-auto flex gap-4 sm:gap-6">
+        <ChromeNavBackground active={showHeader} settings={chromeSettings} />
+        <nav aria-label="Main navigation" className="relative z-10 mx-auto flex gap-4 sm:gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               className={`${link.colorClass || "text-white"}
                           hover:underline underline-offset-4
-                          font-normal sm:text-sm md:text-base lg:text-lg`}
+                          rounded-sm font-normal sm:text-sm md:text-base lg:text-lg
+                          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white`}
               href={link.href}
             >
               {link.label}

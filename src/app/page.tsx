@@ -2,6 +2,7 @@
 
 import { ProjectGrid } from "@/components/ui/card";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
+import { DEFAULT_CHROME_SETTINGS } from "@/components/ChromeNavBackground";
 import { useState, useEffect, useRef, useId } from "react";
 import type { LottieRefCurrentProps } from "lottie-react";
 import dynamic from "next/dynamic";
@@ -34,6 +35,7 @@ const projects = [
 
 // ─── TWEAK THESE (edit defaults here once you've dialled them in) ─────────────
 const DEFAULTS = {
+  ...DEFAULT_CHROME_SETTINGS,
   PANEL_PX:             590,
   RIGHT_SCALE:         -1.06,
   RIGHT_SCALE_RATE:     0.0005,
@@ -75,6 +77,19 @@ type Cfg = typeof DEFAULTS;
 
 // Slider config for the dev panel
 const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: number; section?: string }[] = [
+  { key: "CHROME_REFLECTION", label: "Reflection strength", min: 0, max: 2, step: 0.05, section: "Navigation chrome" },
+  { key: "CHROME_SCALE", label: "Pattern size", min: 0.25, max: 4, step: 0.05 },
+  { key: "CHROME_SPEED", label: "Movement speed", min: 0, max: 5, step: 0.05 },
+  { key: "CHROME_DISTORTION", label: "Surface distortion", min: 0, max: 5, step: 0.05 },
+  { key: "CHROME_SHARPNESS", label: "Reflection sharpness", min: 1, max: 64, step: 1 },
+  { key: "CHROME_DARKNESS", label: "Background darkness", min: 0, max: 0.95, step: 0.01 },
+  { key: "CHROME_NOISE_AMOUNT", label: "Noise amount", min: 0, max: 2, step: 0.05, section: "Chrome noise" },
+  { key: "CHROME_NOISE_HARMONICS", label: "Noise harmonics", min: 1, max: 6, step: 1 },
+  { key: "CHROME_NOISE_PERIOD", label: "Noise period / size", min: 0.5, max: 8, step: 0.1 },
+  { key: "CHROME_NOISE_ROUGHNESS", label: "Noise roughness", min: 0, max: 0.9, step: 0.05 },
+  { key: "CHROME_NOISE_LACUNARITY", label: "Noise lacunarity", min: 1.2, max: 2.5, step: 0.05 },
+  { key: "CHROME_NOISE_SPEED", label: "Noise evolution speed", min: 0, max: 3, step: 0.05 },
+  { key: "CHROME_NOISE_SEED", label: "Noise seed", min: 0, max: 100, step: 1 },
   { key: "BLOOM_AMOUNT", label: "Bloom amount", min: 0, max: 3, step: 0.05, section: "Bloom" },
   { key: "BLOOM_THRESHOLD", label: "Bloom threshold", min: 0, max: 0.99, step: 0.01 },
   { key: "BLOOM_SIZE", label: "Bloom size (px)", min: 0, max: 60, step: 1 },
@@ -374,7 +389,7 @@ export default function Page() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <AnimatedHeader navLinks={homePageLinks} />
+        <AnimatedHeader navLinks={homePageLinks} chromeSettings={cfg} />
         <main className="relative z-10">
           <div className="relative">
           {/* Hero */}
