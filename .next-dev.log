@@ -49,3 +49,42 @@ Browserslist: browsers data (caniuse-lite) is 24 months old. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
 ✓ Compiled in 605ms
+ GET / 200 in 125ms (compile: 92ms, render: 32ms)
+✓ Compiled in 59ms
+✓ Compiled in 60ms
+✓ Compiled in 34ms
+✓ Compiled in 48ms
+✓ Compiled in 61ms
+✓ Compiled in 42ms
+✓ Compiled in 109ms
+✓ Compiled in 75ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 439ms (compile: 140ms, render: 298ms)
+✓ Compiled in 45ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 215ms (compile: 79ms, render: 136ms)
+✓ Compiled in 82ms
+✓ Compiled in 30ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 270ms (compile: 112ms, render: 158ms)
+✓ Compiled in 60ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 300ms (compile: 110ms, render: 190ms)
+✓ Compiled in 108ms
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 699ms (compile: 244ms, render: 454ms)

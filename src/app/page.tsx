@@ -2,7 +2,7 @@
 
 import { ProjectGrid } from "@/components/ui/card";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useId } from "react";
 import type { LottieRefCurrentProps } from "lottie-react";
 import dynamic from "next/dynamic";
 
@@ -35,34 +35,34 @@ const projects = [
 // ─── TWEAK THESE (edit defaults here once you've dialled them in) ─────────────
 const DEFAULTS = {
   PANEL_PX:             590,
-  LEFT_SCALE:           0.58,
-  LEFT_SCALE_RATE:     -0.0013,
-  LEFT_TRANSLATE_X:    -53,
-  LEFT_TRANSLATE_RATE: -0.027,
-  LEFT_Y:               0,
-  RIGHT_SCALE:         -0.72,
+  RIGHT_SCALE:         -1.06,
   RIGHT_SCALE_RATE:     0.0005,
-  RIGHT_TRANSLATE_X:    69,
-  RIGHT_TRANSLATE_RATE: 0.04,
-  RIGHT_Y:             1,
-  PARALLAX_SPEED:       0.3,
+  RIGHT_TRANSLATE_X:    -3,
+  RIGHT_TRANSLATE_RATE: 0.001,
+  RIGHT_Y:             26,
+  RIGHT_ROTATION:      90,
+  PARALLAX_SPEED:       0.69,
+  BLOOM_AMOUNT:        1.5,
+  BLOOM_THRESHOLD:     0.01,
+  BLOOM_SIZE:          4,
   PARALLAX_OVERFLOW:    60,
-  ANIM_SPEED:           2.4,
-  SCROLL_SPEED:         0.31,
+  IDLE_FPS:             60,
+  SCROLL_SPEED:         0.5,
   LERP:                 0.3,
   // Text
-  HERO_PT:              188,
+  HERO_PT:              164,
   ARROW_X:              8,
   ARROW_BOTTOM:         2,
-  TEXT_WIDTH_VW:        40,
-  TEXT_Y:               -7,
-  HEADING_MIN:          44,
+  TEXT_WIDTH_VW:        50,
+  TEXT_Y:               -24,
+  MOBILE_TEXT_Y:        -20,
+  HEADING_MIN:          45,
   HEADING_VW:           8.2,
-  HEADING_MAX:          83,
-  BIO_MIN:              19,
-  BIO_VW:               2.1,
-  BIO_MAX:              27,
-// textAlign: "right"
+  HEADING_MAX:          76,
+  BIO_MIN:              18,
+  BIO_VW:               1.6,
+  BIO_MAX:              26,
+// textAlign: "center"
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -75,27 +75,27 @@ type Cfg = typeof DEFAULTS;
 
 // Slider config for the dev panel
 const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: number; section?: string }[] = [
+  { key: "BLOOM_AMOUNT", label: "Bloom amount", min: 0, max: 3, step: 0.05, section: "Bloom" },
+  { key: "BLOOM_THRESHOLD", label: "Bloom threshold", min: 0, max: 0.99, step: 0.01 },
+  { key: "BLOOM_SIZE", label: "Bloom size (px)", min: 0, max: 60, step: 1 },
   { key: "PANEL_PX",             label: "Panel Width",       min: 100,    max: 1500,  step: 10     },
-  { key: "LEFT_SCALE",           label: "L Scale",           min: 0,      max: 5,     step: 0.01   },
-  { key: "LEFT_SCALE_RATE",      label: "L Scale Rate",      min: -0.005, max: 0.005, step: 0.0001 },
-  { key: "LEFT_TRANSLATE_X",     label: "L Translate X",     min: -300,   max: 300,   step: 1      },
-  { key: "LEFT_TRANSLATE_RATE",  label: "L Translate Rate",  min: -0.3,   max: 0.3,   step: 0.001  },
-  { key: "LEFT_Y",               label: "L Y",               min: -100,   max: 100,   step: 1      },
-  { key: "RIGHT_SCALE",          label: "R Scale",           min: -3,     max: 3,     step: 0.01   },
-  { key: "RIGHT_SCALE_RATE",     label: "R Scale Rate",      min: -0.005, max: 0.005, step: 0.0001 },
-  { key: "RIGHT_TRANSLATE_X",    label: "R Translate X",     min: -300,   max: 300,   step: 1      },
-  { key: "RIGHT_TRANSLATE_RATE", label: "R Translate Rate",  min: -0.3,   max: 0.3,   step: 0.001  },
-  { key: "RIGHT_Y",              label: "R Y",               min: -100,   max: 100,   step: 1      },
-  { key: "PARALLAX_SPEED",       label: "Parallax Speed",    min: 0,      max: 2,     step: 0.01   },
+  { key: "RIGHT_SCALE",          label: "Animation Scale",           min: -3,     max: 3,     step: 0.01   },
+  { key: "RIGHT_SCALE_RATE",     label: "Animation Scale Rate",      min: -0.005, max: 0.005, step: 0.0001 },
+  { key: "RIGHT_TRANSLATE_X",    label: "Animation Translate X",     min: -300,   max: 300,   step: 1      },
+  { key: "RIGHT_TRANSLATE_RATE", label: "Animation Y Rate",  min: -0.3,   max: 0.3,   step: 0.001  },
+  { key: "RIGHT_ROTATION", label: "Rotation (degrees)", min: -180, max: 180, step: 1 },
+  { key: "RIGHT_Y",              label: "Animation Y",               min: -100,   max: 100,   step: 1      },
+  { key: "PARALLAX_SPEED",       label: "Scroll movement (1 = text)",    min: 0,      max: 2,     step: 0.01   },
   { key: "PARALLAX_OVERFLOW",    label: "Parallax Overflow", min: 0,      max: 500,   step: 10     },
-  { key: "ANIM_SPEED",           label: "Anim Speed",        min: 0,      max: 10,    step: 0.1    },
-  { key: "SCROLL_SPEED",         label: "Scroll Speed",      min: 0,      max: 2,     step: 0.01   },
-  { key: "LERP",                 label: "Scroll Lerp",       min: 0.01,   max: 1,     step: 0.01   },
+  { key: "IDLE_FPS",             label: "Idle FPS",          min: 0,      max: 60,    step: 1      },
+  { key: "SCROLL_SPEED",         label: "Scrub frames / px",      min: 0,      max: 2,     step: 0.01   },
+  { key: "LERP",                 label: "Scrub smoothing",       min: 0.01,   max: 1,     step: 0.01   },
   { key: "HERO_PT",               label: "Hero Top Pad (px)", min: 0,      max: 300,   step: 2,     section: "── text ──" },
   { key: "ARROW_X",              label: "Arrow X",           min: -200,   max: 200,   step: 1      },
   { key: "ARROW_BOTTOM",         label: "Arrow Bottom",      min: 0,      max: 200,   step: 2      },
   { key: "TEXT_WIDTH_VW",        label: "Text Width",        min: 5,      max: 100,   step: 1      },
-  { key: "TEXT_Y",               label: "Text Y (vh)",       min: -50,    max: 50,    step: 1      },
+  { key: "TEXT_Y",               label: "Desktop Text Y (vh)", min: -50, max: 50, step: 1 },
+  { key: "MOBILE_TEXT_Y",        label: "Mobile Text Y (vh)", min: -50, max: 50, step: 1 },
   { key: "HEADING_MIN",          label: "H Min px",          min: 10,     max: 100,   step: 1      },
   { key: "HEADING_VW",           label: "H vw",              min: 0,      max: 20,    step: 0.1    },
   { key: "HEADING_MAX",          label: "H Max px",          min: 20,     max: 200,   step: 1      },
@@ -105,29 +105,24 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
 ];
 
 export default function Page() {
+  const bloomId = useId();
   const [cfg, setCfg] = useState<Cfg>(DEFAULTS);
   const [windowWidth, setWindowWidth] = useState(1920);
   const [isLowEnd, setIsLowEnd] = useState(false);
-  const [dsddAnim, setDsddAnim] = useState<object | null>(null);
   const [dspfAnim, setDspfAnim] = useState<object | null>(null);
   const [tweakerOpen, setTweakerOpen] = useState(true);
-  const [textAlign, setTextAlign] = useState<"left" | "center" | "right">("right");
+  const [textAlign, setTextAlign] = useState<"left" | "center" | "right">("center");
+  const exportRef = useRef<HTMLTextAreaElement>(null);
   const [copied, setCopied] = useState(false);
   const [typedCount, setTypedCount] = useState(0);
   const typingDone = typedCount >= HEADING_FULL.length;
 
-  const dsddRef     = useRef<LottieRefCurrentProps>(null);
   const dspfRef     = useRef<LottieRefCurrentProps>(null);
-  const leftPanelRef  = useRef<HTMLDivElement>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
-  const videoLeftRef  = useRef<HTMLVideoElement>(null);
   const videoRightRef = useRef<HTMLVideoElement>(null);
   const cfgRef  = useRef(cfg);
-  const arrowRef = useRef<HTMLDivElement>(null);
-  const projectsSectionRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const [heroVisible, setHeroVisible] = useState(true);
-  const updateArrowPos = useRef<() => void>(() => {});
   useEffect(() => { cfgRef.current = cfg; }, [cfg]);
 
   useEffect(() => {
@@ -138,14 +133,10 @@ export default function Page() {
         const visible = entry.isIntersecting;
         setHeroVisible(visible);
         if (visible) {
-          videoLeftRef.current?.play();
           videoRightRef.current?.play();
-          dsddRef.current?.play();
           dspfRef.current?.play();
         } else {
-          videoLeftRef.current?.pause();
           videoRightRef.current?.pause();
-          dsddRef.current?.pause();
           dspfRef.current?.pause();
         }
       },
@@ -164,93 +155,52 @@ export default function Page() {
 
   useEffect(() => {
     if (isLowEnd) return;
-    fetch("/lotties/dsdd.json").then(r => r.json()).then(setDsddAnim);
     fetch("/lotties/dspf.json").then(r => r.json()).then(setDspfAnim);
   }, [isLowEnd]);
 
-  // Apply idle speed whenever cfg.ANIM_SPEED changes (polls until items are ready on first load)
+  // Scrub source frames with scroll distance while idle playback continues slowly.
   useEffect(() => {
-    let tries = 0;
-    const apply = () => {
-      const d = dsddRef.current?.animationItem;
-      const p = dspfRef.current?.animationItem;
-      if (d) d.setSpeed(cfg.ANIM_SPEED);
-      if (p) p.setSpeed(cfg.ANIM_SPEED);
-      if ((!d || !p) && ++tries < 30) setTimeout(apply, 100);
-    };
-    apply();
-  }, [cfg.ANIM_SPEED]);
-
-  // Scrub dsdd while playing (lerp-smoothed)
-  useEffect(() => {
-    if (isLowEnd) return;
-    let lastY = window.scrollY;
-    let scrollTarget = 0;
-    let scrollCurrent = 0;
+    if (isLowEnd || !heroVisible) return;
+    const readScrollY = () => Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+    let lastY = readScrollY();
+    let pendingFrames = 0;
+    let lastTime = performance.now();
+    let lastIdleSpeed = -1;
     let rafId: number;
 
     const handleScroll = () => {
-      const delta = window.scrollY - lastY;
-      lastY = window.scrollY;
-      scrollTarget += Math.abs(delta) * cfgRef.current.SCROLL_SPEED;
-    };
-
-    const tick = () => {
-      const anim = dsddRef.current?.animationItem;
-      if (anim) {
-        const prev = scrollCurrent;
-        scrollCurrent += (scrollTarget - scrollCurrent) * cfgRef.current.LERP;
-        const nudge = scrollCurrent - prev;
-        if (Math.abs(nudge) > 0.01) {
-          const total = anim.totalFrames;
-          const next = ((anim.currentFrame + nudge) % total + total) % total;
-          anim.goToAndPlay(next, true);
-        }
-        // Reset once converged to avoid float drift
-        if (Math.abs(scrollTarget - scrollCurrent) < 0.001) {
-          scrollTarget = 0;
-          scrollCurrent = 0;
-        }
+      const y = readScrollY();
+      const anim = dspfRef.current?.animationItem;
+      // Preserve the original forward scrubbing in either scroll direction.
+      // Limit queued travel so a fast fling cannot leave a long catch-up tail.
+      if (anim && anim.totalFrames > 0) {
+        pendingFrames = Math.min(
+          pendingFrames + Math.abs(y - lastY) * cfgRef.current.SCROLL_SPEED,
+          anim.totalFrames / 2
+        );
       }
-      rafId = requestAnimationFrame(tick);
+      lastY = y;
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    rafId = requestAnimationFrame(tick);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      cancelAnimationFrame(rafId);
-    };
-  }, [isLowEnd]);
-
-  // Scrub dspf while playing (lerp-smoothed)
-  useEffect(() => {
-    if (isLowEnd) return;
-    let lastY = window.scrollY;
-    let scrollTarget = 0;
-    let scrollCurrent = 0;
-    let rafId: number;
-
-    const handleScroll = () => {
-      const delta = window.scrollY - lastY;
-      lastY = window.scrollY;
-      scrollTarget += Math.abs(delta) * cfgRef.current.SCROLL_SPEED;
-    };
-
-    const tick = () => {
+    const tick = (now: number) => {
+      const elapsed = Math.max(1, now - lastTime);
+      lastTime = now;
       const anim = dspfRef.current?.animationItem;
       if (anim) {
-        const prev = scrollCurrent;
-        scrollCurrent += (scrollTarget - scrollCurrent) * cfgRef.current.LERP;
-        const nudge = scrollCurrent - prev;
-        if (Math.abs(nudge) > 0.01) {
-          const total = anim.totalFrames;
-          const next = ((anim.currentFrame + nudge) % total + total) % total;
-          anim.goToAndPlay(next, true);
+        const { IDLE_FPS, LERP } = cfgRef.current;
+        const idleSpeed = IDLE_FPS / (anim.frameRate || 30);
+        if (idleSpeed !== lastIdleSpeed) {
+          anim.setSpeed(idleSpeed);
+          lastIdleSpeed = idleSpeed;
         }
-        if (Math.abs(scrollTarget - scrollCurrent) < 0.001) {
-          scrollTarget = 0;
-          scrollCurrent = 0;
+        if (elapsed > 100) pendingFrames = 0;
+        const smoothing = 1 - Math.pow(1 - LERP, Math.min(elapsed, 100) / (1000 / 60));
+        const nudge = pendingFrames * smoothing;
+        if (nudge > 0.01 && anim.totalFrames > 0) {
+          pendingFrames -= nudge;
+          anim.goToAndPlay((anim.currentFrame + nudge) % anim.totalFrames, true);
+        } else {
+          pendingFrames = 0;
         }
       }
       rafId = requestAnimationFrame(tick);
@@ -262,24 +212,36 @@ export default function Page() {
       window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(rafId);
     };
-  }, [isLowEnd]);
+  }, [isLowEnd, heroVisible]);
 
-  // Parallax — direct DOM mutation, zero React re-renders
+  // Keep one pending update so rapid scroll events cannot postpone a paint.
   useEffect(() => {
-    const handleScroll = () => {
-      const offset = -window.scrollY * cfgRef.current.PARALLAX_SPEED;
-      if (leftPanelRef.current)  leftPanelRef.current.style.transform  = `translateY(${offset}px)`;
-      if (rightPanelRef.current) rightPanelRef.current.style.transform = `translateY(${offset}px)`;
+    let frame: number | null = null;
+    const update = () => {
+      frame = null;
+      const scrollY = Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+      const offset = -scrollY * cfg.PARALLAX_SPEED;
+      if (rightPanelRef.current) {
+        rightPanelRef.current.style.transform = `translate3d(0, ${offset}px, 0)`;
+      }
     };
+    const handleScroll = () => {
+      if (frame === null) frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("resize", handleScroll, { passive: true });
+    return () => {
+      if (frame !== null) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [cfg.PARALLAX_SPEED]);
 
   // Force-play videos on low-end (bypasses iOS low-power-mode autoplay block)
   useEffect(() => {
     if (!isLowEnd) return;
     const tryPlay = () => {
-      videoLeftRef.current?.play().catch(() => {});
       videoRightRef.current?.play().catch(() => {});
     };
     tryPlay();
@@ -302,11 +264,9 @@ export default function Page() {
     if (!isLowEnd) return;
     let resumeTimer: ReturnType<typeof setTimeout> | null = null;
     const handleScroll = () => {
-      dsddRef.current?.animationItem?.pause();
       dspfRef.current?.animationItem?.pause();
       if (resumeTimer) clearTimeout(resumeTimer);
       resumeTimer = setTimeout(() => {
-        dsddRef.current?.animationItem?.play();
         dspfRef.current?.animationItem?.play();
       }, 200);
     };
@@ -324,44 +284,6 @@ export default function Page() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Arrow scroll — fixed to viewport bottom, stops at projects section top
-  useEffect(() => {
-    let rafId: number;
-    const update = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const arrow = arrowRef.current;
-        if (!arrow) return;
-        const { ARROW_X, ARROW_BOTTOM } = cfgRef.current;
-        const projects = projectsSectionRef.current;
-        let lift = ARROW_BOTTOM;
-        if (projects) {
-          const projectsTop = projects.getBoundingClientRect().top;
-          const arrowH = arrow.offsetHeight || 60;
-          // Stop the arrow just above the projects section
-          const clamp = window.innerHeight - projectsTop - arrowH + 56;
-          lift = Math.max(ARROW_BOTTOM, clamp);
-          // Hide once projects section has scrolled fully past
-          arrow.style.opacity = projectsTop < -arrowH ? "0" : "1";
-        }
-        // Only update transform — never layout-triggering bottom
-        arrow.style.transform = `translateX(calc(-50% + ${ARROW_X}px)) translateY(-${lift}px)`;
-      });
-    };
-    updateArrowPos.current = update;
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update, { passive: true });
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  // Re-apply arrow position when ARROW_X / ARROW_BOTTOM change from tweaker
-  useEffect(() => { updateArrowPos.current(); }, [cfg.ARROW_X, cfg.ARROW_BOTTOM]);
-
   // Typewriter effect for heading
   useEffect(() => {
     if (typedCount >= HEADING_FULL.length) return;
@@ -370,10 +292,9 @@ export default function Page() {
   }, [typedCount]);
 
   // ── Computed transforms ───────────────────────────────────────────────────
-  const leftScale       = cfg.LEFT_SCALE      - windowWidth * cfg.LEFT_SCALE_RATE;
   const rightScale      = cfg.RIGHT_SCALE     - windowWidth * cfg.RIGHT_SCALE_RATE;
-  const leftTranslateX  = cfg.LEFT_TRANSLATE_X  - windowWidth * cfg.LEFT_TRANSLATE_RATE;
-  const rightTranslateX = cfg.RIGHT_TRANSLATE_X - windowWidth * cfg.RIGHT_TRANSLATE_RATE;
+  const rightTranslateX = cfg.RIGHT_TRANSLATE_X;
+  const rightTranslateY = cfg.RIGHT_Y - windowWidth * cfg.RIGHT_TRANSLATE_RATE;
 
   // ── Responsive bio text ───────────────────────────────────────────────────
   const bioText =
@@ -387,41 +308,23 @@ export default function Page() {
   const set = (key: keyof Cfg, val: number) =>
     setCfg(c => ({ ...c, [key]: val }));
 
-  const copyToCode = () => {
-    const lines = [
-      `  PANEL_PX:             ${cfg.PANEL_PX},`,
-      `  LEFT_SCALE:           ${cfg.LEFT_SCALE},`,
-      `  LEFT_SCALE_RATE:     ${cfg.LEFT_SCALE_RATE},`,
-      `  LEFT_TRANSLATE_X:    ${cfg.LEFT_TRANSLATE_X},`,
-      `  LEFT_TRANSLATE_RATE: ${cfg.LEFT_TRANSLATE_RATE},`,
-      `  LEFT_Y:               ${cfg.LEFT_Y},`,
-      `  RIGHT_SCALE:         ${cfg.RIGHT_SCALE},`,
-      `  RIGHT_SCALE_RATE:     ${cfg.RIGHT_SCALE_RATE},`,
-      `  RIGHT_TRANSLATE_X:    ${cfg.RIGHT_TRANSLATE_X},`,
-      `  RIGHT_TRANSLATE_RATE: ${cfg.RIGHT_TRANSLATE_RATE},`,
-      `  RIGHT_Y:             ${cfg.RIGHT_Y},`,
-      `  PARALLAX_SPEED:       ${cfg.PARALLAX_SPEED},`,
-      `  PARALLAX_OVERFLOW:    ${cfg.PARALLAX_OVERFLOW},`,
-      `  ANIM_SPEED:           ${cfg.ANIM_SPEED},`,
-      `  SCROLL_SPEED:         ${cfg.SCROLL_SPEED},`,
-      `  LERP:                 ${cfg.LERP},`,
-      `  // Text`,
-      `  HERO_PT:              ${cfg.HERO_PT},`,
-      `  ARROW_X:              ${cfg.ARROW_X},`,
-      `  ARROW_BOTTOM:         ${cfg.ARROW_BOTTOM},`,
-      `  TEXT_WIDTH_VW:        ${cfg.TEXT_WIDTH_VW},`,
-      `  TEXT_Y:               ${cfg.TEXT_Y},`,
-      `  HEADING_MIN:          ${cfg.HEADING_MIN},`,
-      `  HEADING_VW:           ${cfg.HEADING_VW},`,
-      `  HEADING_MAX:          ${cfg.HEADING_MAX},`,
-      `  BIO_MIN:              ${cfg.BIO_MIN},`,
-      `  BIO_VW:               ${cfg.BIO_VW},`,
-      `  BIO_MAX:              ${cfg.BIO_MAX},`,
-      `// textAlign: "${textAlign}"`,
-    ].join("\n");
-    navigator.clipboard.writeText(lines);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  const settingsExport = JSON.stringify({
+    page: "Homepage hero",
+    viewport: { width: windowWidth, height: typeof window === "undefined" ? null : window.innerHeight },
+    rendering: isLowEnd ? "video" : "lottie",
+    settings: cfg,
+    textAlign,
+  }, null, 2);
+
+  const copyToCode = async () => {
+    try {
+      await navigator.clipboard.writeText(settingsExport);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      exportRef.current?.focus();
+      exportRef.current?.select();
+    }
   };
 
   const isDev = process.env.NODE_ENV === "development";
@@ -434,31 +337,31 @@ export default function Page() {
 
   return (
     <div className="relative min-h-screen no-scrollbar">
+      <svg aria-hidden="true" width="0" height="0" className="absolute pointer-events-none">
+        <defs>
+          <filter id={bloomId} x="-100%" y="-100%" width="300%" height="300%" colorInterpolationFilters="sRGB">
+            {/* Build a soft brightness mask so only highlights produce bloom. */}
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.2126 0.7152 0.0722 0 0" result="brightness" />
+            <feComponentTransfer in="brightness" result="highlights">
+              <feFuncA type="linear" slope={1 / (1 - cfg.BLOOM_THRESHOLD)} intercept={-cfg.BLOOM_THRESHOLD / (1 - cfg.BLOOM_THRESHOLD)} />
+            </feComponentTransfer>
+            <feComposite in="SourceGraphic" in2="highlights" operator="in" result="brightPixels" />
+            <feGaussianBlur in="brightPixels" stdDeviation={cfg.BLOOM_SIZE} result="glow" />
+            <feComponentTransfer in="glow" result="bloom">
+              <feFuncA type="linear" slope={cfg.BLOOM_AMOUNT} />
+            </feComponentTransfer>
+            <feBlend in="SourceGraphic" in2="bloom" mode="screen" />
+          </filter>
+        </defs>
+      </svg>
 
       {/* Background panels */}
       <div className="fixed inset-0 z-0" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.6s ease" }}>
 
-        {/* Left panel — wrapper ref'd for scroll-driven translateY only */}
-        <div ref={leftPanelRef} className="absolute top-0 left-0 h-full" style={{ width: `${cfg.PANEL_PX}px`, zIndex: 1, willChange: "transform" }}>
-          {/* React controls translateX + scale — separate div so scroll handler never clobbers it */}
-          <div style={{ width: "100%", height: "100%", transform: `translateX(${leftTranslateX}%) scale(${leftScale})` }}>
-            <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
-              transform: `translateX(-10%) translateY(${cfg.LEFT_Y}%)`,
-              display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              {isLowEnd
-                ? <video ref={videoLeftRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Lottie_web.mp4" type="video/mp4" /></video>
-                : dsddAnim && <Lottie lottieRef={dsddRef} animationData={dsddAnim} loop autoplay
-                    rendererSettings={LOTTIE_RENDERER_SETTINGS}
-                    style={{ width: "100%", height: "100%" }} />}
-            </div>
-          </div>
-        </div>
-
         {/* Right panel */}
-        <div ref={rightPanelRef} className="absolute top-0 right-0 h-full" style={{ width: `${cfg.PANEL_PX}px`, zIndex: 2, willChange: "transform" }}>
-          <div style={{ width: "100%", height: "100%", transform: `translateX(${rightTranslateX}%) scale(${rightScale})` }}>
+        <div ref={rightPanelRef} className="absolute top-0 left-1/2 h-full" style={{ width: `${cfg.PANEL_PX}px`, marginLeft: -cfg.PANEL_PX / 2, zIndex: 2, willChange: "transform" }}>
+          <div style={{ width: "100%", height: "100%", filter: cfg.BLOOM_AMOUNT > 0 ? `url(#${bloomId})` : undefined, transform: `translateX(${rightTranslateX}%) translateY(${rightTranslateY}%) scale(${rightScale}) rotate(${cfg.RIGHT_ROTATION}deg)` }}>
             <div style={{ position: "absolute", top: -cfg.PARALLAX_OVERFLOW, bottom: -cfg.PARALLAX_OVERFLOW, left: 0, right: 0,
-              transform: `translateX(10%) translateY(${cfg.RIGHT_Y}%)`,
               display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               {isLowEnd
                 ? <video ref={videoRightRef} autoPlay muted loop playsInline preload="auto" style={{ width: "100%", height: "100%", objectFit: "contain" }}><source src="/mp4/Comp_1_web2.mp4" type="video/mp4" /></video>
@@ -473,12 +376,13 @@ export default function Page() {
       <div className="relative z-10 min-h-screen flex flex-col">
         <AnimatedHeader navLinks={homePageLinks} />
         <main className="relative z-10">
+          <div className="relative">
           {/* Hero */}
           <section ref={heroRef} className="relative min-h-screen h-screen flex items-center justify-center pb-8 md:pb-0" style={{ paddingTop: cfg.HERO_PT }}>
             <div className="px-8" style={{
               width: `${cfg.TEXT_WIDTH_VW}vw`,
               textAlign,
-              transform: `translateY(${cfg.TEXT_Y}vh)`,
+              transform: `translateY(${windowWidth < 640 ? cfg.MOBILE_TEXT_Y : cfg.TEXT_Y}vh)`,
             }}>
               <h1 className="text-white font-bold leading-tight mb-2 md:mb-6" style={{ fontSize: `clamp(${cfg.HEADING_MIN}px, min(${cfg.HEADING_VW}vw, 12vh), ${cfg.HEADING_MAX}px)` }}>
                 {HEADING_FULL.slice(0, typedCount).split("\n").map((line, i, lines) => (
@@ -509,28 +413,29 @@ export default function Page() {
 
           <div style={{ height: HERO_PROJECTS_GAP }} />
 
+          {/* Native sticky positioning keeps the arrow in sync with browser scrolling. */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 bottom-2 z-20">
+            <div className="sticky mx-auto h-12 w-fit" style={{
+              top: `calc(100dvh - 48px - ${cfg.ARROW_BOTTOM}px)`,
+              transform: `translateX(${cfg.ARROW_X}px)`,
+            }}>
+              <a href="#projects" className="pointer-events-auto text-white flex flex-col items-center gap-1 opacity-0 animate-fadeInBounce">
+                <span className="text-sm tracking-widest uppercase">Projects</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 5v14M5 12l7 7 7-7" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          </div>
+
           {/* Projects */}
-          <section ref={projectsSectionRef} className="min-h-screen flex flex-col items-center justify-center relative">
+          <section className="min-h-screen flex flex-col items-center justify-center relative">
             <div className="flex-1 w-full bg-black" id="projects">
               <ProjectGrid projects={projects} fullHeight />
             </div>
           </section>
         </main>
-      </div>
-
-      {/* ── Projects arrow — fixed, scroll-driven ────────────────────────── */}
-      <div
-        ref={arrowRef}
-        style={{ position: "fixed", left: "50%", bottom: 0, zIndex: 20,
-          transform: `translateX(calc(-50% + ${cfg.ARROW_X}px)) translateY(-${cfg.ARROW_BOTTOM}px)`,
-          willChange: "transform" }}
-      >
-        <a href="#projects" className="text-white flex flex-col items-center gap-1 opacity-0 animate-fadeInBounce">
-          <span className="text-sm tracking-widest uppercase">Projects</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
-        </a>
       </div>
 
       {/* ── Dev Tweaker Panel (dev mode only) ─────────────────────────────── */}
@@ -607,7 +512,9 @@ export default function Page() {
                   <div style={{ marginBottom: 8 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
                       <span style={{ color: "#888" }}>{label}</span>
-                      <span style={{ color: "#fff" }}>{cfg[key]}</span>
+                      <input type="number" aria-label={label + " value"} min={min} max={max} step={step} value={cfg[key]}
+                        onChange={e => { if (e.target.value !== "" && Number.isFinite(e.target.valueAsNumber)) set(key, Math.max(min, Math.min(max, e.target.valueAsNumber))); }}
+                        className="w-20 rounded bg-black text-right text-white" />
                     </div>
                     <input
                       type="range"
@@ -622,10 +529,17 @@ export default function Page() {
                 </div>
               ))}
 
+              <p className="mb-3 text-xs leading-relaxed text-white/60">
+                Adjust controls, copy settings, and paste them into chat to make them permanent.
+              </p>
+              <details className="mb-3" open>
+                <summary className="cursor-pointer">Settings to share</summary>
+                <textarea ref={exportRef} readOnly value={settingsExport} aria-label="Settings to share in chat" className="mt-2 h-40 w-full select-text rounded bg-black p-2 text-xs" />
+              </details>
               {/* Reset + Copy */}
               <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
                 <button
-                  onClick={() => setCfg(DEFAULTS)}
+                  onClick={() => { setCfg(DEFAULTS); setTextAlign("center"); }}
                   style={{
                     flex: 1, padding: "4px 0", fontSize: 10, borderRadius: 4,
                     background: "#1a1a1a", border: "1px solid #444", color: "#aaa", cursor: "pointer",
@@ -643,7 +557,7 @@ export default function Page() {
                     transition: "background 0.2s, border-color 0.2s, color 0.2s",
                   }}
                 >
-                  {copied ? "copied!" : "copy to code"}
+                  {copied ? "copied!" : "copy settings"}
                 </button>
               </div>
             </div>
