@@ -430,7 +430,7 @@ export default function Page() {
                   </span>
                 ))}
               </h1>
-              <p className="text-white/80 leading-relaxed transition-opacity duration-700"
+              <p className="text-white/80 leading-relaxed text-balance transition-opacity duration-700"
                 style={{
                   fontSize: `clamp(${cfg.BIO_MIN}px, min(${cfg.BIO_VW}vw, 4vh), ${cfg.BIO_MAX}px)`,
                   opacity: typingDone ? 1 : 0,
