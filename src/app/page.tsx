@@ -83,6 +83,8 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
   { key: "CHROME_DISTORTION", label: "Surface distortion", min: 0, max: 5, step: 0.05 },
   { key: "CHROME_SHARPNESS", label: "Reflection sharpness", min: 1, max: 64, step: 1 },
   { key: "CHROME_DARKNESS", label: "Background darkness", min: 0, max: 0.95, step: 0.01 },
+  { key: "CHROME_PIXEL_SIZE", label: "Pixel size (px)", min: 1, max: 48, step: 1, section: "Chrome pixels" },
+  { key: "CHROME_PIXEL_AMOUNT", label: "Pixel amount", min: 0, max: 1, step: 0.05 },
   { key: "CHROME_NOISE_AMOUNT", label: "Noise amount", min: 0, max: 2, step: 0.05, section: "Chrome noise" },
   { key: "CHROME_NOISE_HARMONICS", label: "Noise harmonics", min: 1, max: 6, step: 1 },
   { key: "CHROME_NOISE_PERIOD", label: "Noise period / size", min: 0.5, max: 8, step: 0.1 },

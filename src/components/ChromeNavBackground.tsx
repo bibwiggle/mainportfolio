@@ -3,12 +3,14 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 
 export const DEFAULT_CHROME_SETTINGS = {
-  CHROME_REFLECTION: 0.5,
-  CHROME_SCALE: 1.7,
-  CHROME_SPEED: 0.8,
-  CHROME_DISTORTION: 0.25,
-  CHROME_SHARPNESS: 15,
-  CHROME_DARKNESS: 0.23,
+  CHROME_REFLECTION: 0.9,
+  CHROME_SCALE: 1.65,
+  CHROME_SPEED: 0.45,
+  CHROME_DISTORTION: 0.55,
+  CHROME_SHARPNESS: 3,
+  CHROME_DARKNESS: 0.7,
+  CHROME_PIXEL_SIZE: 8,
+  CHROME_PIXEL_AMOUNT: 1,
   CHROME_NOISE_AMOUNT: 1.9,
   CHROME_NOISE_HARMONICS: 2,
   CHROME_NOISE_PERIOD: 1.3,
@@ -41,6 +43,9 @@ const FRAGMENT_SHADER = `
   uniform float u_scale;
   uniform float u_distortion;
   uniform float u_sharpness;
+  uniform vec2 u_css_resolution;
+  uniform float u_pixel_size;
+  uniform float u_pixel_amount;
   uniform float u_noise_amount;
   uniform float u_noise_harmonics;
   uniform float u_noise_period;
@@ -49,6 +54,7 @@ const FRAGMENT_SHADER = `
   uniform float u_noise_time;
   uniform float u_noise_seed;
   uniform float u_noise_footprint;
+  uniform float u_pixel_noise_footprint;
 
   float hash(vec2 p) {
     p = fract(p * vec2(123.34, 456.21));
@@ -68,7 +74,7 @@ const FRAGMENT_SHADER = `
     );
   }
 
-  float fractalNoise(vec2 p) {
+  float fractalNoise(vec2 p, float footprint) {
     float sum = 0.0;
     float weight = 1.0;
     float totalWeight = 0.0;
@@ -76,7 +82,7 @@ const FRAGMENT_SHADER = `
     for (int harmonic = 0; harmonic < 6; harmonic++) {
       if (float(harmonic) >= u_noise_harmonics || weight < 0.001) break;
       // Fade detail that is finer than a pixel instead of producing shimmer.
-      float detail = 1.0 - smoothstep(0.15, 0.5, frequency * u_noise_footprint);
+      float detail = 1.0 - smoothstep(0.15, 0.5, frequency * footprint);
       if (detail < 0.001) break;
       sum += valueNoise(p) * weight * detail;
       totalWeight += weight * detail;
@@ -88,7 +94,7 @@ const FRAGMENT_SHADER = `
     return sum / max(totalWeight, 0.0001) * 2.0 - 1.0;
   }
 
-  float surface(vec2 p) {
+  float surface(vec2 p, float footprint) {
     float waves = sin(p.x * 0.9 + u_time * 0.22) * 0.22
       + sin(p.x * 1.8 - p.y * 2.0 - u_time * 0.18) * 0.12
       + sin(p.x * 0.4 + p.y * 5.2 + u_time * 0.12) * 0.08;
@@ -96,14 +102,14 @@ const FRAGMENT_SHADER = `
     vec2 noisePosition = p / u_noise_period
       + vec2(u_noise_seed * 0.37, u_noise_seed * 0.61)
       + vec2(u_noise_time * 0.23, -u_noise_time * 0.17);
-    return waves + fractalNoise(noisePosition) * u_noise_amount * 0.35;
+    return waves + fractalNoise(noisePosition, footprint) * u_noise_amount * 0.35;
   }
 
-  void main() {
-    vec2 p = v_uv * vec2(8.0, 1.2) / u_scale;
-    float h = surface(p);
-    vec2 slope = vec2(surface(p + vec2(0.02, 0.0)) - h,
-                      surface(p + vec2(0.0, 0.02)) - h) / 0.02;
+  vec3 shade(vec2 uv, float footprint) {
+    vec2 p = uv * vec2(8.0, 1.2) / u_scale;
+    float h = surface(p, footprint);
+    vec2 slope = vec2(surface(p + vec2(0.02, 0.0), footprint) - h,
+                      surface(p + vec2(0.0, 0.02), footprint) - h) / 0.02;
     vec3 normal = normalize(vec3(-slope * u_distortion, 1.0));
     vec3 reflection = reflect(vec3(0.0, 0.0, -1.0), normal);
 
@@ -111,10 +117,28 @@ const FRAGMENT_SHADER = `
     float bands = 0.5 + 0.5 * sin(reflection.y * 8.0 + reflection.x * 2.2);
     float glint = pow(bands, u_sharpness);
     float softReflection = pow(bands, 3.0);
-    float edge = pow(abs(v_uv.y * 2.0 - 1.0), 10.0);
+    float edge = pow(abs(uv.y * 2.0 - 1.0), 10.0);
     vec3 silver = vec3(0.90, 0.94, 1.0);
     vec3 color = silver * (0.055 + u_reflection * (softReflection * 0.22 + glint * 0.56 + edge * 0.13));
-    gl_FragColor = vec4(color, 1.0);
+    return color;
+  }
+
+  void main() {
+    if (u_pixel_amount <= 0.0) {
+      gl_FragColor = vec4(shade(v_uv, u_noise_footprint), 1.0);
+      return;
+    }
+    // Anchor square cells to the top left and measure their size in CSS pixels.
+    vec2 screenUv = vec2(v_uv.x, 1.0 - v_uv.y);
+    vec2 cell = floor(screenUv * u_css_resolution / u_pixel_size);
+    vec2 sampleUv = clamp((cell + 0.5) * u_pixel_size / u_css_resolution, 0.0, 1.0);
+    sampleUv.y = 1.0 - sampleUv.y;
+    vec3 pixelColor = shade(sampleUv, u_pixel_noise_footprint);
+    if (u_pixel_amount >= 1.0) {
+      gl_FragColor = vec4(pixelColor, 1.0);
+      return;
+    }
+    gl_FragColor = vec4(mix(shade(v_uv, u_noise_footprint), pixelColor, u_pixel_amount), 1.0);
   }
 `;
 
@@ -185,6 +209,9 @@ export function ChromeNavBackground({ active, settings = DEFAULT_CHROME_SETTINGS
     const scale = gl.getUniformLocation(program, "u_scale");
     const distortion = gl.getUniformLocation(program, "u_distortion");
     const sharpness = gl.getUniformLocation(program, "u_sharpness");
+    const cssResolution = gl.getUniformLocation(program, "u_css_resolution");
+    const pixelSize = gl.getUniformLocation(program, "u_pixel_size");
+    const pixelAmount = gl.getUniformLocation(program, "u_pixel_amount");
     const noiseAmount = gl.getUniformLocation(program, "u_noise_amount");
     const noiseHarmonics = gl.getUniformLocation(program, "u_noise_harmonics");
     const noisePeriod = gl.getUniformLocation(program, "u_noise_period");
@@ -193,6 +220,7 @@ export function ChromeNavBackground({ active, settings = DEFAULT_CHROME_SETTINGS
     const noiseTimeUniform = gl.getUniformLocation(program, "u_noise_time");
     const noiseSeed = gl.getUniformLocation(program, "u_noise_seed");
     const noiseFootprint = gl.getUniformLocation(program, "u_noise_footprint");
+    const pixelNoiseFootprint = gl.getUniformLocation(program, "u_pixel_noise_footprint");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame: number | null = null;
     let lastPaint = -Infinity;
@@ -223,6 +251,9 @@ export function ChromeNavBackground({ active, settings = DEFAULT_CHROME_SETTINGS
       gl.uniform1f(scale, current.CHROME_SCALE);
       gl.uniform1f(distortion, current.CHROME_DISTORTION);
       gl.uniform1f(sharpness, current.CHROME_SHARPNESS);
+      gl.uniform2f(cssResolution, Math.max(1, canvas.clientWidth), Math.max(1, canvas.clientHeight));
+      gl.uniform1f(pixelSize, current.CHROME_PIXEL_SIZE);
+      gl.uniform1f(pixelAmount, current.CHROME_PIXEL_AMOUNT);
       gl.uniform1f(noiseAmount, current.CHROME_NOISE_AMOUNT);
       gl.uniform1f(noiseHarmonics, current.CHROME_NOISE_HARMONICS);
       gl.uniform1f(noisePeriod, current.CHROME_NOISE_PERIOD);
@@ -231,6 +262,7 @@ export function ChromeNavBackground({ active, settings = DEFAULT_CHROME_SETTINGS
       gl.uniform1f(noiseTimeUniform, reducedMotion.matches ? 0 : noiseTime);
       gl.uniform1f(noiseSeed, current.CHROME_NOISE_SEED);
       gl.uniform1f(noiseFootprint, Math.max(8 / width, 1.2 / height) / (current.CHROME_SCALE * current.CHROME_NOISE_PERIOD));
+      gl.uniform1f(pixelNoiseFootprint, Math.max(8 / Math.max(1, canvas.clientWidth), 1.2 / Math.max(1, canvas.clientHeight)) * current.CHROME_PIXEL_SIZE / (current.CHROME_SCALE * current.CHROME_NOISE_PERIOD));
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       canvas.style.opacity = "1";
       lastPaint = now;
