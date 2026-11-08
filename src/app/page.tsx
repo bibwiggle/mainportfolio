@@ -57,6 +57,7 @@ const DEFAULTS = {
   ARROW_X:              8,
   ARROW_BOTTOM:         2,
   TEXT_WIDTH_VW:        50,
+  TEXT_MIN_PX:          576,
   TEXT_Y:               -24,
   MOBILE_TEXT_Y:        -20,
   HEADING_MIN:          45,
@@ -112,6 +113,7 @@ const SLIDERS: { key: keyof Cfg; label: string; min: number; max: number; step: 
   { key: "ARROW_X",              label: "Arrow X",           min: -200,   max: 200,   step: 1      },
   { key: "ARROW_BOTTOM",         label: "Arrow Bottom",      min: 0,      max: 200,   step: 2      },
   { key: "TEXT_WIDTH_VW",        label: "Text Width",        min: 5,      max: 100,   step: 1      },
+  { key: "TEXT_MIN_PX",          label: "Text minimum width (px)", min: 240, max: 900, step: 8 },
   { key: "TEXT_Y",               label: "Desktop Text Y (vh)", min: -50, max: 50, step: 1 },
   { key: "MOBILE_TEXT_Y",        label: "Mobile Text Y (vh)", min: -50, max: 50, step: 1 },
   { key: "HEADING_MIN",          label: "H Min px",          min: 10,     max: 100,   step: 1      },
@@ -407,8 +409,8 @@ export default function Page() {
           <div className="relative">
           {/* Hero */}
           <section ref={heroRef} className="relative min-h-screen h-screen flex items-center justify-center pb-8 md:pb-0" style={{ paddingTop: cfg.HERO_PT }}>
-            <div className="px-8" style={{
-              width: `${cfg.TEXT_WIDTH_VW}vw`,
+            <div className="px-6 sm:px-8" style={{
+              width: `min(100%, max(${cfg.TEXT_MIN_PX}px, ${cfg.TEXT_WIDTH_VW}vw))`,
               textAlign,
               transform: `translateY(${windowWidth < 640 ? cfg.MOBILE_TEXT_Y : cfg.TEXT_Y}vh)`,
             }}>
