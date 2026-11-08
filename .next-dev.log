@@ -45,3 +45,7 @@ Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
 ✓ Compiled in 51ms
 ✓ Compiled in 70ms
  GET /fabrication 200 in 130ms (compile: 96ms, render: 34ms)
+Browserslist: browsers data (caniuse-lite) is 24 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ Compiled in 605ms
