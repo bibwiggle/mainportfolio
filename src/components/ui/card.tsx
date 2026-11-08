@@ -10,19 +10,20 @@ interface Project {
   link: string;
 }
 
-export function ProjectGrid({ projects }: { projects: Project[] }) {
+export function ProjectGrid({ projects, fullHeight = false }: { projects: Project[]; fullHeight?: boolean }) {
   return (
-    <div className="grid gap-0 lg:grid-cols-3 m-0">
+    <div className="grid gap-0 md:grid-cols-2 m-0">
       {projects.map((project) => (
         <Link
           key={project.id}
           href={project.link}
-          className="group relative w-full h-[85vh] block overflow-hidden"
+          className={`group relative w-full ${fullHeight ? "h-screen" : "h-[85vh]"} block overflow-hidden`}
         >
           <Image
             src={project.imageUrl}
             alt={project.title}
             quality={85}
+            sizes="(min-width: 768px) 50vw, 100vw"
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />

@@ -1,0 +1,47 @@
+
+> portfolio@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.249:3000
+
+✓ Starting...
+✓ Ready in 1402ms
+Browserslist: browsers data (caniuse-lite) is 24 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Image with src "/assets/DDthumb2.png" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/VJtn.jpg" is using quality "85" which is not configured in images.qualities [75]. Please update your config to [75, 85].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 2.5s (compile: 2.4s, render: 118ms)
+ GET / 200 in 40ms (compile: 6ms, render: 34ms)
+ GET / 200 in 78ms (compile: 10ms, render: 68ms)
+ GET /fabrication 200 in 2.2s (compile: 2.1s, render: 54ms)
+ GET /vjclips 200 in 107ms (compile: 76ms, render: 31ms)
+✓ Compiled in 50ms
+✓ Compiled in 21ms
+ GET /vjclips 200 in 254ms (compile: 98ms, render: 156ms)
+✓ Compiled in 51ms
+ GET /vjclips 200 in 157ms (compile: 73ms, render: 84ms)
+✓ Compiled in 34ms
+✓ Compiled in 25ms
+✓ Compiled in 32ms
+✓ Compiled in 18ms
+✓ Compiled in 51ms
+ GET /fabrication 200 in 145ms (compile: 111ms, render: 34ms)
+ GET /dokihelmet 200 in 109ms (compile: 79ms, render: 29ms)
+ GET /dancingdancheong 200 in 106ms (compile: 73ms, render: 32ms)
+ GET /spiritualmercury 200 in 76ms (compile: 42ms, render: 34ms)
+ GET /beatbowl 200 in 95ms (compile: 66ms, render: 29ms)
+ GET / 200 in 19ms (compile: 5ms, render: 14ms)
+✓ Compiled in 44ms
+ GET / 200 in 94ms (compile: 55ms, render: 39ms)
+ GET / 200 in 93ms (compile: 77ms, render: 16ms)
+✓ Compiled in 29ms
+ GET / 200 in 162ms (compile: 95ms, render: 67ms)
+ GET / 200 in 162ms (compile: 137ms, render: 25ms)
+✓ Compiled in 51ms
+✓ Compiled in 70ms
+ GET /fabrication 200 in 130ms (compile: 96ms, render: 34ms)

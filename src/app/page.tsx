@@ -481,10 +481,20 @@ export default function Page() {
               transform: `translateY(${cfg.TEXT_Y}vh)`,
             }}>
               <h1 className="text-white font-bold leading-tight mb-2 md:mb-6" style={{ fontSize: `clamp(${cfg.HEADING_MIN}px, min(${cfg.HEADING_VW}vw, 12vh), ${cfg.HEADING_MAX}px)` }}>
-                {HEADING_FULL.slice(0, typedCount).split("\n").map((line, i) => (
-                  <span key={i}>{i > 0 && <br />}{line}</span>
+                {HEADING_FULL.slice(0, typedCount).split("\n").map((line, i, lines) => (
+                  <span key={i}>
+                    {i > 0 && <br />}
+                    {i === lines.length - 1 ? (
+                      <>
+                        {line.slice(0, -1)}
+                        <span className="relative whitespace-nowrap">
+                          {line.slice(-1)}
+                          <span aria-hidden="true" className="animate-blink absolute" style={{ left: "100%", bottom: "0.05em", width: 2, height: "0.85em", background: "white", marginLeft: 2 }} />
+                        </span>
+                      </>
+                    ) : line}
+                  </span>
                 ))}
-                <span className="animate-blink inline-block align-middle" style={{ width: 2, height: "0.85em", background: "white", marginLeft: 2 }} />
               </h1>
               <p className="text-white/80 leading-relaxed transition-opacity duration-700"
                 style={{
@@ -502,7 +512,7 @@ export default function Page() {
           {/* Projects */}
           <section ref={projectsSectionRef} className="min-h-screen flex flex-col items-center justify-center relative">
             <div className="flex-1 w-full bg-black" id="projects">
-              <ProjectGrid projects={projects} />
+              <ProjectGrid projects={projects} fullHeight />
             </div>
           </section>
         </main>

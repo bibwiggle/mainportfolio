@@ -7,6 +7,8 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
   const [playing, setPlaying] = useState(false);
+  const [thumbnailQuality, setThumbnailQuality] = useState(0);
+  const thumbnailSizes = ["maxresdefault", "sddefault", "hqdefault"];
 
   if (playing) {
     return (
@@ -29,10 +31,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
       {/* Thumbnail */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+        src={`https://img.youtube.com/vi/${videoId}/${thumbnailSizes[thumbnailQuality]}.jpg`}
         alt="Video thumbnail"
-        className="w-full h-full object-cover"
-        onError={(e) => { (e.currentTarget as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; }}
+        className="w-full h-full object-cover bg-black"
+        onLoad={(e) => {
+          // YouTube sometimes returns a tiny placeholder instead of a 404.
+          if (e.currentTarget.naturalWidth <= 120 && thumbnailQuality < thumbnailSizes.length - 1) {
+            setThumbnailQuality(thumbnailQuality + 1);
+          }
+        }}
+        onError={() => {
+          if (thumbnailQuality < thumbnailSizes.length - 1) {
+            setThumbnailQuality(thumbnailQuality + 1);
+          }
+        }}
       />
 
       {/* Dark overlay on hover */}

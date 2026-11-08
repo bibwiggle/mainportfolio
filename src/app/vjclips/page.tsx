@@ -10,22 +10,22 @@ const SUBTITLE = "Video work spanning live visual performance, editing, and orig
 const SKILLS = ["TouchDesigner", "Blender", "Resolume", "Video Editing", "Camera Work"];
 
 type VisualClip =
-  | { id: string; title: string; type: "youtube"; videoId: string }
+  | { id: string; title: string; description?: string; type: "youtube"; videoId: string }
   | { id: string; title: string; type: "local"; src: string; poster: string };
 
 const clips: VisualClip[] = [
-  { id: "vj-1", type: "youtube", videoId: "kThJ-WOY3SI", title: "Visual Work" },
-  { id: "vj-2", type: "youtube", videoId: "3YqU2R2awY0", title: "Visual Work" },
-  { id: "vj-3", type: "youtube", videoId: "VeDs-DxPeUk", title: "Visual Work" },
-  { id: "vj-4", type: "youtube", videoId: "rG-gCH8Vhus", title: "Visual Work" },
-  { id: "vj-5", type: "youtube", videoId: "vlvMBKK9rqE", title: "Visual Work" },
-  { id: "vj-6", type: "youtube", videoId: "Dxh-egyEjxM", title: "Visual Work" },
-  { id: "vj-7", type: "youtube", videoId: "v8VdSTnSmL4", title: "Visual Work" },
-  { id: "vj-8", type: "youtube", videoId: "-Kx1qlzHYl4", title: "Visual Work" },
-  { id: "vj-9", type: "youtube", videoId: "J2KjAoztyIA", title: "Visual Work" },
+  { id: "anime-rave", type: "youtube", videoId: "ckRolrJ5SKI", title: "Anime Rave VJ Highlights" },
+  { id: "vj-3", type: "youtube", videoId: "VeDs-DxPeUk", title: "TouchDesigner Study #04" },
+  { id: "vj-2", type: "youtube", videoId: "3YqU2R2awY0", title: "TouchDesigner Study #03" },
+  { id: "vj-1", type: "youtube", videoId: "kThJ-WOY3SI", title: "TouchDesigner Study #02" },
+  { id: "vj-4", type: "youtube", videoId: "rG-gCH8Vhus", title: "TouchDesigner Study #01" },
+  { id: "vj-5", type: "youtube", videoId: "vlvMBKK9rqE", title: "Canopy of Light", description: "Tree projection mapping in Fort Tryon Park, made with TouchDesigner." },
+  { id: "vj-6", type: "youtube", videoId: "Dxh-egyEjxM", title: "Spiritual Mercury — Visual Artifacts", description: "A visual study using MediaPipe, TouchDesigner, and Ableton." },
+  { id: "vj-7", type: "youtube", videoId: "v8VdSTnSmL4", title: "Ceiling Constellations", description: "A particle simulation projected onto my apartment ceiling, controlled with MediaPipe in TouchDesigner." },
+  { id: "vj-8", type: "youtube", videoId: "-Kx1qlzHYl4", title: "Mercer Labs — Promo", description: "Promotional visuals made with Resolume." },
+  { id: "vj-9", type: "youtube", videoId: "J2KjAoztyIA", title: "Resolume Study #01" },
   { id: "techwear-1", type: "local", src: "/mp4/v09044ce0000bu2k28rrspql4e61ee10.mp4", poster: "/mp4/v09044ce0000bu2k28rrspql4e61ee10_thumb.jpg", title: "Techwear video collaboration" },
   { id: "techwear-2", type: "local", src: "/mp4/export_1730350545125.mp4", poster: "/mp4/export_1730350545125_thumb.jpg", title: "Techwear video collaboration" },
-  { id: "anime-rave", type: "youtube", videoId: "ckRolrJ5SKI", title: "Anime Rave — Live VJ Set" },
 ];
 
 const navLinks = [
@@ -56,7 +56,7 @@ export default function VJClips() {
       </section>
 
       <section className="px-8 pb-16" aria-label="Visual work collections">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 items-start">
           {clips.map((clip) => (
             <article key={clip.id}>
               <div className="overflow-hidden rounded-lg bg-white/5" style={{ aspectRatio: "9 / 16" }}>
@@ -64,7 +64,10 @@ export default function VJClips() {
                   ? <VideoPlayer videoId={clip.videoId} />
                   : <LocalVideoPlayer src={clip.src} poster={clip.poster} />}
               </div>
-              {clip.title !== "Visual Work" && <h2 className="mt-3 text-base font-medium">{clip.title}</h2>}
+              <h2 className="mt-2 text-base font-medium">{clip.title}</h2>
+              {clip.type === "youtube" && clip.description && (
+                <p className="mt-1 text-sm leading-relaxed text-white/50">{clip.description}</p>
+              )}
             </article>
           ))}
         </div>
