@@ -23,6 +23,8 @@ body {
   inset: 0;
   pointer-events: none;
   background: linear-gradient(165deg, #0b0c0e 0%, #51545a 18%, #151619 34%, #08090b 48%, #44474e 68%, #111215 84%, #666a72 100%);
+  background-size: max(100%, 1707px) 56px;
+  background-position: center;
 }
 
 .chrome-nav-surface::after {

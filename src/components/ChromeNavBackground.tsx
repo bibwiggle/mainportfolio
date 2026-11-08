@@ -22,6 +22,10 @@ export const DEFAULT_CHROME_SETTINGS = {
 
 export type ChromeNavSettings = typeof DEFAULT_CHROME_SETTINGS;
 
+// Preserve the pattern scale from the approved desktop layout as the viewport changes.
+const REFERENCE_WIDTH = 1707;
+const REFERENCE_HEIGHT = 56;
+
 const VERTEX_SHADER = `
   attribute vec2 a_position;
   varying vec2 v_uv;
@@ -55,6 +59,8 @@ const FRAGMENT_SHADER = `
   uniform float u_noise_seed;
   uniform float u_noise_footprint;
   uniform float u_pixel_noise_footprint;
+  const vec2 referenceSize = vec2(${REFERENCE_WIDTH.toFixed(1)}, ${REFERENCE_HEIGHT.toFixed(1)});
+  const vec2 patternSpan = vec2(8.0, 1.2);
 
   float hash(vec2 p) {
     p = fract(p * vec2(123.34, 456.21));
@@ -106,7 +112,8 @@ const FRAGMENT_SHADER = `
   }
 
   vec3 shade(vec2 uv, float footprint) {
-    vec2 p = uv * vec2(8.0, 1.2) / u_scale;
+    // Crop around the center instead of squeezing the whole pattern into the header.
+    vec2 p = ((uv - 0.5) * u_css_resolution * patternSpan / referenceSize + patternSpan * 0.5) / u_scale;
     float h = surface(p, footprint);
     vec2 slope = vec2(surface(p + vec2(0.02, 0.0), footprint) - h,
                       surface(p + vec2(0.0, 0.02), footprint) - h) / 0.02;
@@ -128,10 +135,11 @@ const FRAGMENT_SHADER = `
       gl_FragColor = vec4(shade(v_uv, u_noise_footprint), 1.0);
       return;
     }
-    // Anchor square cells to the top left and measure their size in CSS pixels.
+    // Keep the pixel grid aligned to the same virtual canvas while cropping its sides.
     vec2 screenUv = vec2(v_uv.x, 1.0 - v_uv.y);
-    vec2 cell = floor(screenUv * u_css_resolution / u_pixel_size);
-    vec2 sampleUv = clamp((cell + 0.5) * u_pixel_size / u_css_resolution, 0.0, 1.0);
+    vec2 cropOffset = vec2((referenceSize.x - u_css_resolution.x) * 0.5, 0.0);
+    vec2 cell = floor((screenUv * u_css_resolution + cropOffset) / u_pixel_size);
+    vec2 sampleUv = clamp(((cell + 0.5) * u_pixel_size - cropOffset) / u_css_resolution, 0.0, 1.0);
     sampleUv.y = 1.0 - sampleUv.y;
     vec3 pixelColor = shade(sampleUv, u_pixel_noise_footprint);
     if (u_pixel_amount >= 1.0) {
@@ -239,8 +247,10 @@ export function ChromeNavBackground({ active, settings = DEFAULT_CHROME_SETTINGS
       }
       lastTime = now;
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      const width = Math.max(1, Math.round(canvas.clientWidth * dpr));
-      const height = Math.max(1, Math.round(canvas.clientHeight * dpr));
+      const cssWidth = Math.max(1, canvas.clientWidth);
+      const cssHeight = Math.max(1, canvas.clientHeight);
+      const width = Math.max(1, Math.round(cssWidth * dpr));
+      const height = Math.max(1, Math.round(cssHeight * dpr));
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
@@ -251,7 +261,7 @@ export function ChromeNavBackground({ active, settings = DEFAULT_CHROME_SETTINGS
       gl.uniform1f(scale, current.CHROME_SCALE);
       gl.uniform1f(distortion, current.CHROME_DISTORTION);
       gl.uniform1f(sharpness, current.CHROME_SHARPNESS);
-      gl.uniform2f(cssResolution, Math.max(1, canvas.clientWidth), Math.max(1, canvas.clientHeight));
+      gl.uniform2f(cssResolution, cssWidth, cssHeight);
       gl.uniform1f(pixelSize, current.CHROME_PIXEL_SIZE);
       gl.uniform1f(pixelAmount, current.CHROME_PIXEL_AMOUNT);
       gl.uniform1f(noiseAmount, current.CHROME_NOISE_AMOUNT);
@@ -261,8 +271,9 @@ export function ChromeNavBackground({ active, settings = DEFAULT_CHROME_SETTINGS
       gl.uniform1f(noiseLacunarity, current.CHROME_NOISE_LACUNARITY);
       gl.uniform1f(noiseTimeUniform, reducedMotion.matches ? 0 : noiseTime);
       gl.uniform1f(noiseSeed, current.CHROME_NOISE_SEED);
-      gl.uniform1f(noiseFootprint, Math.max(8 / width, 1.2 / height) / (current.CHROME_SCALE * current.CHROME_NOISE_PERIOD));
-      gl.uniform1f(pixelNoiseFootprint, Math.max(8 / Math.max(1, canvas.clientWidth), 1.2 / Math.max(1, canvas.clientHeight)) * current.CHROME_PIXEL_SIZE / (current.CHROME_SCALE * current.CHROME_NOISE_PERIOD));
+      const noiseScale = current.CHROME_SCALE * current.CHROME_NOISE_PERIOD;
+      gl.uniform1f(noiseFootprint, Math.max(8 / REFERENCE_WIDTH * cssWidth / width, 1.2 / REFERENCE_HEIGHT * cssHeight / height) / noiseScale);
+      gl.uniform1f(pixelNoiseFootprint, Math.max(8 / REFERENCE_WIDTH, 1.2 / REFERENCE_HEIGHT) * current.CHROME_PIXEL_SIZE / noiseScale);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       canvas.style.opacity = "1";
       lastPaint = now;
