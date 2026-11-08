@@ -38,7 +38,8 @@ const VIDEOS = [
 
 const navLinks = [
   { href: "/",          label: "Home",     colorClass: "text-white" },
-  { href: "/#projects", label: "Projects", colorClass: "text-white" },
+  { href: "/fabrication", label: "Fabrication", colorClass: "text-white" },
+  { href: "/vjclips", label: "Visual Works", colorClass: "text-white" },
   { href: "/contact",   label: "Contact",  colorClass: "text-white" },
 ];
 

@@ -15,47 +15,20 @@ const LOTTIE_RENDERER_SETTINGS = {
 
 const projects = [
   {
-    id: "3",
+    id: "fabrication",
+    title: "Fabrication",
+    description: "Kinetic sculpture, physical computing, mechanisms, and cosplay.",
+    imageUrl: "/assets/DDthumb2.png",
+    lottieUrl: "/lotties/DDlottie.json",
+    link: "/fabrication",
+  },
+  {
+    id: "visual-works",
     title: "Visual Works",
-    description:
-      "Video work spanning live visual performance, editing, and original footage.",
+    description: "VJing, projection mapping, camera work, and moving images.",
     imageUrl: "/VJtn.jpg",
     lottieUrl: "/lotties/VJclips.json",
     link: "/vjclips",
-  },
-  {
-    id: "5",
-    title: "Spiritual Mercury",
-    description: "A kinetic sculpture imagining a futuristic energy artifact, where reflective fluid forms rotate within a custom hubless ring structure.",
-    imageUrl: "/assets/SMthumb.png",
-    lottieUrl: "",
-    link: "/spiritualmercury",
-  },
-  {
-    id: "4",
-    title: "Doki Helmet",
-    description: "A fully mechanical helmet built around the Dokkaebi of Korean folklore, filtered through the design language of Iron Man, Power Rangers, and Titanfall.",
-    imageUrl: "/doki assets/DokiThumb.png",
-    lottieUrl: "",
-    link: "/dokihelmet",
-  },
-  {
-    id: "1",
-    title: "Dancing Dancheong (단청)",
-    description:
-      "A kinetic sculpture that reinterprets traditional Korean decorative painting through motion and contemporary technology.",
-    imageUrl: "/assets/DDthumb2.png",
-    lottieUrl: "/lotties/DDlottie.json",
-    link: "/dancingdancheong",
-  },
-  {
-    id: "2",
-    title: "Beat Bowl",
-    description:
-      "A four-sided MIDI instrument designed for four players at once, built out of an obsession with knobs, faders, and what happens when you hand a stranger something they have never touched before.",
-    imageUrl: "/assets/DownscaleBB.jpg",
-    lottieUrl: "/lotties/beatbowl.json",
-    link: "/beatbowl",
   },
 ];
 
@@ -454,7 +427,8 @@ export default function Page() {
   const isDev = process.env.NODE_ENV === "development";
 
   const homePageLinks = [
-    { href: "#projects", label: "Projects", colorClass: "text-white" },
+    { href: "/fabrication", label: "Fabrication", colorClass: "text-white" },
+    { href: "/vjclips", label: "Visual Works", colorClass: "text-white" },
     { href: "/contact",  label: "Contact",  colorClass: "text-white" },
   ];
 
