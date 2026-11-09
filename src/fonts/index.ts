@@ -1,45 +1,14 @@
-import {
-  Poppins,
-  Roboto,
-  Montserrat,
-  Oswald,
-  Exo,
-  Nabla,
-  Geist,
-} from "next/font/google";
-// Define Poppins font
-export const poppins = Poppins({
-  subsets: ["latin"],
+import localFont from "next/font/local";
+
+// Bundled fonts keep production builds independent of Google Fonts downloads.
+export const nabla = localFont({
+  src: "./nabla-latin.woff2",
   display: "swap",
-  weight: ["400", "500"],
+  weight: "400",
 });
 
-export const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-export const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-export const oswald = Oswald({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-export const exo = Exo({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-export const nabla = Nabla({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-export const geist = Geist({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+export const geist = localFont({
+  src: "./geist-latin.woff2",
+  display: "swap",
+  weight: "100 900",
 });
