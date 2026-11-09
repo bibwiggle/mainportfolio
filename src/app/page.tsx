@@ -4,6 +4,7 @@ import { ProjectGrid } from "@/components/ui/card";
 import { AnimatedHeader } from "@/components/AnimatedHeader";
 import { DEFAULT_CHROME_SETTINGS } from "@/components/ChromeNavBackground";
 import { LampCanvas } from "@/components/LampCanvas";
+import { HOMEPAGE_LAMP_APPEARANCE } from "@/lib/lamp-settings";
 import { useState, useEffect, useRef } from "react";
 
 function isMobileDevice() {
@@ -34,6 +35,7 @@ const projects = [
 // ─── TWEAK THESE (edit defaults here once you've dialled them in) ─────────────
 const DEFAULTS = {
   ...DEFAULT_CHROME_SETTINGS,
+  ...HOMEPAGE_LAMP_APPEARANCE,
   RIGHT_ROTATION:      90,
   ANIMATION_WIDTH_VW: 124,
   ANIMATION_MAX_PX: 1820,
@@ -41,24 +43,7 @@ const DEFAULTS = {
   ANIMATION_X: -140,
   MODEL_ANCHOR_X: 42.5,
   MODEL_ZOOM: 1.05,
-  MODEL_EMISSION: 5,
-  MODEL_LIGHT_STRENGTH: 1.45,
-  MODEL_LIGHT_REACH: 0.1,
-  MODEL_LIGHT_DEPTH: 1.5,
-  MODEL_LIGHT_HUE: 238,
-  MODEL_LIGHT_SATURATION: 1,
-  MODEL_REFLECTION_STRENGTH: 0.15,
-  MODEL_HIGHLIGHT_SHARPNESS: 11,
-  MODEL_BAND_STRENGTH: 0.4,
-  MODEL_FRESNEL_STRENGTH: 0.6,
-  REFRACTION_ENABLED: true,
-  REFRACTION_INTERMESH: true,
-  REFRACTION_IOR: 1.44,
-  REFRACTION_AMOUNT: 0.075,
-  REFRACTION_DISPERSION: 0.08,
-  REFRACTION_MIX: 0.45,
-  REFRACTION_QUALITY: 0.7,
-  REFRACTION_LAYER_GAP: 0.0044,
+  RENDER_PIXEL_RATIO: 1.25,
   MESH_CYLINDER_008: true,
   MESH_PLANE: true,
   MESH_PLANE_014: true,
@@ -73,14 +58,13 @@ const DEFAULTS = {
   MOBILE_ANIMATION_GAP: 0,
   MOBILE_ANIMATION_X: -107,
   MOBILE_MODEL_ZOOM: 1.1,
+  MOBILE_RENDER_PIXEL_RATIO: 2.75,
+  MOBILE_REFRACTION_QUALITY: 1,
   MOBILE_MESH_CYLINDER_008: true,
-  PARALLAX_SPEED:       0.88,
-  BLOOM_AMOUNT:        1.9,
-  BLOOM_THRESHOLD:     0.12,
-  BLOOM_SIZE:          60,
-  IDLE_FPS:             9,
-  SCROLL_SPEED:         0.79,
-  SCRUB_LAG_MS:         160,
+  PARALLAX_SPEED:       0.66,
+  IDLE_FPS:             19,
+  SCROLL_SPEED:         0.35,
+  SCRUB_LAG_MS:         190,
   // Text
   HERO_PT:              164,
   ARROW_X:              8,
@@ -144,8 +128,9 @@ const SLIDERS: { key: NumericCfgKey; label: string; min: number; max: number; st
   { key: "REFRACTION_AMOUNT", label: "Refraction bend", min: 0, max: 0.3, step: 0.005 },
   { key: "REFRACTION_DISPERSION", label: "Color separation", min: 0, max: 0.25, step: 0.005 },
   { key: "REFRACTION_MIX", label: "Refraction mix", min: 0, max: 1, step: 0.05 },
-  { key: "REFRACTION_QUALITY", label: "Render quality", min: 0.25, max: 1, step: 0.05 },
   { key: "REFRACTION_LAYER_GAP", label: "Layer separation", min: 0, max: 0.01, step: 0.0001 },
+  { key: "RENDER_PIXEL_RATIO", label: "Desktop pixel density (max)", min: 1, max: 2, step: 0.25, section: "Desktop rendering" },
+  { key: "REFRACTION_QUALITY", label: "Desktop refraction resolution", min: 0.25, max: 1, step: 0.05 },
   { key: "ANIMATION_WIDTH_VW", label: "Desktop width (% screen)", min: 50, max: 800, step: 1, section: "3D model below bio" },
   { key: "ANIMATION_MAX_PX", label: "Maximum width (px)", min: 600, max: 4000, step: 20 },
   { key: "ANIMATION_GAP", label: "Visible gap below bio (px)", min: -300, max: 500, step: 2 },
@@ -157,6 +142,8 @@ const SLIDERS: { key: NumericCfgKey; label: string; min: number; max: number; st
   { key: "MOBILE_ANIMATION_GAP", label: "Phone visible gap (px)", min: -300, max: 500, step: 2 },
   { key: "MOBILE_ANIMATION_X", label: "Phone horizontal nudge (px)", min: -1200, max: 600, step: 1 },
   { key: "MOBILE_MODEL_ZOOM", label: "Phone model crop / zoom", min: 0.5, max: 3, step: 0.05 },
+  { key: "MOBILE_RENDER_PIXEL_RATIO", label: "Phone pixel density (max)", min: 1, max: 3, step: 0.25 },
+  { key: "MOBILE_REFRACTION_QUALITY", label: "Phone refraction resolution", min: 0.25, max: 1, step: 0.05 },
   { key: "RIGHT_ROTATION", label: "Rotation (degrees)", min: -180, max: 180, step: 1 },
   { key: "PARALLAX_SPEED",       label: "Scroll movement (1 = text)",    min: 0,      max: 2,     step: 0.01   },
   { key: "IDLE_FPS",             label: "Idle frames / sec",       min: 0,    max: 60,    step: 1      },
@@ -229,16 +216,39 @@ export default function Page() {
     setIsMobile(mobile);
   }, []);
 
-  // Keep one pending update so rapid scroll events cannot postpone a paint.
+  // A native scroll timeline lets the compositor position the sculpture even
+  // while the main thread is busy rendering its WebGL animation.
   useEffect(() => {
+    const panel = rightPanelRef.current;
+    if (!panel) return;
+    const root = document.scrollingElement || document.documentElement;
+    if (CSS.supports("animation-timeline", "scroll(root block)")) {
+      const measure = () => {
+        const scrollRange = Math.max(0, root.scrollHeight - root.clientHeight);
+        panel.style.setProperty("--hero-scroll-end", `${-scrollRange * cfg.PARALLAX_SPEED}px`);
+      };
+      measure();
+      panel.style.removeProperty("transform");
+      panel.dataset.scrollPosition = "native";
+      const observer = new ResizeObserver(measure);
+      observer.observe(document.body);
+      observer.observe(document.documentElement);
+      window.addEventListener("resize", measure, { passive: true });
+      return () => {
+        observer.disconnect();
+        window.removeEventListener("resize", measure);
+        delete panel.dataset.scrollPosition;
+        panel.style.removeProperty("--hero-scroll-end");
+      };
+    }
+
+    // Older browsers retain the existing coalesced scroll updates.
     let frame: number | null = null;
     const update = () => {
       frame = null;
-      const scrollY = Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+      const scrollY = Math.max(0, Math.min(window.scrollY, root.scrollHeight - root.clientHeight));
       const offset = -scrollY * cfg.PARALLAX_SPEED;
-      if (rightPanelRef.current) {
-        rightPanelRef.current.style.transform = `translate3d(0, ${offset}px, 0)`;
-      }
+      panel.style.transform = `translate3d(0, ${offset}px, 0)`;
     };
     const handleScroll = () => {
       if (frame === null) frame = requestAnimationFrame(update);
@@ -250,6 +260,7 @@ export default function Page() {
       if (frame !== null) cancelAnimationFrame(frame);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
+      panel.style.removeProperty("transform");
     };
   }, [cfg.PARALLAX_SPEED]);
 
@@ -280,6 +291,7 @@ export default function Page() {
 
   // Full phone settings below 640px, smoothly blending to desktop at 1024px.
   const phoneMix = Math.max(0, Math.min(1, (1024 - windowWidth) / 384));
+  const usePhoneRendering = isMobile || windowWidth <= 640;
   const modelZoom = blend(cfg.MODEL_ZOOM, cfg.MOBILE_MODEL_ZOOM, phoneMix);
   const modelOffsetX = blend(cfg.ANIMATION_X, cfg.MOBILE_ANIMATION_X, phoneMix);
   const cylinderVisible = phoneMix >= 0.5 ? cfg.MOBILE_MESH_CYLINDER_008 : cfg.MESH_CYLINDER_008;
@@ -319,6 +331,8 @@ export default function Page() {
       ANIMATION_GAP: responsiveGap,
       ANIMATION_X: modelOffsetX,
       MODEL_ZOOM: modelZoom,
+      RENDER_PIXEL_RATIO: usePhoneRendering ? cfg.MOBILE_RENDER_PIXEL_RATIO : cfg.RENDER_PIXEL_RATIO,
+      REFRACTION_QUALITY: usePhoneRendering ? cfg.MOBILE_REFRACTION_QUALITY : cfg.REFRACTION_QUALITY,
       MODEL_LIGHT_STRENGTH: cfg.MODEL_LIGHT_STRENGTH,
       MODEL_REFLECTION_STRENGTH: cfg.MODEL_REFLECTION_STRENGTH,
       MODEL_HIGHLIGHT_SHARPNESS: cfg.MODEL_HIGHLIGHT_SHARPNESS,
@@ -359,13 +373,15 @@ export default function Page() {
       <div className="fixed inset-0 z-0" style={{ opacity: heroVisible ? 1 : 0.04, transition: "opacity 0.6s ease" }}>
 
         {/* Right panel */}
-        <div ref={rightPanelRef} className="absolute left-1/2" style={{ top: animationTop, width: animationWidth, height: animationHeight, marginLeft: -animationWidth / 2, zIndex: 2, willChange: "transform" }}>
+        <div ref={rightPanelRef} className="hero-sculpture-position absolute left-1/2" style={{ top: animationTop, width: animationWidth, height: animationHeight, marginLeft: -animationWidth / 2, zIndex: 2, willChange: "transform" }}>
           <div className="h-full w-full" style={{ filter: cfg.BLOOM_AMOUNT > 0 && cfg.BLOOM_SIZE > 0 ? `drop-shadow(0 0 ${cfg.BLOOM_SIZE}px rgba(195,185,255,${Math.min(0.8, cfg.BLOOM_AMOUNT * 0.45)}))` : undefined }}>
             <LampCanvas
               hero
               variant={compareLite ? "lite" : "compact"}
               visible={heroVisible}
-              mobile={isMobile}
+              mobile={usePhoneRendering}
+              desktopPixelRatio={cfg.RENDER_PIXEL_RATIO}
+              mobilePixelRatio={cfg.MOBILE_RENDER_PIXEL_RATIO}
               rotation={cfg.RIGHT_ROTATION}
               zoom={modelZoom}
               anchorX={cfg.MODEL_ANCHOR_X}
@@ -382,7 +398,7 @@ export default function Page() {
                 amount: cfg.REFRACTION_AMOUNT,
                 dispersion: cfg.REFRACTION_DISPERSION,
                 mix: cfg.REFRACTION_MIX,
-                quality: cfg.REFRACTION_QUALITY,
+                quality: usePhoneRendering ? cfg.MOBILE_REFRACTION_QUALITY : cfg.REFRACTION_QUALITY,
                 layerGap: cfg.REFRACTION_LAYER_GAP,
               }}
               modelShader={{
@@ -582,6 +598,9 @@ export default function Page() {
                     {key === "MODEL_EMISSION" && <div style={{ color: "#666", fontSize: 10, marginBottom: 4 }}>Brightens the cylinder and the light it casts on the shapes.</div>}
                     {key === "MODEL_BAND_STRENGTH" && <div style={{ color: "#666", fontSize: 10, marginBottom: 4 }}>Lower this to see more of the cylinder reflections.</div>}
                     {key === "REFRACTION_QUALITY" && <div style={{ color: "#666", fontSize: 10, marginBottom: 4 }}>Higher quality sharpens the effect but uses more graphics power.</div>}
+                    {key === "RENDER_PIXEL_RATIO" && <div style={{ color: "#666", fontSize: 10, marginBottom: 4 }}>Lower values reduce rendering work. Desktop canvases are capped at 1.5 million pixels.</div>}
+                    {key === "MOBILE_RENDER_PIXEL_RATIO" && <div style={{ color: "#666", fontSize: 10, marginBottom: 4 }}>Limited by the device pixel density and a 2 million pixel canvas budget.</div>}
+                    {key === "MOBILE_REFRACTION_QUALITY" && <div style={{ color: "#666", fontSize: 10, marginBottom: 4 }}>1 renders the phone reflection passes at full canvas resolution.</div>}
                     {key === "REFRACTION_LAYER_GAP" && <div style={{ color: "#666", fontSize: 10, marginBottom: 4 }}>Skips the front surface to sample a layer behind it. Higher values skip nearby layers.</div>}
                     <input
                       type="range"

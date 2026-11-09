@@ -12,13 +12,24 @@ type LampCanvasProps = {
   wireframe?: boolean;
   visible?: boolean;
   mobile?: boolean;
+  desktopPixelRatio?: number;
+  mobilePixelRatio?: number;
+  renderScale?: number;
+  onRenderSize?: (width: number, height: number) => void;
   rotation?: number;
+  rotationX?: number;
+  rotationY?: number;
+  fixedFraming?: boolean;
   zoom?: number;
   anchorX?: number;
   offsetX?: number;
+  offsetY?: number;
   scrollSpeed?: number;
   idleFps?: number;
   scrubLagMs?: number;
+  interaction?: "scroll" | "pointer";
+  pointerStrength?: number;
+  pointerDrag?: number;
   bloomAmount?: number;
   bloomThreshold?: number;
   refraction?: {
@@ -53,6 +64,9 @@ const paths = {
   full: "/models/pf-lamp-geometry.glb",
 };
 
+const MOBILE_PIXEL_BUDGET = 2_000_000;
+const DESKTOP_PIXEL_BUDGET = 1_500_000;
+
 const chromeVertexShader = `
 varying vec3 vNormal;
 varying vec3 vView;
@@ -81,6 +95,7 @@ uniform float uBandStrength;
 uniform float uFresnelStrength;
 uniform sampler2D uRefractionTexture;
 uniform vec2 uResolution;
+uniform vec2 uRefractionUvScale;
 uniform float uRefractionIor;
 uniform float uRefractionAmount;
 uniform float uRefractionDispersion;
@@ -135,9 +150,9 @@ void main() {
     float iorR = max(1.0, uRefractionIor - uRefractionDispersion);
     float iorG = max(1.0, uRefractionIor);
     float iorB = max(1.0, uRefractionIor + uRefractionDispersion);
-    vec2 shiftR = (refract(incident, faceNormal, 1.0 / iorR).xy - incident.xy) * uRefractionAmount;
-    vec2 shiftG = (refract(incident, faceNormal, 1.0 / iorG).xy - incident.xy) * uRefractionAmount;
-    vec2 shiftB = (refract(incident, faceNormal, 1.0 / iorB).xy - incident.xy) * uRefractionAmount;
+    vec2 shiftR = (refract(incident, faceNormal, 1.0 / iorR).xy - incident.xy) * uRefractionAmount * uRefractionUvScale;
+    vec2 shiftG = (refract(incident, faceNormal, 1.0 / iorG).xy - incident.xy) * uRefractionAmount * uRefractionUvScale;
+    vec2 shiftB = (refract(incident, faceNormal, 1.0 / iorB).xy - incident.xy) * uRefractionAmount * uRefractionUvScale;
     vec2 uv = gl_FragCoord.xy / uResolution;
     vec4 sampleR = texture2D(uRefractionTexture, clamp(uv + shiftR, 0.0, 1.0));
     vec4 sampleG = texture2D(uRefractionTexture, clamp(uv + shiftG, 0.0, 1.0));
@@ -180,18 +195,21 @@ export function LampCanvas(props: LampCanvasProps) {
 
     let renderer: THREE.WebGLRenderer;
     try {
-      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !propsRef.current.mobile, powerPreference: "low-power" });
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
     } catch {
       container.textContent = "This device could not start the 3D preview.";
       return;
     }
 
     renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, propsRef.current.mobile ? 1.25 : 1.75));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.left = "50%";
+    renderer.domElement.style.top = "0";
+    renderer.domElement.style.transform = "translateX(-50%)";
     renderer.domElement.style.height = "100%";
     renderer.domElement.style.display = "block";
+    renderer.domElement.style.touchAction = props.interaction === "pointer" ? "none" : "auto";
     container.appendChild(renderer.domElement);
     const refractionTarget = propsRef.current.hero
       ? new THREE.WebGLRenderTarget(1, 1, { depthBuffer: true, stencilBuffer: false })
@@ -236,8 +254,18 @@ export function LampCanvas(props: LampCanvasProps) {
     let lastScrollY = window.scrollY;
     let targetFrames = 0;
     let displayedFrames = 0;
+    let spinVelocity = 0;
+    type PointerSample = { x: number; y: number; time: number };
+    let previousPointer: PointerSample | null = null;
+    let pendingPointer: PointerSample | null = null;
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    const interactiveMeshes: THREE.Mesh[] = [];
     let duration = 1;
     let angle = propsRef.current.hero ? propsRef.current.rotation ?? 90 : 0;
+    let angleX = propsRef.current.rotationX ?? 0;
+    let angleY = propsRef.current.rotationY ?? 0;
+    let framingSet = false;
     let lastZoom = propsRef.current.zoom ?? 1.8;
     let fittedWidth = 1;
     let fittedHeight = 1;
@@ -245,6 +273,12 @@ export function LampCanvas(props: LampCanvasProps) {
     let modelTop = 0;
     let lastAnchorX = propsRef.current.anchorX ?? 50;
     let lastOffsetX = propsRef.current.offsetX ?? 0;
+    let lastOffsetY = propsRef.current.offsetY ?? 0;
+    let lastMobilePixelRatio = propsRef.current.mobilePixelRatio ?? 2.75;
+    let lastDesktopPixelRatio = propsRef.current.desktopPixelRatio ?? 1.25;
+    let lastRenderScale = propsRef.current.renderScale ?? 1;
+    let lastRefractionAmount = propsRef.current.refraction?.amount ?? 0;
+    let lastRefractionEnabled = propsRef.current.refraction?.enabled ?? false;
 
     const placeModel = () => {
       if (!model || !propsRef.current.hero) return;
@@ -252,19 +286,49 @@ export function LampCanvas(props: LampCanvasProps) {
       const anchorShift = (50 - (propsRef.current.anchorX ?? 50)) * fittedWidth / 100;
       const pixelNudge = (propsRef.current.offsetX ?? 0) / Math.max(0.001, pixelsPerWorldUnit);
       group.position.x = -modelCenterX + anchorShift + pixelNudge;
+      group.position.y = -(propsRef.current.offsetY ?? 0) / Math.max(0.001, pixelsPerWorldUnit);
     };
 
     const fit = () => {
       const width = Math.max(1, container.clientWidth);
       const height = Math.max(1, container.clientHeight);
       const aspect = width / height;
-      camera.left = -aspect;
-      camera.right = aspect;
+      // Keep enough offscreen pixels for refraction to sample near the edges.
+      // The orthographic zoom still uses the full layout width.
+      const refraction = propsRef.current.refraction;
+      const overscan = propsRef.current.hero && refraction?.enabled
+        ? Math.ceil(width * Math.max(0, refraction.amount))
+        : 0;
+      const visibleWidth = propsRef.current.hero ? Math.min(width, window.innerWidth + overscan * 2) : width;
+      const visibleAspect = visibleWidth / height;
+      camera.left = -visibleAspect;
+      camera.right = visibleAspect;
       camera.top = 1;
       camera.bottom = -1;
       camera.zoom = Math.min(2 * aspect / (fittedWidth * 1.04), 2 / (fittedHeight * 1.04)) * (propsRef.current.hero ? propsRef.current.zoom ?? 1.8 : 1);
       camera.updateProjectionMatrix();
-      renderer.setSize(width, height, false);
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      const requestedPixelRatio = propsRef.current.mobile
+        ? propsRef.current.mobilePixelRatio ?? 2.75
+        : propsRef.current.desktopPixelRatio ?? (propsRef.current.hero ? 1.25 : 1.75);
+      const pixelBudget = propsRef.current.mobile ? MOBILE_PIXEL_BUDGET : DESKTOP_PIXEL_BUDGET;
+      const basePixelRatio = Math.max(propsRef.current.fixedFraming ? 0.25 : 1, Math.min(devicePixelRatio, requestedPixelRatio, Math.sqrt(pixelBudget / (visibleWidth * height))));
+      // Studio supersampling is applied after the device preset so the quality
+      // control can raise resolution beyond its usual performance cap.
+      const pixelRatio = propsRef.current.renderScale === undefined ? basePixelRatio : Math.min(
+        basePixelRatio * THREE.MathUtils.clamp(propsRef.current.renderScale, 0.5, 2),
+        Math.sqrt(12_000_000 / (visibleWidth * height)),
+        renderer.capabilities.maxTextureSize / visibleWidth,
+        renderer.capabilities.maxTextureSize / height,
+      );
+      if (renderer.getPixelRatio() !== pixelRatio) renderer.setPixelRatio(pixelRatio);
+      renderer.setSize(visibleWidth, height, false);
+      if (propsRef.current.onRenderSize) {
+        renderer.getDrawingBufferSize(drawingBufferSize);
+        propsRef.current.onRenderSize(drawingBufferSize.x, drawingBufferSize.y);
+      }
+      renderer.domElement.style.width = `${visibleWidth}px`;
+      if (uniforms) (uniforms.uRefractionUvScale.value as THREE.Vector2).set(width / visibleWidth, 1);
       placeModel();
       if (model && propsRef.current.hero) {
         const projectedTop = Math.min(1, modelTop * camera.zoom);
@@ -283,14 +347,24 @@ export function LampCanvas(props: LampCanvasProps) {
 
     const refitModel = () => {
       if (!model) return;
-      group.position.x = 0;
-      group.rotation.z = THREE.MathUtils.degToRad(angle);
-      const box = getSculptureBounds();
+      group.position.set(0, 0, 0);
+      group.rotation.set(THREE.MathUtils.degToRad(angleX), THREE.MathUtils.degToRad(angleY), THREE.MathUtils.degToRad(angle));
+      let box = getSculptureBounds();
+      if (propsRef.current.fixedFraming && !framingSet) {
+        group.rotation.set(0, 0, Math.PI / 2);
+        box = getSculptureBounds();
+        group.rotation.set(THREE.MathUtils.degToRad(angleX), THREE.MathUtils.degToRad(angleY), THREE.MathUtils.degToRad(angle));
+      }
       const size = box.getSize(new THREE.Vector3());
-      fittedWidth = Math.max(size.x, 0.01);
-      fittedHeight = Math.max(size.y, 0.01);
-      modelCenterX = box.getCenter(new THREE.Vector3()).x;
-      modelTop = box.max.y;
+      // Studio rotation keeps a stable camera scale and pivot. Size and
+      // position controls therefore remain independent of the viewing angle.
+      if (!propsRef.current.fixedFraming || !framingSet) {
+        fittedWidth = Math.max(size.x, 0.01);
+        fittedHeight = Math.max(size.y, 0.01);
+        modelCenterX = box.getCenter(new THREE.Vector3()).x;
+        modelTop = box.max.y;
+        framingSet = true;
+      }
       fit();
     };
 
@@ -298,6 +372,44 @@ export function LampCanvas(props: LampCanvasProps) {
       const y = window.scrollY;
       targetFrames += (y - lastScrollY) * (propsRef.current.scrollSpeed ?? 0.39);
       lastScrollY = y;
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      pendingPointer = { x: event.clientX, y: event.clientY, time: performance.now() };
+      if (!previousPointer) previousPointer = pendingPointer;
+    };
+    const resetPointer = () => { previousPointer = null; pendingPointer = null; };
+    const onPointerDown = (event: PointerEvent) => {
+      resetPointer();
+      onPointerMove(event);
+      if (event.pointerType !== "mouse") renderer.domElement.setPointerCapture(event.pointerId);
+    };
+    const applyPointerStroke = () => {
+      if (!pendingPointer || !previousPointer) return;
+      const from = previousPointer;
+      const to = pendingPointer;
+      previousPointer = to;
+      pendingPointer = null;
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      if (Math.hypot(dx, dy) < 0.5) return;
+      const rect = renderer.domElement.getBoundingClientRect();
+      scene.updateMatrixWorld(true);
+      camera.updateMatrixWorld(true);
+      // Sample the stroke as well as its endpoint so a quick pass can hit a
+      // thin surface. Empty background never adds momentum.
+      const steps = Math.min(5, Math.max(1, Math.ceil(Math.hypot(dx, dy) / 80)));
+      for (let i = 0; i <= steps; i++) {
+        pointer.set(((from.x + dx * i / steps - rect.left) / rect.width) * 2 - 1,
+          1 - ((from.y + dy * i / steps - rect.top) / rect.height) * 2);
+        raycaster.setFromCamera(pointer, camera);
+        if (raycaster.intersectObjects(interactiveMeshes, false).some(hit => hit.object.visible)) {
+          const elapsed = Math.max(0.016, (to.time - from.time) / 1000);
+          const strokeSpeed = (dx * 0.65 - dy) / Math.max(1, Math.min(rect.width, rect.height)) / elapsed;
+          spinVelocity = THREE.MathUtils.clamp(spinVelocity * 0.5 + strokeSpeed * 48 * (propsRef.current.pointerStrength ?? 1), -240, 240);
+          break;
+        }
+      }
     };
 
     const loader = new GLTFLoader();
@@ -341,6 +453,7 @@ export function LampCanvas(props: LampCanvasProps) {
           uFresnelStrength: { value: 1 },
           uRefractionTexture: { value: neutralTexture },
           uResolution: { value: new THREE.Vector2(1, 1) },
+          uRefractionUvScale: { value: new THREE.Vector2(1, 1) },
           uRefractionIor: { value: 1.31 },
           uRefractionAmount: { value: 0.06 },
           uRefractionDispersion: { value: 0.04 },
@@ -364,7 +477,10 @@ export function LampCanvas(props: LampCanvasProps) {
         scene.add(light);
       }
       model.traverse((object) => {
-        if ((object as THREE.Mesh).isMesh) (object as THREE.Mesh).material = object === emitter && emitterMaterial ? emitterMaterial : material!;
+        if ((object as THREE.Mesh).isMesh) {
+          (object as THREE.Mesh).material = object === emitter && emitterMaterial ? emitterMaterial : material!;
+          if (object !== emitter) interactiveMeshes.push(object as THREE.Mesh);
+        }
       });
 
       mixer = new THREE.AnimationMixer(model);
@@ -384,7 +500,15 @@ export function LampCanvas(props: LampCanvasProps) {
 
     const resizeObserver = new ResizeObserver(fit);
     resizeObserver.observe(container);
-    if (propsRef.current.hero) window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", fit);
+    if (propsRef.current.hero && props.interaction !== "pointer") window.addEventListener("scroll", onScroll, { passive: true });
+    if (props.interaction === "pointer") {
+      renderer.domElement.addEventListener("pointermove", onPointerMove);
+      renderer.domElement.addEventListener("pointerdown", onPointerDown);
+      renderer.domElement.addEventListener("pointerleave", resetPointer);
+      renderer.domElement.addEventListener("pointerup", resetPointer);
+      renderer.domElement.addEventListener("pointercancel", resetPointer);
+    }
     fit();
 
     const render = (now: number) => {
@@ -394,12 +518,38 @@ export function LampCanvas(props: LampCanvasProps) {
       if (!model || !mixer || propsRef.current.visible === false) return;
 
       const currentAngle = propsRef.current.hero ? propsRef.current.rotation ?? 90 : 0;
-      if (currentAngle !== angle) {
+      const currentAngleX = propsRef.current.rotationX ?? 0;
+      const currentAngleY = propsRef.current.rotationY ?? 0;
+      if (currentAngle !== angle || currentAngleX !== angleX || currentAngleY !== angleY) {
         angle = currentAngle;
+        angleX = currentAngleX;
+        angleY = currentAngleY;
         refitModel();
       }
       if (propsRef.current.hero && (propsRef.current.zoom ?? 1.8) !== lastZoom) {
         lastZoom = propsRef.current.zoom ?? 1.8;
+        fit();
+      }
+      const nextMobilePixelRatio = propsRef.current.mobilePixelRatio ?? 2.75;
+      if (nextMobilePixelRatio !== lastMobilePixelRatio) {
+        lastMobilePixelRatio = nextMobilePixelRatio;
+        fit();
+      }
+      const nextDesktopPixelRatio = propsRef.current.desktopPixelRatio ?? 1.25;
+      if (nextDesktopPixelRatio !== lastDesktopPixelRatio) {
+        lastDesktopPixelRatio = nextDesktopPixelRatio;
+        fit();
+      }
+      const nextRenderScale = propsRef.current.renderScale ?? 1;
+      if (nextRenderScale !== lastRenderScale) {
+        lastRenderScale = nextRenderScale;
+        fit();
+      }
+      const nextRefractionAmount = propsRef.current.refraction?.amount ?? 0;
+      const nextRefractionEnabled = propsRef.current.refraction?.enabled ?? false;
+      if (nextRefractionAmount !== lastRefractionAmount || nextRefractionEnabled !== lastRefractionEnabled) {
+        lastRefractionAmount = nextRefractionAmount;
+        lastRefractionEnabled = nextRefractionEnabled;
         fit();
       }
       if (propsRef.current.meshVisibility) {
@@ -409,13 +559,22 @@ export function LampCanvas(props: LampCanvasProps) {
       }
       const nextAnchorX = propsRef.current.anchorX ?? 50;
       const nextOffsetX = propsRef.current.offsetX ?? 0;
-      if (nextAnchorX !== lastAnchorX || nextOffsetX !== lastOffsetX) {
+      const nextOffsetY = propsRef.current.offsetY ?? 0;
+      if (nextAnchorX !== lastAnchorX || nextOffsetX !== lastOffsetX || nextOffsetY !== lastOffsetY) {
         lastAnchorX = nextAnchorX;
         lastOffsetX = nextOffsetX;
+        lastOffsetY = nextOffsetY;
         placeModel();
       }
 
       if (propsRef.current.hero) {
+        if (propsRef.current.interaction === "pointer") {
+          applyPointerStroke();
+          const drag = Math.max(0.1, propsRef.current.pointerDrag ?? 2.5);
+          const decay = Math.exp(-drag * delta);
+          targetFrames += spinVelocity * (1 - decay) / drag;
+          spinVelocity *= decay;
+        }
         targetFrames += (propsRef.current.idleFps ?? 24) * delta;
         const lag = propsRef.current.scrubLagMs ?? 160;
         const alpha = lag <= 0 ? 1 : 1 - Math.exp(-delta * 1000 / lag);
@@ -505,7 +664,13 @@ export function LampCanvas(props: LampCanvasProps) {
       disposed = true;
       cancelAnimationFrame(raf);
       resizeObserver.disconnect();
+      window.removeEventListener("resize", fit);
       window.removeEventListener("scroll", onScroll);
+      renderer.domElement.removeEventListener("pointermove", onPointerMove);
+      renderer.domElement.removeEventListener("pointerdown", onPointerDown);
+      renderer.domElement.removeEventListener("pointerleave", resetPointer);
+      renderer.domElement.removeEventListener("pointerup", resetPointer);
+      renderer.domElement.removeEventListener("pointercancel", resetPointer);
       controls?.dispose();
       mixer?.stopAllAction();
       model?.traverse((object) => {
@@ -520,7 +685,7 @@ export function LampCanvas(props: LampCanvasProps) {
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, [props.variant, props.hero, props.mobile]);
+  }, [props.variant, props.hero, props.mobile, props.interaction]);
 
-  return <div ref={containerRef} className="h-full w-full" aria-hidden="true" />;
+  return <div ref={containerRef} className="relative h-full w-full" aria-hidden="true" />;
 }

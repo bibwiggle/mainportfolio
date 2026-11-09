@@ -13,6 +13,21 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@keyframes hero-sculpture-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, var(--hero-scroll-end, 0px), 0); }
+}
+
+@supports (animation-timeline: scroll(root block)) {
+  .hero-sculpture-position[data-scroll-position="native"] {
+    animation-name: hero-sculpture-scroll;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: scroll(root block);
+  }
+}
+
 .chrome-nav-header {
   background: #101114;
   box-shadow: 0 8px 24px rgb(0 0 0 / 24%);
