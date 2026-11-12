@@ -15,20 +15,22 @@ function isMobileDevice() {
 
 const projects = [
   {
-    id: "fabrication",
-    title: "Fabrication",
-    description: "Kinetic sculpture, physical computing, mechanisms, and cosplay.",
-    imageUrl: "/assets/DDthumb2.png",
-    lottieUrl: "/lotties/DDlottie.json",
-    link: "/fabrication",
-  },
-  {
     id: "visual-works",
     title: "Visual Works",
     description: "VJing, projection mapping, camera work, and moving images.",
-    imageUrl: "/VJtn.jpg",
+    imageUrl: "/visual-works-thumbnail.jpg",
+    visualEffect: "noise" as const,
     lottieUrl: "/lotties/VJclips.json",
     link: "/vjclips",
+  },
+  {
+    id: "fabrication",
+    title: "Fabrication",
+    description: "Kinetic sculpture, physical computing, mechanisms, and cosplay.",
+    imageUrl: "/doki assets/helmet-card-poster.jpg",
+    visualEffect: "helmet-scrub" as const,
+    lottieUrl: "/lotties/DDlottie.json",
+    link: "/fabrication",
   },
 ];
 
@@ -36,6 +38,30 @@ const projects = [
 const DEFAULTS = {
   ...DEFAULT_CHROME_SETTINGS,
   ...HOMEPAGE_LAMP_APPEARANCE,
+  HELMET_CARD_SCALE: 1.25,
+  MOBILE_HELMET_CARD_SCALE: 1.7,
+  CARD_VIGNETTE_OPACITY: 0.8,
+  CARD_VIGNETTE_WIDTH: 21,
+  CARD_VIGNETTE_HEIGHT: 17,
+  CARD_VIGNETTE_FEATHER: 70,
+  CARD_HOVER_DARKNESS: 0.45,
+  NOISE_DENSITY: 1,
+  NOISE_SIZE: 1.75,
+  NOISE_BRIGHTNESS: 1.5,
+  NOISE_SPEED: 1.9,
+  NOISE_MOVEMENT: 23,
+  NOISE_HORIZONTAL: 1.3,
+  NOISE_VERTICAL: 2.7,
+  NOISE_FLOW_SCALE: 2,
+  NOISE_VARIATION: 0.1,
+  NOISE_TRAILS: 0.97,
+  NOISE_TRAIL_HUE_A: 211,
+  NOISE_TRAIL_HUE_B: 291,
+  NOISE_TRAIL_SATURATION: 45,
+  NOISE_TRAIL_INTENSITY: 1.05,
+  NOISE_TRAIL_SEPARATION: 6,
+  NOISE_RADIUS: 10,
+  NOISE_STRENGTH: 0.9,
   RIGHT_ROTATION:      90,
   ANIMATION_WIDTH_VW: 124,
   ANIMATION_MAX_PX: 1820,
@@ -96,6 +122,30 @@ const blend = (desktop: number, phone: number, phoneMix: number) => desktop + (p
 
 // Slider config for the dev panel
 const SLIDERS: { key: NumericCfgKey; label: string; min: number; max: number; step: number; section?: string }[] = [
+  { key: "HELMET_CARD_SCALE", label: "Desktop helmet scale", min: 0.5, max: 2.5, step: 0.05, section: "Fabrication card" },
+  { key: "MOBILE_HELMET_CARD_SCALE", label: "Phone helmet scale", min: 0.5, max: 2.5, step: 0.05 },
+  { key: "CARD_VIGNETTE_OPACITY", label: "Vignette darkness", min: 0, max: 1, step: 0.05, section: "Card text vignette" },
+  { key: "CARD_VIGNETTE_WIDTH", label: "Vignette width", min: 5, max: 100, step: 1 },
+  { key: "CARD_VIGNETTE_HEIGHT", label: "Vignette height", min: 5, max: 100, step: 1 },
+  { key: "CARD_VIGNETTE_FEATHER", label: "Vignette softness", min: 0, max: 100, step: 1 },
+  { key: "CARD_HOVER_DARKNESS", label: "Hover darkness", min: 0, max: 1, step: 0.05 },
+  { key: "NOISE_DENSITY", label: "Particle density", min: 0, max: 3, step: 0.1, section: "Visual Works card" },
+  { key: "NOISE_SIZE", label: "Particle size", min: 0.25, max: 4, step: 0.05 },
+  { key: "NOISE_BRIGHTNESS", label: "Particle brightness", min: 0, max: 2, step: 0.05 },
+  { key: "NOISE_SPEED", label: "Movement speed", min: 0, max: 4, step: 0.1 },
+  { key: "NOISE_MOVEMENT", label: "Movement distance (px)", min: 0, max: 50, step: 1 },
+  { key: "NOISE_HORIZONTAL", label: "Horizontal movement", min: 0, max: 3, step: 0.1 },
+  { key: "NOISE_VERTICAL", label: "Vertical movement", min: 0, max: 3, step: 0.1 },
+  { key: "NOISE_FLOW_SCALE", label: "Movement wave scale", min: 0, max: 5, step: 0.1 },
+  { key: "NOISE_VARIATION", label: "Movement variation", min: 0, max: 3, step: 0.1 },
+  { key: "NOISE_TRAILS", label: "Particle trails", min: 0, max: 0.98, step: 0.01 },
+  { key: "NOISE_TRAIL_HUE_A", label: "First trail hue", min: 0, max: 360, step: 1 },
+  { key: "NOISE_TRAIL_HUE_B", label: "Second trail hue", min: 0, max: 360, step: 1 },
+  { key: "NOISE_TRAIL_SATURATION", label: "Trail saturation", min: 0, max: 100, step: 1 },
+  { key: "NOISE_TRAIL_INTENSITY", label: "Trail color intensity", min: 0, max: 2, step: 0.05 },
+  { key: "NOISE_TRAIL_SEPARATION", label: "Color separation (px)", min: 0, max: 20, step: 0.5 },
+  { key: "NOISE_RADIUS", label: "Empty space radius (% card)", min: 0, max: 60, step: 1 },
+  { key: "NOISE_STRENGTH", label: "Pointer push strength", min: 0, max: 1.5, step: 0.05 },
   { key: "CHROME_REFLECTION", label: "Reflection strength", min: 0, max: 2, step: 0.05, section: "Navigation chrome" },
   { key: "CHROME_SCALE", label: "Pattern size", min: 0.25, max: 4, step: 0.05 },
   { key: "CHROME_SPEED", label: "Movement speed", min: 0, max: 5, step: 0.05 },
@@ -291,6 +341,7 @@ export default function Page() {
 
   // Full phone settings below 640px, smoothly blending to desktop at 1024px.
   const phoneMix = Math.max(0, Math.min(1, (1024 - windowWidth) / 384));
+  const helmetCardScale = blend(cfg.HELMET_CARD_SCALE, cfg.MOBILE_HELMET_CARD_SCALE, phoneMix);
   const usePhoneRendering = isMobile || windowWidth <= 640;
   const modelZoom = blend(cfg.MODEL_ZOOM, cfg.MOBILE_MODEL_ZOOM, phoneMix);
   const modelOffsetX = blend(cfg.ANIMATION_X, cfg.MOBILE_ANIMATION_X, phoneMix);
@@ -326,6 +377,7 @@ export default function Page() {
     refractionRendering: cfg.REFRACTION_ENABLED ? (cfg.REFRACTION_INTERMESH ? "depth peel + rgb dispersion" : "fbo + rgb dispersion") : "off",
     settings: cfg,
     effectiveAtViewport: {
+      HELMET_CARD_SCALE: helmetCardScale,
       ANIMATION_WIDTH_VW: responsiveWidth,
       ANIMATION_MAX_PX: responsiveMaximum,
       ANIMATION_GAP: responsiveGap,
@@ -489,7 +541,31 @@ export default function Page() {
           {/* Projects */}
           <section className="min-h-screen flex flex-col items-center justify-center relative">
             <div className="flex-1 w-full bg-black" id="projects">
-              <ProjectGrid projects={projects} fullHeight />
+              <ProjectGrid projects={projects} fullHeight helmetScale={helmetCardScale} vignette={{
+                opacity: cfg.CARD_VIGNETTE_OPACITY,
+                width: cfg.CARD_VIGNETTE_WIDTH,
+                height: cfg.CARD_VIGNETTE_HEIGHT,
+                feather: cfg.CARD_VIGNETTE_FEATHER,
+                hoverDarkness: cfg.CARD_HOVER_DARKNESS,
+              }} noiseSettings={{
+                density: cfg.NOISE_DENSITY,
+                size: cfg.NOISE_SIZE,
+                brightness: cfg.NOISE_BRIGHTNESS,
+                speed: cfg.NOISE_SPEED,
+                movement: cfg.NOISE_MOVEMENT,
+                horizontal: cfg.NOISE_HORIZONTAL,
+                vertical: cfg.NOISE_VERTICAL,
+                flowScale: cfg.NOISE_FLOW_SCALE,
+                variation: cfg.NOISE_VARIATION,
+                trails: cfg.NOISE_TRAILS,
+                trailHueA: cfg.NOISE_TRAIL_HUE_A,
+                trailHueB: cfg.NOISE_TRAIL_HUE_B,
+                trailSaturation: cfg.NOISE_TRAIL_SATURATION,
+                trailIntensity: cfg.NOISE_TRAIL_INTENSITY,
+                trailSeparation: cfg.NOISE_TRAIL_SEPARATION,
+                radius: cfg.NOISE_RADIUS,
+                strength: cfg.NOISE_STRENGTH,
+              }} />
             </div>
           </section>
         </main>

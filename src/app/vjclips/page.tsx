@@ -14,6 +14,7 @@ type VisualClip =
   | { id: string; title: string; type: "local"; src: string; poster: string };
 
 const clips: VisualClip[] = [
+  { id: "fort-tryon-colonnade", type: "youtube", videoId: "28qqlMo-acU", title: "Fort Tryon Park — Colonnade Projection Mapping" },
   { id: "anime-rave", type: "youtube", videoId: "ckRolrJ5SKI", title: "Anime Rave VJ Highlights" },
   { id: "vj-3", type: "youtube", videoId: "VeDs-DxPeUk", title: "TouchDesigner Study #04" },
   { id: "vj-2", type: "youtube", videoId: "3YqU2R2awY0", title: "TouchDesigner Study #03" },
