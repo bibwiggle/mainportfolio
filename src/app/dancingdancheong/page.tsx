@@ -14,7 +14,7 @@ const SECTIONS = [
   },
   {
     label: "Process",
-    body: `The mechanical design was the hardest thing I had built at that point. A three-axis system with pairs of bevel gears, each connected to its own motor, with rods of different thicknesses nested inside one another. Getting the gear ratios right and finding enough torque was a long journey. I wish I had understood mechanical advantage from the start. But by Prototype 3, the motion was finally what I had imagined: layers of pattern gliding and spinning in a way that felt alive.\n\nWiring the motors and drivers was its own education. Every prototype taught me something new about keeping the electrical side stable. By the end, I felt much more confident managing both the code and the cables.`,
+    body: `The mechanical design was the hardest thing I had built at that point. It used a three-axis system with pairs of bevel gears, each connected to its own motor, and rods of different thicknesses nested inside one another. Getting the gear ratios right and finding enough torque was a long journey. I wish I had understood mechanical advantage from the start. But by Prototype 3, the motion was finally what I had imagined: layers of pattern gliding and spinning in a way that felt alive.\n\nWiring the motors and drivers was its own education. Every prototype taught me something new about keeping the electrical side stable. By the end, I felt much more confident managing both the code and the cables.`,
   },
 ];
 

@@ -12,7 +12,7 @@ const SECTIONS = [
   },
   {
     label: "Process",
-    body: `Getting all the multiplexers talking to a single Arduino Pro Micro was a victory by itself. The hard lesson was that every component needs its own dedicated ground wire running back to a single common point. Merging multiple ground wires into one lets current from one component bleed into another, which is why turning one knob was sending the others jumping. A separate 12V power supply solved the other half of it, giving everything stable voltage instead of pulling from the Arduino's onboard power.\n\nThe moment the controls mapped cleanly in Ableton and every knob responded in real time was genuinely satisfying. That was when it stopped being a wiring project and started being an instrument.`,
+    body: `Getting all the multiplexers talking to a single Arduino Pro Micro was a victory by itself. The hard lesson was that every component needs its own dedicated ground wire running back to a single common point. Merging multiple ground wires into one lets current from one component bleed into another, which is why turning one knob caused the others to jump. A separate 12V power supply solved the other half of it, giving everything stable voltage instead of pulling from the Arduino's onboard power.\n\nThe moment the controls mapped cleanly in Ableton and every knob responded in real time was genuinely satisfying. That was when it stopped being a wiring project and started being an instrument.`,
   },
   {
     label: "User Experience",

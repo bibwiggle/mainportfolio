@@ -5,9 +5,9 @@ import VideoPlayer from "@/components/VideoPlayer";
 import LocalVideoPlayer from "@/components/LocalVideoPlayer";
 
 const TITLE = "Visual Works";
-const SUBTITLE = "Video work spanning live visual performance, editing, and original footage. Made with Resolume, TouchDesigner, Blender, and a adobe suite.";
+const SUBTITLE = "Video work spanning live visual performance, editing, and original footage. Made with Resolume, TouchDesigner, Blender, and Adobe suite.";
 
-const SKILLS = ["TouchDesigner", "Blender", "Resolume", "Video Editing", "Camera Work"];
+const SKILLS = ["TouchDesigner", "Blender", "Resolume", "Projection Mapping", "Video Editing", "Camera Work"];
 
 type VisualClip =
   | { id: string; title: string; description?: string; type: "youtube"; videoId: string }
